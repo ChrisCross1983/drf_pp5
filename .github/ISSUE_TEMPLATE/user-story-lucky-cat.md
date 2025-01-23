@@ -1,7 +1,7 @@
 ---
-name: User Story
-about: 'User Story: '
-title: ''
+name: User Story Lucky Cat
+about: Standard Template
+title: 'User Story: '
 labels: ''
 assignees: ''
 
