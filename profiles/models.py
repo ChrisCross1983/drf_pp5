@@ -9,7 +9,7 @@ class Profile(models.Model):
         'image', 
         default='https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg'
     )
-    location = models.CharField(max_length=100, blank=True)
+    followers = models.ManyToManyField("self", symmetrical=False, related_name='following', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 from django.contrib.auth.models import User
 from .models import Profile
+from posts.models import Post
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8, required=True)
@@ -37,7 +38,21 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='user.username')
+    total_posts = serializers.SerializerMethodField()
+    followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
-        fields = ['id', 'owner', 'bio', 'profile_picture', 'location', 'created_at']
+        fields = [
+            'id', 'owner', 'bio', 'profile_picture',
+            'total_posts', 'followers_count', 'following_count', 'created_at']
+
+    def get_total_posts(self, obj):
+        return Post.objects.filter(user=obj.user).count()
+
+    def get_followers_count(self, obj):
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        return obj.following.count()
