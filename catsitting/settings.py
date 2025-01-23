@@ -35,8 +35,15 @@ SECRET_KEY = 'django-insecure-*41c7@4tzalm527io68p1r5rd&s0^)%lbfp73jik8(2=wk#ja5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '8000-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
+]
 
 # Application definition
 
@@ -49,9 +56,11 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
+    'rest_framework',
+    'corsheaders',
 
     'profiles',
-
+    'posts',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +71,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
 ]
 
 ROOT_URLCONF = 'catsitting.urls'
