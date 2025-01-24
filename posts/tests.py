@@ -158,3 +158,28 @@ class EditDeletePostTestCase(TestCase):
         response = self.client.delete(f'/api/posts/{self.post.id}/')
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Post.objects.filter(id=self.post.id).exists())
+
+# Test Edit / Delete Comments
+class EditDeleteCommentTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client = APIClient()
+        self.post = Post.objects.create(author=self.user, title="Test Post", category="general", description="Test description")
+        self.comment = Comment.objects.create(author=self.user, post=self.post, content="Original comment")
+
+        response = self.client.post('/api/profiles/login/', {
+            "username": "testuser",
+            "password": "password123"
+        })
+        self.access_token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+    def test_edit_comment(self):
+        response = self.client.put(f'/api/posts/comments/{self.comment.id}/', {"content": "Updated comment"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['content'], "Updated comment")
+
+    def test_delete_comment(self):
+        response = self.client.delete(f'/api/posts/comments/{self.comment.id}/')
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(Comment.objects.filter(id=self.comment.id).exists())

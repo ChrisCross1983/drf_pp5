@@ -52,7 +52,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ['owner']
 
     def get_total_posts(self, obj):
-        return Post.objects.filter(user=obj.user).count()
+        return Post.objects.filter(author=obj.user).count()
 
     def get_followers_count(self, obj):
         return obj.followers.count()

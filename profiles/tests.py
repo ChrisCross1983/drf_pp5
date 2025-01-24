@@ -155,3 +155,53 @@ class ChangePasswordTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         print("Password Change Response Status Code:", response.status_code)
         print("Password Change Response Data:", response.url)
+
+# Test Follow / Unfollow profiles
+class FollowUserTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user1 = User.objects.create_user(username="user1", password="password123")
+        self.user2 = User.objects.create_user(username="user2", password="password123")
+
+        response = self.client.post('/api/profiles/login/', {
+            "username": "user1",
+            "password": "password123"
+        })
+        self.access_token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+    def test_follow_user(self):
+        response = self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('message', response.data)
+        self.assertEqual(response.data['message'], 'Followed successfully.')
+
+    def test_unfollow_user(self):
+        self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
+        response = self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('message', response.data)
+        self.assertEqual(response.data['message'], 'Unfollowed successfully.')
+
+    def test_cannot_follow_self(self):
+        response = self.client.post(f'/api/profiles/{self.user1.profile.id}/follow/')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+        self.assertEqual(response.data['error'], "You cannot follow yourself.")
+
+# Test for calling followers / following lists
+
+    def test_get_followers(self):
+        self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
+        response = self.client.get(f'/api/profiles/{self.user2.profile.id}/followers/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['username'], "user1")
+
+    def test_get_following(self):
+        self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
+        response = self.client.get(f'/api/profiles/{self.user1.profile.id}/following/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['username'], "user2")

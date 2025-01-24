@@ -4,6 +4,7 @@ from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, Crea
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
@@ -56,4 +57,58 @@ class EditProfileView(RetrieveUpdateAPIView):
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'registration/password_change_form.html'
     success_url = reverse_lazy('password_change_done')
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated]
+
+class FollowUserView(APIView):
+    """
+    Endpoint to follow or unfollow another user.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            target_profile = Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if target_profile.user == request.user:
+            return Response({"error": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.user.profile in target_profile.followers.all():
+            target_profile.followers.remove(request.user.profile)
+            return Response({"message": "Unfollowed successfully."}, status=status.HTTP_200_OK)
+        else:
+            target_profile.followers.add(request.user.profile)
+            return Response({"message": "Followed successfully."}, status=status.HTTP_200_OK)
+
+class FollowersListView(APIView):
+    """
+    Endpoint to get a list of followers for a user.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            profile = Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        followers = profile.followers.all()
+        data = [{"id": follower.id, "username": follower.user.username} for follower in followers]
+        return Response(data, status=status.HTTP_200_OK)
+
+class FollowingListView(APIView):
+    """
+    Endpoint to get a list of profiles the user is following.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            profile = Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        following = profile.following.all()
+        data = [{"id": follow.id, "username": follow.user.username} for follow in following]
+        return Response(data, status=status.HTTP_200_OK)
