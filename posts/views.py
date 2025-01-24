@@ -1,3 +1,4 @@
+from django.db import models
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -23,6 +24,22 @@ class PostFeedView(ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [AllowAny]
     pagination_class = PostFeedPagination
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        search_query = self.request.query_params.get('search')
+        if search_query:
+            queryset = queryset.filter(
+                models.Q(title__icontains=search_query) |
+                models.Q(description__icontains=search_query)
+            )
+
+        category_filter = self.request.query_params.get('category')
+        if category_filter:
+            queryset = queryset.filter(category=category_filter)
+
+        return queryset
 
 class LikePostView(APIView):
     permission_classes = [IsAuthenticated]

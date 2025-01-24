@@ -97,3 +97,30 @@ class PostInteractionTestCase(TestCase):
         response = self.client.post(f'/api/posts/{self.post.id}/comment/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.post.comments.count(), 1)
+
+# Test Search and Filter Options
+class PostSearchFilterTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client = APIClient()
+        
+        response = self.client.post('/api/profiles/login/', {
+            "username": "testuser",
+            "password": "password123"
+        })
+        self.access_token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        Post.objects.create(author=self.user, title="Offer Sitting", category="offer", description="Looking for a sitter")
+        Post.objects.create(author=self.user, title="Search Sitting", category="search", description="Need a sitter")
+        Post.objects.create(author=self.user, title="General Tips", category="general", description="Tips for cats")
+
+    def test_search_posts(self):
+        response = self.client.get('/api/posts/feed/?search=sitter')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['results']), 2)
+
+    def test_filter_posts_by_category(self):
+        response = self.client.get('/api/posts/feed/?category=offer')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['results']), 1)

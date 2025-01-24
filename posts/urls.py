@@ -3,7 +3,7 @@ from .views import CreatePostView, PostFeedView, LikePostView, AddCommentView
 
 urlpatterns = [
     path('create/', CreatePostView.as_view(), name='create-post'),
-    path('feed/', PostFeedView.as_view(), name='post-feed'),
+    path('feed/', PostFeedView.as_view(), name='post-feed'), # with search and filter options
     path('<int:pk>/like/', LikePostView.as_view(), name='like-post'),
     path('<int:pk>/comment/', AddCommentView.as_view(), name='add-comment'),
 ]
