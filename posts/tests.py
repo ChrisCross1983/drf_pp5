@@ -124,3 +124,37 @@ class PostSearchFilterTestCase(TestCase):
         response = self.client.get('/api/posts/feed/?category=offer')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 1)
+
+# Test Delete and Edit Post
+class EditDeletePostTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client = APIClient()
+
+        response = self.client.post('/api/profiles/login/', {
+            "username": "testuser",
+            "password": "password123"
+        })
+        self.access_token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        self.post = Post.objects.create(
+            author=self.user,
+            title="Initial Title",
+            category="general",
+            description="Initial Description"
+        )
+
+    def test_edit_post(self):
+        response = self.client.put(f'/api/posts/{self.post.id}/', {
+            "title": "Updated Title",
+            "category": "offer",
+            "description": "Updated Description",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['title'], "Updated Title")
+
+    def test_delete_post(self):
+        response = self.client.delete(f'/api/posts/{self.post.id}/')
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(Post.objects.filter(id=self.post.id).exists())
