@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView
+from django.contrib.auth.views import PasswordChangeView
+from django.urls import reverse_lazy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from .models import Profile
@@ -50,3 +52,8 @@ class EditProfileView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.profile
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'registration/password_change_form.html'
+    success_url = reverse_lazy('password_change_done')
+    permission_classes = [IsAuthenticated] 

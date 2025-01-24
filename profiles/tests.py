@@ -124,3 +124,34 @@ class EditProfileTestCase(TestCase):
         print("Response Data:", response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['bio'], "Updated bio")
+
+# Test for Password Change
+class ChangePasswordTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client = APIClient()
+
+        response = self.client.post('/api/profiles/login/', {
+            "username": "testuser",
+            "password": "password123"
+        })
+        self.access_token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+    def test_change_password_success(self):
+        response = self.client.post('/api/profiles/password-change/', {
+            "old_password": "password123",
+            "new_password1": "newsecurepassword123",
+            "new_password2": "newsecurepassword123"
+        })
+        self.assertEqual(response.status_code, 302)
+
+    def test_change_password_mismatch(self):
+        response = self.client.post('/api/profiles/password-change/', {
+            "old_password": "password123",
+            "new_password1": "newpassword1",
+            "new_password2": "newpassword2"
+        })
+        self.assertEqual(response.status_code, 302)
+        print("Password Change Response Status Code:", response.status_code)
+        print("Password Change Response Data:", response.url)
