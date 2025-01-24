@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Post
 
+# Test Create Post
 class CreatePostTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="password123")
@@ -32,3 +33,36 @@ class CreatePostTestCase(TestCase):
         self.client.credentials()
         response = self.client.post('/api/posts/create/', self.valid_post_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+# Test Post Feed
+class PostFeedTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client = APIClient()
+
+        response = self.client.post('/api/profiles/login/', {
+            "username": "testuser",
+            "password": "password123"
+        })
+        self.access_token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        for i in range(15):
+            Post.objects.create(
+                author=self.user,
+                title=f"Post {i}",
+                category="general",
+                description="This is a test post",
+            )
+
+    def test_feed_pagination(self):
+        response = self.client.get('/api/posts/feed/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 10)
+
+    def test_infinite_scrolling(self):
+        response = self.client.get('/api/posts/feed/?page=1')
+        self.assertEqual(len(response.data['results']), 10)
+
+        response = self.client.get('/api/posts/feed/?page=2')
+        self.assertEqual(len(response.data['results']), 5)
