@@ -24,6 +24,7 @@ class Post(models.Model):
         null=True, 
         default='https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570695/default_post_tuonop.jpg'
     )
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

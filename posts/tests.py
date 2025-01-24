@@ -2,7 +2,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, Comment
 
 # Test Create Post
 class CreatePostTestCase(TestCase):
@@ -66,3 +66,34 @@ class PostFeedTestCase(TestCase):
 
         response = self.client.get('/api/posts/feed/?page=2')
         self.assertEqual(len(response.data['results']), 5)
+
+# Test Comment and Like
+class PostInteractionTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client = APIClient()
+
+        response = self.client.post('/api/profiles/login/', {
+            "username": "testuser",
+            "password": "password123"
+        })
+        self.access_token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        self.post = Post.objects.create(
+            author=self.user,
+            title="Test Post",
+            category="general",
+            description="This is a test post"
+        )
+
+    def test_like_post(self):
+        response = self.client.post(f'/api/posts/{self.post.id}/like/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.post.likes.count(), 1)
+
+    def test_add_comment(self):
+        data = {"content": "This is a test comment"}
+        response = self.client.post(f'/api/posts/{self.post.id}/comment/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(self.post.comments.count(), 1)
