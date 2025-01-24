@@ -25,7 +25,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
-        Profile.objects.create(user=user, profile_picture=profile_picture)
+        if profile_picture:
+            user.profile.profile_picture = profile_picture
+            user.profile.save()
 
         send_mail(
             'Welcome to Lucky Cat!',
@@ -47,6 +49,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'owner', 'bio', 'profile_picture',
             'total_posts', 'followers_count', 'following_count', 'created_at']
+        read_only_fields = ['owner']
 
     def get_total_posts(self, obj):
         return Post.objects.filter(user=obj.user).count()

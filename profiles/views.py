@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import RetrieveAPIView, CreateAPIView
+from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from .models import Profile
@@ -12,6 +12,7 @@ class RegisterView(CreateAPIView):
     Endpoint to register a new user.
     """
     serializer_class = RegisterSerializer
+    permission_classes = []
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -38,3 +39,14 @@ class UserProfileView(RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
+class EditProfileView(RetrieveUpdateAPIView):
+    """
+    Endpoint to allow users to edit their profile details.
+    """
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile

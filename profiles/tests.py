@@ -9,6 +9,7 @@ from profiles.models import Profile
 # Test for registration
 class RegistrationTestCase(TestCase):
     def setUp(self):
+        self.client = APIClient()
         self.valid_user_data = {
             "username": "testuser",
             "email": "testuser@example.com",
@@ -21,19 +22,22 @@ class RegistrationTestCase(TestCase):
         }
 
     def test_user_registration_creates_profile(self):
+        client = APIClient()
         response = self.client.post('/api/profiles/register/', self.valid_user_data)
         self.assertEqual(response.status_code, 201)
 
         user = User.objects.get(username="testuser")
-        self.assertIsNotNone(user)
-
         profile = Profile.objects.get(user=user)
         self.assertIsNotNone(profile)
 
     def test_duplicate_email_fails(self):
         self.client.post('/api/profiles/register/', self.valid_user_data)
 
-        response = self.client.post('/api/profiles/register/', self.invalid_user_data)
+        response = self.client.post('/api/profiles/register/', {
+            "username": "testuser2",
+            "email": "testuser@example.com",
+            "password": "securepassword123"
+        })
         self.assertEqual(response.status_code, 400)
         self.assertIn("email", response.data)
 
@@ -90,3 +94,33 @@ class PasswordResetTestCase(TestCase):
         response = self.client.post(self.password_reset_url, {'email': 'invalid@example.com'})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(mail.outbox), 0)
+
+# Test for Edit Profile
+class EditProfileTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client = APIClient()
+
+        response = self.client.post('/api/profiles/login/', {
+            "username": "testuser",
+            "password": "password123"
+        })
+
+        print("Login Response Status Code:", response.status_code)
+        print("Login Response Data:", response.data)
+
+        self.access_token = response.data.get('access')
+        if not self.access_token:
+            print("Error: No Access Token received")
+
+    def test_edit_profile(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        response = self.client.put('/api/profiles/edit/', {
+            "bio": "Updated bio",
+            "profile_picture": "https://example.com/new_image.jpg"
+        })
+        print("Response Status Code:", response.status_code)
+        print("Response Data:", response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['bio'], "Updated bio")
