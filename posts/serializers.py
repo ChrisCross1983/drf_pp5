@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Comment
+from .models import Post, Comment, SittingRequest
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -19,3 +19,9 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'category', 'description', 'image', 'author', 'likes_count', 'comments', 'created_at']
     def get_likes_count(self, obj):
         return obj.likes.count()
+
+class SittingRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SittingRequest
+        fields = ['id', 'sender', 'receiver', 'post', 'message', 'created_at']
+        read_only_fields = ['id', 'sender', 'receiver', 'post', 'created_at']

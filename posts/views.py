@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from .models import Post, Comment, SittingRequest
+from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer
 
 class PostFeedPagination(PageNumberPagination):
     page_size = 10
@@ -77,3 +77,29 @@ class CommentDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+class CreateSittingRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        print("Request received for post_id:", post_id)
+        try:
+            post = Post.objects.get(pk=post_id)
+            print("Post found:", post.title)
+            if post.author == request.user:
+                return Response({"error": "You cannot request sitting for your own post."}, status=status.HTTP_400_BAD_REQUEST)
+
+            data = {
+                "sender": request.user.id,
+                "receiver": post.author.id,
+                "post": post.id,
+                "message": request.data.get("message", "")
+            }
+            serializer = SittingRequestSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)

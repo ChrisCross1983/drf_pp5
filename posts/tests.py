@@ -2,7 +2,8 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Post, Comment
+from posts.models import Post
+from .models import Post, Comment, SittingRequest
 
 # Test Create Post
 class CreatePostTestCase(TestCase):
@@ -183,3 +184,44 @@ class EditDeleteCommentTestCase(TestCase):
         response = self.client.delete(f'/api/posts/comments/{self.comment.id}/')
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Comment.objects.filter(id=self.comment.id).exists())
+
+# Test Sitting Request
+class SittingRequestTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user1 = User.objects.create_user(username="user1", password="password123")
+        self.user2 = User.objects.create_user(username="user2", password="password123")
+
+        self.post = Post.objects.create(
+            author=self.user2,
+            title="Looking for a sitter",
+            category="search",
+            description="I need a sitter for my cat this weekend."
+        )
+
+        self.login_url = "/api/profiles/login/"
+        response = self.client.post(self.login_url, {"username": "user1", "password": "password123"})
+        self.access_token = response.data["access"]
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
+
+    def test_create_sitting_request(self):
+        data = {"message": "Hi, I would love to help with cat-sitting!"}
+        response = self.client.post(f"/api/posts/{self.post.id}/request/", data)
+
+        print("Response status:", response.status_code)
+        print("Response data:", response.data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(SittingRequest.objects.count(), 1)
+        self.assertEqual(SittingRequest.objects.first().sender, self.user1)
+        self.assertEqual(SittingRequest.objects.first().receiver, self.user2)
+
+    def test_cannot_request_own_post(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
+        response = self.client.post(f"/api/posts/{self.post.id}/request/", {"message": "I cannot send to my own post"})
+        
+        print("Response status:", response.status_code)
+        print("Response data:", response.data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
