@@ -10,6 +10,7 @@ from .views import (
     FollowUserView,
     FollowersListView,
     FollowingListView,
+    TopFollowedProfilesView,
 )
 
 urlpatterns = [
@@ -22,6 +23,7 @@ urlpatterns = [
     path('<int:pk>/follow/', FollowUserView.as_view(), name='follow-user'),
     path('<int:pk>/followers/', FollowersListView.as_view(), name='followers-list'),
     path('<int:pk>/following/', FollowingListView.as_view(), name='following-list'),
+    path('top-followed/', TopFollowedProfilesView.as_view(), name='top-followed-profiles'),
     path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),

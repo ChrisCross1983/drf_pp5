@@ -205,3 +205,20 @@ class FollowUserTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['username'], "user2")
+
+# Test Top 5 Followers
+class TopFollowedProfilesTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.users = [
+            User.objects.create_user(username=f'user{i}', password='password123') for i in range(1, 7)
+        ]
+        for user in self.users:
+            user.profile.followers.add(*[u.profile for u in self.users[:3]])
+
+    def test_top_followed_profiles(self):
+        response = self.client.get('/api/profiles/top-followed/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 5)
+        self.assertEqual(response.data[0]['follower_count'], 3)

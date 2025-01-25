@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from django.db.models import Count
 from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -111,4 +112,23 @@ class FollowingListView(APIView):
 
         following = profile.following.all()
         data = [{"id": follow.id, "username": follow.user.username} for follow in following]
+        return Response(data, status=status.HTTP_200_OK)
+
+class TopFollowedProfilesView(APIView):
+    """
+    Endpoint to retrieve the top 5 most-followed profiles.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        top_profiles = Profile.objects.annotate(follower_count=Count('followers')).order_by('-follower_count')[:5]
+        data = [
+            {
+                "id": profile.id,
+                "username": profile.user.username,
+                "follower_count": profile.follower_count,
+                "profile_picture": profile.profile_picture.url if profile.profile_picture else None,
+            }
+            for profile in top_profiles
+        ]
         return Response(data, status=status.HTTP_200_OK)
