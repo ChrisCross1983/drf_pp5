@@ -2,6 +2,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.urls import reverse
 from posts.models import Post
 from .models import Post, Comment, SittingRequest
 
@@ -200,17 +201,18 @@ class SittingRequestTestCase(TestCase):
             description="I need a sitter for my cat this weekend."
         )
 
-        self.login_url = "/api/profiles/login/"
+        self.login_url = reverse("token_obtain_pair")
         response = self.client.post(self.login_url, {"username": "user1", "password": "password123"})
         self.access_token = response.data["access"]
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
 
     def test_create_sitting_request(self):
-        data = {"message": "Hi, I would love to help with cat-sitting!"}
-        response = self.client.post(f"/api/posts/{self.post.id}/request/", data)
+        url = reverse('create-sitting-request', kwargs={'post_id': self.post.id})
+        print("DEBUG: Sending POST request to:", url)
 
-        print("Response status:", response.status_code)
-        print("Response data:", response.data)
+        response = self.client.post(url, {"message": "Hi, I would love to help with cat-sitting!"})
+        print("DEBUG: Response status:", response.status_code)
+        print("DEBUG: Response data:", getattr(response, "data", "No data available"))
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(SittingRequest.objects.count(), 1)
@@ -218,10 +220,16 @@ class SittingRequestTestCase(TestCase):
         self.assertEqual(SittingRequest.objects.first().receiver, self.user2)
 
     def test_cannot_request_own_post(self):
+        self.client.credentials()
+        response = self.client.post(self.login_url, {"username": "user2", "password": "password123"})
+        self.access_token = response.data["access"]
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
-        response = self.client.post(f"/api/posts/{self.post.id}/request/", {"message": "I cannot send to my own post"})
-        
-        print("Response status:", response.status_code)
-        print("Response data:", response.data)
+
+        url = reverse('create-sitting-request', kwargs={'post_id': self.post.id})
+        print("DEBUG: Sending POST request to:", url)
+
+        response = self.client.post(url, {"message": "I cannot send to my own post"})
+        print("DEBUG: Response status:", response.status_code)
+        print("DEBUG: Response data:", getattr(response, "data", "No data available"))
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

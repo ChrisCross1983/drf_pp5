@@ -16,5 +16,5 @@ urlpatterns = [
     path('<int:pk>/comment/', AddCommentView.as_view(), name='add-comment'),
     path('<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('comments/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
-    path('posts/<int:post_id>/request/', CreateSittingRequestView.as_view(), name='create-sitting-request'),
+    path('<int:post_id>/request/', CreateSittingRequestView.as_view(), name='create-sitting-request'),
 ]
