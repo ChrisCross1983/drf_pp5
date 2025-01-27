@@ -21,7 +21,11 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.likes.count()
 
 class SittingRequestSerializer(serializers.ModelSerializer):
+    sender_username = serializers.ReadOnlyField(source='sender.username')
+    receiver_username = serializers.ReadOnlyField(source='receiver.username')
+    post_title = serializers.ReadOnlyField(source='post.title')
+
     class Meta:
         model = SittingRequest
-        fields = ['id', 'sender', 'receiver', 'post', 'message', 'created_at']
+        fields = ['id', 'sender', 'receiver', 'post', 'message', 'status', 'created_at', 'sender_username', 'receiver_username', 'post_title']
         read_only_fields = ['id', 'sender', 'receiver', 'post', 'created_at']

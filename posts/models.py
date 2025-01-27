@@ -43,10 +43,17 @@ class Comment(models.Model):
         return f"Comment by {self.author.username} on {self.post.title}"
 
 class SittingRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('declined', 'Declined'),
+    ]
+
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_requests')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_requests')
-    post = models.ForeignKey('posts.Post', on_delete=models.CASCADE, related_name='sitting_requests')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='sitting_requests')
     message = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

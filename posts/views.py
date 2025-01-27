@@ -91,12 +91,6 @@ class CreateSittingRequestView(APIView):
             if post.author == request.user:
                 return Response({"error": "You cannot request sitting for your own post."}, status=status.HTTP_400_BAD_REQUEST)
 
-            #data = {
-            #    "sender": request.user.id,
-            #    "receiver": post.author.id,
-            #    "post": post.id,
-            #    "message": request.data.get("message", "")
-            #}
             serializer = SittingRequestSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(sender=request.user, receiver=post.author, post=post)
@@ -106,3 +100,32 @@ class CreateSittingRequestView(APIView):
         except Post.DoesNotExist:
             print("DEBUG: Post with id", post_id, "not found.")
             return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class IncomingSittingRequestsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        incoming_requests = SittingRequest.objects.filter(receiver=request.user)
+        serializer = SittingRequestSerializer(incoming_requests, many=True)
+        return Response(serializer.data)
+
+
+class ManageSittingRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, request_id):
+        try:
+            sitting_request = SittingRequest.objects.get(id=request_id, receiver=request.user)
+            action = request.data.get('action')
+            
+            if action == 'accept':
+                sitting_request.status = 'accepted'
+            elif action == 'decline':
+                sitting_request.status = 'declined'
+            else:
+                return Response({'error': 'Invalid action'}, status=400)
+            
+            sitting_request.save()
+            return Response({'message': f'Request {action}ed successfully.'})
+        except SittingRequest.DoesNotExist:
+            return Response({'error': 'Request not found'}, status=404)

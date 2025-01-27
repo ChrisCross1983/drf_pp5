@@ -233,3 +233,50 @@ class SittingRequestTestCase(TestCase):
         print("DEBUG: Response data:", getattr(response, "data", "No data available"))
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+# Test Manage Sitting Requests
+class SittingRequestManagementTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user1 = User.objects.create_user(username="user1", password="password123")
+        self.user2 = User.objects.create_user(username="user2", password="password123")
+
+        self.post = Post.objects.create(
+            author=self.user2,
+            title="Looking for a sitter",
+            category="search",
+            description="I need a sitter for my cat this weekend."
+        )
+
+        self.sitting_request = SittingRequest.objects.create(
+            sender=self.user1,
+            receiver=self.user2,
+            post=self.post,
+            message="I can help with sitting!"
+        )
+
+        self.login_url = "/api/profiles/login/"
+        response = self.client.post(self.login_url, {"username": "user2", "password": "password123"})
+        self.access_token = response.data["access"]
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
+
+    def test_incoming_requests(self):
+        response = self.client.get('/api/posts/requests/incoming/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['message'], "I can help with sitting!")
+
+    def test_manage_request_accept(self):
+        url = f'/api/posts/requests/manage/{self.sitting_request.id}/'
+        response = self.client.post(url, {"action": "accept"})
+        self.assertEqual(response.status_code, 200)
+        self.sitting_request.refresh_from_db()
+        self.assertEqual(self.sitting_request.status, 'accepted')
+
+    def test_manage_request_decline(self):
+        url = f'/api/posts/requests/manage/{self.sitting_request.id}/'
+        response = self.client.post(url, {"action": "decline"})
+        self.assertEqual(response.status_code, 200)
+        self.sitting_request.refresh_from_db()
+        self.assertEqual(self.sitting_request.status, 'declined')
