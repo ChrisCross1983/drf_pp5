@@ -35,7 +35,6 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -64,7 +63,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudinary',
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'django.contrib.sites',
     'rest_framework_simplejwt',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
     'corsheaders',
     'drf_yasg',
 
@@ -78,6 +84,7 @@ MIDDLEWARE = [
     'catsitting.middleware.CustomCORSMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -93,12 +100,15 @@ else:
         r"^https:\/\/.*\.codeinstitute-ide\.net$",
     ]
 
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_SECURE = True 
 JWT_AUTH_SAMESITE = 'None'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
@@ -144,6 +154,7 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOW_HEADERS = [
     "Authorization",
     "Content-Type",
+    "X-CSRFToken",
 ]
 
 TEMPLATES = [
@@ -163,6 +174,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'catsitting.wsgi.application'
+SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
