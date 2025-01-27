@@ -9,6 +9,8 @@ from .views import (
     CreateSittingRequestView,
     IncomingSittingRequestsView,
     ManageSittingRequestView,
+    NotificationListView,
+    MarkNotificationReadView,
 )
 
 urlpatterns = [
@@ -21,4 +23,6 @@ urlpatterns = [
     path('<int:post_id>/request/', CreateSittingRequestView.as_view(), name='create-sitting-request'),
     path('requests/incoming/', IncomingSittingRequestsView.as_view(), name='incoming-sitting-requests'),
     path('requests/manage/<int:request_id>/', ManageSittingRequestView.as_view(), name='manage-sitting-request'),
+    path('notifications/', NotificationListView.as_view(), name='notifications'),
+    path('notifications/<int:notification_id>/mark-read/', MarkNotificationReadView.as_view(), name='mark-notification-read'),
 ]

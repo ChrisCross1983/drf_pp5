@@ -61,3 +61,25 @@ class SittingRequest(models.Model):
 
     def __str__(self):
         return f"Request from {self.sender.username} to {self.receiver.username} for post {self.post.title}"
+
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        ('like', 'Like'),
+        ('comment', 'Comment'),
+        ('request', 'Sitting Request'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True, related_name='notifications')
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, null=True)
+    sitting_request = models.ForeignKey(SittingRequest, on_delete=models.CASCADE, blank=True, null=True)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.message}"

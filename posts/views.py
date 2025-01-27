@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
-from .models import Post, Comment, SittingRequest
-from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer
+from .models import Post, Comment, SittingRequest, Notification
+from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer, NotificationSerializer
 
 class PostFeedPagination(PageNumberPagination):
     page_size = 10
@@ -46,13 +46,24 @@ class LikePostView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        if request.user in post.likes.all():
-            post.likes.remove(request.user)
-            return Response({'message': 'Post unliked'}, status=status.HTTP_200_OK)
-        else:
-            post.likes.add(request.user)
-            return Response({'message': 'Post liked'}, status=status.HTTP_200_OK)
+        try:
+            post = Post.objects.get(pk=pk)
+            if request.user in post.likes.all():
+                post.likes.remove(request.user)
+                return Response({'message': 'Post unliked'}, status=status.HTTP_200_OK)
+            else:
+                post.likes.add(request.user)
+
+                Notification.objects.create(
+                    user=post.author,
+                    type='like',
+                    post=post,
+                    message=f"{request.user.username} liked your post."
+                )
+
+                return Response({'message': 'Post liked'}, status=status.HTTP_200_OK)
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 class AddCommentView(APIView):
     permission_classes = [IsAuthenticated]
@@ -109,7 +120,6 @@ class IncomingSittingRequestsView(APIView):
         serializer = SittingRequestSerializer(incoming_requests, many=True)
         return Response(serializer.data)
 
-
 class ManageSittingRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -129,3 +139,22 @@ class ManageSittingRequestView(APIView):
             return Response({'message': f'Request {action}ed successfully.'})
         except SittingRequest.DoesNotExist:
             return Response({'error': 'Request not found'}, status=404)
+
+class NotificationListView(ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user)
+
+class MarkNotificationReadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, notification_id):
+        try:
+            notification = Notification.objects.get(pk=notification_id, user=request.user)
+            notification.is_read = True
+            notification.save()
+            return Response({'message': 'Notification marked as read.'}, status=status.HTTP_200_OK)
+        except Notification.DoesNotExist:
+            return Response({'error': 'Notification not found.'}, status=status.HTTP_404_NOT_FOUND)
