@@ -49,7 +49,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '8000-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
-    'https://luckycat-b653875cceaf.herokuapp.com/',
+    '8080-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
+    'luckycat-b653875cceaf.herokuapp.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
