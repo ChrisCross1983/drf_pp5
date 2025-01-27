@@ -55,6 +55,7 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
+    'https://luckycat-b653875cceaf.herokuapp.com',
 ]
 
 INSTALLED_APPS = [

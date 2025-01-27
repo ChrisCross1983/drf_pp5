@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg import openapi
+from .views import welcome_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', welcome_view, name='welcome'),
     path('', include('django.contrib.auth.urls')),
     path('api/profiles/', include('profiles.urls')),
     path('api/posts/', include('posts.urls')),
