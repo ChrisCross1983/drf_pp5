@@ -50,12 +50,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '8000-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
     '8080-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
+    '8000-chriscross1983-drfpp5-1kzqisvpqcg.ws.codeinstitute-ide.net',
     'luckycat-b653875cceaf.herokuapp.com',
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://8000-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
-    'https://luckycat-b653875cceaf.herokuapp.com',
 ]
 
 INSTALLED_APPS = [
@@ -77,14 +73,15 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'catsitting.middleware.CustomCORSMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 if 'CLIENT_ORIGIN' in os.environ:
@@ -104,7 +101,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -115,17 +112,39 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:8000',
-    'https://8000-chriscross1983-drfpp5-ygq5bsam955.ws.codeinstitute-ide.net',
+    'https://3000-chriscross1983-reactpp5-h8ikk9hdlca.ws.codeinstitute-ide.net',
+    'https://8000-chriscross1983-drfpp5-1kzqisvpqcg.ws.codeinstitute-ide.net',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://3000-chriscross1983-reactpp5-h8ikk9hdlca.ws.codeinstitute-ide.net',
+    'https://8000-chriscross1983-drfpp5-1kzqisvpqcg.ws.codeinstitute-ide.net',
+    'https://luckycat-b653875cceaf.herokuapp.com',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'catsitting.urls'
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
+CORS_ALLOW_HEADERS = [
+    "Authorization",
+    "Content-Type",
+]
 
 TEMPLATES = [
     {
