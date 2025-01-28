@@ -12,9 +12,11 @@ from .views import (
     FollowersListView,
     FollowingListView,
     TopFollowedProfilesView,
+    csrf_token_view,
 )
 
 urlpatterns = [
+    path("auth/csrf/", csrf_token_view, name="csrf-token"),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView.as_view(), name="logout"),

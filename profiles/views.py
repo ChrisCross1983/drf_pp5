@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView
 from django.contrib.auth.views import PasswordChangeView
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from dj_rest_auth.views import LogoutView
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
@@ -14,6 +16,9 @@ from django.conf import settings
 from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
+
+def csrf_token_view(request):
+    return JsonResponse({"csrfToken": get_token(request)})
 
 class RegisterView(CreateAPIView):
     """

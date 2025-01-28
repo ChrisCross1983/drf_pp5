@@ -82,7 +82,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'catsitting.middleware.CustomCORSMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'allauth.account.middleware.AccountMiddleware',
@@ -118,6 +117,7 @@ JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SECURE = True 
 JWT_AUTH_SAMESITE = 'None'
 
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:8000',
@@ -131,12 +131,17 @@ CSRF_TRUSTED_ORIGINS = [
     'https://luckycat-b653875cceaf.herokuapp.com',
 ]
 
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = True
+CSRF_USE_SESSIONS = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "None" 
+
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https:\/\/.*\.codeinstitute-ide\.net$",
 ]
-
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOW_METHODS = [
     "GET",
@@ -147,11 +152,13 @@ CORS_ALLOW_METHODS = [
     "OPTIONS",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     "Authorization",
     "Content-Type",
     "X-CSRFToken",
 ]
+CORS_EXPOSE_HEADERS = ["X-CSRFToken"]
 
 TEMPLATES = [
     {
