@@ -5,8 +5,10 @@ from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from django.db.models import Count
+from django.conf import settings
 from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -59,6 +61,21 @@ class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'registration/password_change_form.html'
     success_url = reverse_lazy('password_change_done')
     permission_classes = [IsAuthenticated]
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_route(request):
+    """
+    Fix for dj-rest-auth Logout Bug:
+    """
+    response = Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
+
+    response.delete_cookie(settings.JWT_AUTH_COOKIE)
+    response.delete_cookie(settings.JWT_AUTH_REFRESH_COOKIE)
+
+    print("DEBUG: User logged out successfully") 
+
+    return response
 
 class FollowUserView(APIView):
     """

@@ -295,7 +295,12 @@ class NotificationTestCase(TestCase):
             description="Test description"
         )
 
-        self.client.login(username="user2", password="password123")
+        login_response = self.client.post('/api/profiles/login/', {
+            "username": "user2",
+            "password": "password123"
+        })
+        self.access_token = login_response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
     def test_like_notification(self):
         response = self.client.post(f'/api/posts/{self.post.id}/like/')

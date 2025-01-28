@@ -20,7 +20,9 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
 from .views import welcome_view
+from profiles.views import logout_route
 
+# API-Documentation with Swagger
 schema_view = get_schema_view(
     openapi.Info(
         title="Catsitting API",
@@ -34,11 +36,22 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', welcome_view, name='welcome'),
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
+    
+    # 🔹 Fix for dj-rest-auth Logout Bug
+    path('api/auth/logout/', logout_route),
+
+    # 🔹 Authentification with dj-rest-auth
+    path('api/auth/', include('dj_rest_auth.urls')),
+    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
+
+    # Django Auth
+    path('accounts/', include('django.contrib.auth.urls')),
+
+    # 🔹 Profiles & Posts API-Routes
     path('api/profiles/', include('profiles.urls')),
     path('api/posts/', include('posts.urls')),
+
+    # 🔹 API Documentation
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

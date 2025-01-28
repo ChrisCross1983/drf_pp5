@@ -1,4 +1,4 @@
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -73,6 +73,31 @@ class LoginTestCase(TestCase):
             response.data["detail"],
             "No active account found with the given credentials"
         )
+
+#Test for Logout
+class LogoutTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        
+        response = self.client.post("/api/auth/login/", {"username": "testuser", "password": "password123"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.access_token = response.data.get("access")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
+
+    def test_logout_success(self):
+        response = self.client.post("/api/auth/logout/")
+        
+        print("DEBUG: Logout Response Status Code:", response.status_code)
+        print("DEBUG: Logout Response Data:", response.data)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {"message": "Logged out successfully."})
+
+    def test_logout_without_authentication(self):
+        self.client.credentials()
+        response = self.client.post("/api/auth/logout/")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 # Test for Password Reset
 class PasswordResetTestCase(TestCase):

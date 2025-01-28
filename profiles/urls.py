@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import (
@@ -11,11 +11,13 @@ from .views import (
     FollowersListView,
     FollowingListView,
     TopFollowedProfilesView,
+    logout_route,
 )
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('logout/', logout_route, name="logout"),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('me/', CurrentUserProfileView.as_view(), name='current-user-profile'),
     path('<int:pk>/', UserProfileView.as_view(), name='user-profile'),
