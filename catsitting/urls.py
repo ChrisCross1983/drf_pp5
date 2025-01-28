@@ -20,7 +20,6 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
 from .views import welcome_view
-from profiles.views import logout_route
 
 # API-Documentation with Swagger
 schema_view = get_schema_view(
@@ -36,13 +35,9 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', welcome_view, name='welcome'),
-    
-    # 🔹 Fix for dj-rest-auth Logout Bug
-    path('api/auth/logout/', logout_route),
 
     # 🔹 Authentification with dj-rest-auth
     path('api/auth/', include('dj_rest_auth.urls')),
-    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
 
     # Django Auth
     path('accounts/', include('django.contrib.auth.urls')),

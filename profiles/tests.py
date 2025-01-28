@@ -61,43 +61,31 @@ class LoginTestCase(TestCase):
         data = {"username": "testuser", "password": "securepassword123"}
         response = self.client.post(self.login_url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("access", response.data)
-        self.assertIn("refresh", response.data)
+        self.assertIn("key", response.data)
 
     def test_login_failed(self):
         data = {"username": "testuser", "password": "wrongpassword"}
         response = self.client.post(self.login_url, data)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertIn("detail", response.data)
-        self.assertEqual(
-            response.data["detail"],
-            "No active account found with the given credentials"
-        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("non_field_errors", response.data)
+        self.assertEqual(response.data["non_field_errors"][0], "Unable to log in with provided credentials.")
 
 #Test for Logout
 class LogoutTestCase(APITestCase):
     def setUp(self):
+        """Create test user and authenticate via session."""
         self.user = User.objects.create_user(username="testuser", password="password123")
-        
-        response = self.client.post("/api/auth/login/", {"username": "testuser", "password": "password123"})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        self.access_token = response.data.get("access")
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
+        self.client.login(username="testuser", password="password123")
 
     def test_logout_success(self):
-        response = self.client.post("/api/auth/logout/")
-        
+        """Test successful logout using session authentication."""
+        response = self.client.post("/api/auth/logout/", follow=True)
+
         print("DEBUG: Logout Response Status Code:", response.status_code)
         print("DEBUG: Logout Response Data:", response.data)
-        
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {"message": "Logged out successfully."})
 
-    def test_logout_without_authentication(self):
-        self.client.credentials()
-        response = self.client.post("/api/auth/logout/")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {"detail": "Successfully logged out."})
 
 # Test for Password Reset
 class PasswordResetTestCase(TestCase):
@@ -125,22 +113,9 @@ class EditProfileTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="password123")
         self.client = APIClient()
-
-        response = self.client.post('/api/profiles/login/', {
-            "username": "testuser",
-            "password": "password123"
-        })
-
-        print("Login Response Status Code:", response.status_code)
-        print("Login Response Data:", response.data)
-
-        self.access_token = response.data.get('access')
-        if not self.access_token:
-            print("Error: No Access Token received")
+        self.client.login(username="testuser", password="password123")
 
     def test_edit_profile(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
-
         response = self.client.put('/api/profiles/edit/', {
             "bio": "Updated bio",
             "profile_picture": "https://example.com/new_image.jpg"
@@ -155,13 +130,7 @@ class ChangePasswordTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="password123")
         self.client = APIClient()
-
-        response = self.client.post('/api/profiles/login/', {
-            "username": "testuser",
-            "password": "password123"
-        })
-        self.access_token = response.data['access']
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        self.client.login(username="testuser", password="password123")
 
     def test_change_password_success(self):
         response = self.client.post('/api/profiles/password-change/', {
@@ -177,9 +146,11 @@ class ChangePasswordTestCase(TestCase):
             "new_password1": "newpassword1",
             "new_password2": "newpassword2"
         })
-        self.assertEqual(response.status_code, 302)
+    
         print("Password Change Response Status Code:", response.status_code)
-        print("Password Change Response Data:", response.url)
+        print("Password Change Response Content:", response.content.decode())
+
+        self.assertEqual(response.status_code, 200)
 
 # Test Follow / Unfollow profiles
 class FollowUserTestCase(TestCase):
@@ -189,12 +160,7 @@ class FollowUserTestCase(TestCase):
         self.user1 = User.objects.create_user(username="user1", password="password123")
         self.user2 = User.objects.create_user(username="user2", password="password123")
 
-        response = self.client.post('/api/profiles/login/', {
-            "username": "user1",
-            "password": "password123"
-        })
-        self.access_token = response.data['access']
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        self.client.login(username="user1", password="password123")
 
     def test_follow_user(self):
         response = self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')

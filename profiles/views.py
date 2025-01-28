@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView
 from django.contrib.auth.views import PasswordChangeView
+from dj_rest_auth.views import LogoutView
+from django.contrib.auth import logout
 from django.urls import reverse_lazy
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
@@ -62,20 +64,11 @@ class CustomPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy('password_change_done')
     permission_classes = [IsAuthenticated]
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def logout_route(request):
+class CustomLogoutView(LogoutView):
     """
-    Fix for dj-rest-auth Logout Bug:
+    Custom logout view using Django session authentication.
     """
-    response = Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
-
-    response.delete_cookie(settings.JWT_AUTH_COOKIE)
-    response.delete_cookie(settings.JWT_AUTH_REFRESH_COOKIE)
-
-    print("DEBUG: User logged out successfully") 
-
-    return response
+    permission_classes = [IsAuthenticated]
 
 class FollowUserView(APIView):
     """

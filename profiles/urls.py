@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from dj_rest_auth.views import LoginView, LogoutView
+from profiles.views import CustomLogoutView
 from .views import (
     RegisterView,
     UserProfileView,
@@ -11,14 +12,12 @@ from .views import (
     FollowersListView,
     FollowingListView,
     TopFollowedProfilesView,
-    logout_route,
 )
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
-    path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('logout/', logout_route, name="logout"),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', CustomLogoutView.as_view(), name="logout"),
     path('me/', CurrentUserProfileView.as_view(), name='current-user-profile'),
     path('<int:pk>/', UserProfileView.as_view(), name='user-profile'),
     path('edit/', EditProfileView.as_view(), name='edit-profile'),
