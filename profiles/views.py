@@ -4,7 +4,7 @@ from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, Crea
 from django.contrib.auth.views import PasswordChangeView
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from dj_rest_auth.views import LogoutView
+from dj_rest_auth.views import LoginView, LogoutView
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -33,6 +33,16 @@ class RegisterView(CreateAPIView):
             serializer.save()
             return Response({"message": "User registered successfully!"}, status=HTTP_201_CREATED)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+class CustomLoginView(LoginView):
+    def options(self, request, *args, **kwargs):
+        """Antwort auf eine CORS Preflight OPTIONS-Anfrage."""
+        response = JsonResponse({"message": "CORS preflight successful"})
+        response["Access-Control-Allow-Origin"] = request.headers.get("Origin", "")
+        response["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-CSRFToken"
+        response["Access-Control-Allow-Credentials"] = "true"
+        return response
 
 class CurrentUserProfileView(APIView):
     """

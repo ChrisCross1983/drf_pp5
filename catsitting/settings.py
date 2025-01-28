@@ -103,21 +103,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = ["X-CSRFToken"]
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+CORS_ALLOW_HEADERS = ["Authorization", "Content-Type", "X-CSRFToken"]
 
-REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
-JWT_AUTH_SECURE = True 
-JWT_AUTH_SAMESITE = 'None'
-
-CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:8000',
@@ -132,33 +123,16 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CSRF_COOKIE_NAME = "csrftoken"
-CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SECURE = True
-CSRF_USE_SESSIONS = True
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "None" 
+
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "None"
-CSRF_COOKIE_SAMESITE = "None" 
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https:\/\/.*\.codeinstitute-ide\.net$",
 ]
-
-CORS_ALLOW_METHODS = [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-]
-
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = [
-    "Authorization",
-    "Content-Type",
-    "X-CSRFToken",
-]
-CORS_EXPOSE_HEADERS = ["X-CSRFToken"]
 
 TEMPLATES = [
     {
@@ -179,6 +153,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'catsitting.wsgi.application'
 SITE_ID = 1
 ROOT_URLCONF = 'catsitting.urls'
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
