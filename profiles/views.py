@@ -52,7 +52,7 @@ class CurrentUserProfileView(APIView):
 
     def get(self, request):
         profile = Profile.objects.get(user=request.user)
-        serializer = ProfileSerializer(profile)
+        serializer = ProfileSerializer(profile, context={"request": request})
         return Response(serializer.data)
 
 class UserProfileView(RetrieveAPIView):
@@ -62,6 +62,12 @@ class UserProfileView(RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
+    def get_serializer_context(self):
+        """Ensure the request is passed for is_following calculation."""
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
 
 class EditProfileView(RetrieveUpdateAPIView):
     """
@@ -73,6 +79,12 @@ class EditProfileView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.profile
+
+    def get_serializer_context(self):
+        """Ensure the request is passed for is_following calculation."""
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
 
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'registration/password_change_form.html'

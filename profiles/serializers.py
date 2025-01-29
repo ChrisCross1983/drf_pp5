@@ -43,12 +43,13 @@ class ProfileSerializer(serializers.ModelSerializer):
     total_posts = serializers.SerializerMethodField()
     followers_count = serializers.SerializerMethodField()
     following_count = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
         fields = [
             'id', 'owner', 'bio', 'profile_picture',
-            'total_posts', 'followers_count', 'following_count', 'created_at']
+            'total_posts', 'followers_count', 'following_count', 'is_following', 'created_at']
         read_only_fields = ['owner']
 
     def get_total_posts(self, obj):
@@ -59,6 +60,12 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_following_count(self, obj):
         return obj.following.count()
+
+    def get_is_following(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.followers.filter(id=request.user.id).exists()
+        return False
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
