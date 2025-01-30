@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView
+from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView, ListAPIView
 from django.contrib.auth.views import PasswordChangeView
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
@@ -124,53 +124,36 @@ class FollowUserView(APIView):
 
             return Response({"message": "Followed successfully."}, status=status.HTTP_200_OK)
 
-class FollowersListView(APIView):
+class FollowersListView(ListAPIView):
     """
     Endpoint to get a list of followers for a user.
     """
+    serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk):
-        try:
-            profile = Profile.objects.get(pk=pk)
-        except Profile.DoesNotExist:
-            return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+    def get_queryset(self):
+        profile_id = self.kwargs.get("pk")
+        return Profile.objects.filter(following__id=profile_id)
 
-        followers = profile.followers.all()
-        data = [{"id": follower.id, "username": follower.user.username} for follower in followers]
-        return Response(data, status=status.HTTP_200_OK)
-
-class FollowingListView(APIView):
+class FollowingListView(ListAPIView):
     """
     Endpoint to get a list of profiles the user is following.
     """
+    serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk):
-        try:
-            profile = Profile.objects.get(pk=pk)
-        except Profile.DoesNotExist:
-            return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+    def get_queryset(self):
+        profile_id = self.kwargs.get("pk")
+        return Profile.objects.get(pk=profile_id).following.all()
 
-        following = profile.following.all()
-        data = [{"id": follow.id, "username": follow.user.username} for follow in following]
-        return Response(data, status=status.HTTP_200_OK)
-
-class TopFollowedProfilesView(APIView):
+class TopFollowedProfilesView(ListAPIView):
     """
-    Endpoint to retrieve the top 5 most-followed profiles.
+    API View to get the top 5 most-followed profiles.
     """
+    serializer_class = ProfileSerializer
     permission_classes = [AllowAny]
 
-    def get(self, request):
-        top_profiles = Profile.objects.annotate(follower_count=Count('followers')).order_by('-follower_count')[:5]
-        data = [
-            {
-                "id": profile.id,
-                "username": profile.user.username,
-                "follower_count": profile.follower_count,
-                "profile_picture": profile.profile_picture.url if profile.profile_picture else None,
-            }
-            for profile in top_profiles
-        ]
-        return Response(data, status=status.HTTP_200_OK)
+    def get_queryset(self):
+        return Profile.objects.annotate(
+            follower_count=Count("followers")
+        ).order_by("-follower_count")[:5]
