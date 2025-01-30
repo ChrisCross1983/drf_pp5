@@ -40,6 +40,9 @@ class PostFeedView(ListAPIView):
         if category_filter:
             queryset = queryset.filter(category=category_filter)
 
+        ordering = self.request.query_params.get('ordering', '-created_at')
+        queryset = queryset.order_by(ordering)
+
         return queryset
 
 class LikePostView(APIView):
