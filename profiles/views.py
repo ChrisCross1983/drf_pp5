@@ -14,6 +14,7 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from django.db.models import Count
 from django.conf import settings
 from .models import Profile
+from posts.models import Notification
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
 
@@ -98,9 +99,6 @@ class CustomLogoutView(LogoutView):
     permission_classes = [IsAuthenticated]
 
 class FollowUserView(APIView):
-    """
-    Endpoint to follow or unfollow another user.
-    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
@@ -117,6 +115,13 @@ class FollowUserView(APIView):
             return Response({"message": "Unfollowed successfully."}, status=status.HTTP_200_OK)
         else:
             target_profile.followers.add(request.user.profile)
+
+            Notification.objects.create(
+                user=target_profile.user,
+                type="follow",
+                message=f"{request.user.username} started following you."
+            )
+
             return Response({"message": "Followed successfully."}, status=status.HTTP_200_OK)
 
 class FollowersListView(APIView):

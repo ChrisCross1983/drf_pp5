@@ -48,7 +48,6 @@ class SittingRequestSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'sender', 'receiver', 'post', 'created_at']
 
-
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification

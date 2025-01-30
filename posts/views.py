@@ -54,12 +54,13 @@ class LikePostView(APIView):
             else:
                 post.likes.add(request.user)
 
-                Notification.objects.create(
-                    user=post.author,
-                    type='like',
-                    post=post,
-                    message=f"{request.user.username} liked your post."
-                )
+                if request.user != post.author:
+                    Notification.objects.create(
+                        user=post.author,
+                        type='like',
+                        post=post,
+                        message=f"{request.user.username} liked your post."
+                    )
 
                 return Response({'message': 'Post liked'}, status=status.HTTP_200_OK)
         except Post.DoesNotExist:
