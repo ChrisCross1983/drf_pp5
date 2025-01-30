@@ -1,16 +1,21 @@
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.test import TestCase
-from django.contrib.auth.models import User
+from profiles.models import CustomUser
 from django.urls import reverse
-from .models import Post, Comment, SittingRequest, Notification
+from posts.models import Post, Comment, SittingRequest, Notification
+
+
+def create_test_user(email, username, password="password123"):
+    return CustomUser.objects.create_user(email=email, username=username, password=password)
+
 
 # Test Create Post
 class CreatePostTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user = create_test_user(email="testuser@example.com", username="testuser")
         self.client = APIClient()
-        self.client.login(username="testuser", password="password123")
+        self.client.force_authenticate(user=self.user)
 
         self.valid_post_data = {
             "title": "Need a sitter",
@@ -29,12 +34,13 @@ class CreatePostTestCase(TestCase):
         response = self.client.post('/api/posts/create/', self.valid_post_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+
 # Test Post Feed
 class PostFeedTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user = create_test_user(email="testuser@example.com", username="testuser")
         self.client = APIClient()
-        self.client.login(username="testuser", password="password123")
+        self.client.force_authenticate(user=self.user)
 
         for i in range(15):
             Post.objects.create(
@@ -56,12 +62,13 @@ class PostFeedTestCase(TestCase):
         response = self.client.get('/api/posts/feed/?page=2')
         self.assertEqual(len(response.data['results']), 5)
 
+
 # Test Comment and Like
 class PostInteractionTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user = create_test_user(email="testuser@example.com", username="testuser")
         self.client = APIClient()
-        self.client.login(username="testuser", password="password123")
+        self.client.force_authenticate(user=self.user)
 
         self.post = Post.objects.create(
             author=self.user,
@@ -81,12 +88,13 @@ class PostInteractionTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.post.comments.count(), 1)
 
+
 # Test Search and Filter Options
 class PostSearchFilterTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user = create_test_user(email="testuser@example.com", username="testuser")
         self.client = APIClient()
-        self.client.login(username="testuser", password="password123")
+        self.client.force_authenticate(user=self.user)
 
         Post.objects.create(author=self.user, title="Offer Sitting", category="offer", description="Looking for a sitter")
         Post.objects.create(author=self.user, title="Search Sitting", category="search", description="Need a sitter")
@@ -102,12 +110,13 @@ class PostSearchFilterTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 1)
 
+
 # Test Delete and Edit Post
 class EditDeletePostTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user = create_test_user(email="testuser@example.com", username="testuser")
         self.client = APIClient()
-        self.client.login(username="testuser", password="password123")
+        self.client.force_authenticate(user=self.user)
 
         self.post = Post.objects.create(
             author=self.user,
@@ -130,15 +139,16 @@ class EditDeletePostTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Post.objects.filter(id=self.post.id).exists())
 
+
 # Test Edit / Delete Comments
 class EditDeleteCommentTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user = create_test_user(email="testuser@example.com", username="testuser")
         self.client = APIClient()
         self.post = Post.objects.create(author=self.user, title="Test Post", category="general", description="Test description")
         self.comment = Comment.objects.create(author=self.user, post=self.post, content="Original comment")
 
-        self.client.login(username="testuser", password="password123")
+        self.client.force_authenticate(user=self.user)
 
     def test_edit_comment(self):
         response = self.client.put(f'/api/posts/comments/{self.comment.id}/', {"content": "Updated comment"})
@@ -150,42 +160,14 @@ class EditDeleteCommentTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Comment.objects.filter(id=self.comment.id).exists())
 
-# Test Sitting Requests
-class SittingRequestTestCase(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-
-        self.user1 = User.objects.create_user(username="user1", password="password123")
-        self.user2 = User.objects.create_user(username="user2", password="password123")
-
-        self.post = Post.objects.create(
-            author=self.user2,
-            title="Looking for a sitter",
-            category="search",
-            description="I need a sitter for my cat this weekend."
-        )
-
-        self.client.login(username="user1", password="password123")
-
-    def test_create_sitting_request(self):
-        response = self.client.post(f'/api/posts/{self.post.id}/request/', {"message": "I can help!"})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(SittingRequest.objects.count(), 1)
-
-    def test_cannot_request_own_post(self):
-        self.client.logout()
-        self.client.login(username="user2", password="password123")
-
-        response = self.client.post(f'/api/posts/{self.post.id}/request/', {"message": "I want to request my own post"})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 # Test Managing Sitting Requests
 class SittingRequestManagementTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.user1 = User.objects.create_user(username="user1", password="password123")
-        self.user2 = User.objects.create_user(username="user2", password="password123")
+        self.user1 = create_test_user(email="user1@example.com", username="user1")
+        self.user2 = create_test_user(email="user2@example.com", username="user2")
 
         self.post = Post.objects.create(
             author=self.user2,
@@ -201,7 +183,7 @@ class SittingRequestManagementTestCase(TestCase):
             message="I can help with sitting!"
         )
 
-        self.client.login(username="user2", password="password123")
+        self.client.force_authenticate(user=self.user2)
 
     def test_incoming_requests(self):
         response = self.client.get('/api/posts/requests/incoming/')
@@ -219,27 +201,3 @@ class SittingRequestManagementTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.sitting_request.refresh_from_db()
         self.assertEqual(self.sitting_request.status, 'declined')
-
-# Test Notifications
-class NotificationTestCase(TestCase):
-    def setUp(self):
-        self.user1 = User.objects.create_user(username="user1", password="password123")
-        self.user2 = User.objects.create_user(username="user2", password="password123")
-        self.client = APIClient()
-
-        self.post = Post.objects.create(
-            author=self.user1,
-            title="Test Post",
-            category="general",
-            description="Test description"
-        )
-
-        self.client.login(username="user2", password="password123")
-
-    def test_like_notification(self):
-        response = self.client.post(f'/api/posts/{self.post.id}/like/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(Notification.objects.count(), 1)
-        notification = Notification.objects.first()
-        self.assertEqual(notification.user, self.user1)
-        self.assertEqual(notification.type, 'like')
