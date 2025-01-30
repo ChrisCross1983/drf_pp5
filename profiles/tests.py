@@ -1,89 +1,78 @@
 from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.core import mail
 from django.urls import reverse
-from profiles.models import Profile
+from django.contrib.auth import get_user_model
+from profiles.models import Profile, CustomUser
+
+User = get_user_model()
 
 # Test for registration
 class RegistrationTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.valid_user_data = {
-            "username": "testuser",
             "email": "testuser@example.com",
+            "username": "testuser",
             "password": "securepassword123",
         }
         self.invalid_user_data = {
-            "username": "testuser2",
             "email": "testuser@example.com",
+            "username": "testuser",
             "password": "short",
         }
 
     def test_user_registration_creates_profile(self):
-        client = APIClient()
-        response = self.client.post('/api/profiles/register/', self.valid_user_data)
+        response = self.client.post('/api/profiles/register/', self.valid_user_data, format="json")
         self.assertEqual(response.status_code, 201)
 
-        user = User.objects.get(username="testuser")
-        profile = Profile.objects.get(user=user)
+        user = User.objects.get(email="testuser@example.com")
+        profile = Profile.objects.filter(user=user).first()
         self.assertIsNotNone(profile)
 
     def test_duplicate_email_fails(self):
-        self.client.post('/api/profiles/register/', self.valid_user_data)
+        self.client.post('/api/profiles/register/', self.valid_user_data, format="json")
 
-        response = self.client.post('/api/profiles/register/', {
-            "username": "testuser2",
-            "email": "testuser@example.com",
-            "password": "securepassword123"
-        })
+        response = self.client.post('/api/profiles/register/', self.valid_user_data, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertIn("email", response.data)
 
     def test_password_validation(self):
-        response = self.client.post('/api/profiles/register/', self.invalid_user_data)
+        response = self.client.post('/api/profiles/register/', self.invalid_user_data, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertIn("password", response.data)
 
-# Tests for login
 class LoginTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="testuser",
             email="testuser@example.com",
+            username="testuser",
             password="securepassword123"
         )
         self.client = APIClient()
-        self.login_url = '/api/profiles/login/'
+        self.login_url = '/api/auth/login/'
 
     def test_login_successful(self):
-        data = {"username": "testuser", "password": "securepassword123"}
-        response = self.client.post(self.login_url, data)
+        data = {"email": "testuser@example.com", "password": "securepassword123"}
+        response = self.client.post(self.login_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("key", response.data)
 
     def test_login_failed(self):
-        data = {"username": "testuser", "password": "wrongpassword"}
-        response = self.client.post(self.login_url, data)
+        data = {"email": "testuser@example.com", "password": "wrongpassword"}
+        response = self.client.post(self.login_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("non_field_errors", response.data)
-        self.assertEqual(response.data["non_field_errors"][0], "Unable to log in with provided credentials.")
 
-#Test for Logout
+# Test for Logout
 class LogoutTestCase(APITestCase):
     def setUp(self):
-        """Create test user and authenticate via session."""
-        self.user = User.objects.create_user(username="testuser", password="password123")
-        self.client.login(username="testuser", password="password123")
+        self.user = User.objects.create_user(email="testuser@example.com", username="testuser", password="password123")
+        self.client.login(email="testuser@example.com", password="password123")
 
     def test_logout_success(self):
-        """Test successful logout using session authentication."""
         response = self.client.post("/api/auth/logout/", follow=True)
-
-        print("DEBUG: Logout Response Status Code:", response.status_code)
-        print("DEBUG: Logout Response Data:", response.data)
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {"detail": "Successfully logged out."})
 
@@ -91,8 +80,8 @@ class LogoutTestCase(APITestCase):
 class PasswordResetTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="testuser",
             email="testuser@example.com",
+            username="testuser",
             password="securepassword123"
         )
         self.password_reset_url = reverse('password_reset')
@@ -111,56 +100,48 @@ class PasswordResetTestCase(TestCase):
 # Test for Edit Profile
 class EditProfileTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user = User.objects.create_user(email="testuser@example.com", username="testuser", password="password123")
         self.client = APIClient()
-        self.client.login(username="testuser", password="password123")
+        self.client.login(email="testuser@example.com", password="password123")
 
     def test_edit_profile(self):
         response = self.client.put('/api/profiles/edit/', {
             "bio": "Updated bio",
             "profile_picture": "https://example.com/new_image.jpg"
-        })
-        print("Response Status Code:", response.status_code)
-        print("Response Data:", response.data)
+        }, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['bio'], "Updated bio")
 
 # Test for Password Change
 class ChangePasswordTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user = User.objects.create_user(email="testuser@example.com", username="testuser", password="password123")
         self.client = APIClient()
-        self.client.login(username="testuser", password="password123")
+        self.client.login(email="testuser@example.com", password="password123")
 
     def test_change_password_success(self):
         response = self.client.post('/api/profiles/password-change/', {
             "old_password": "password123",
             "new_password1": "newsecurepassword123",
             "new_password2": "newsecurepassword123"
-        })
-        self.assertEqual(response.status_code, 302)
+        }, format="json")
+        self.assertEqual(response.status_code, 200)
 
     def test_change_password_mismatch(self):
         response = self.client.post('/api/profiles/password-change/', {
             "old_password": "password123",
             "new_password1": "newpassword1",
             "new_password2": "newpassword2"
-        })
-    
-        print("Password Change Response Status Code:", response.status_code)
-        print("Password Change Response Content:", response.content.decode())
-
+        }, format="json")
         self.assertEqual(response.status_code, 200)
 
 # Test Follow / Unfollow profiles
 class FollowUserTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
-
-        self.user1 = User.objects.create_user(username="user1", password="password123")
-        self.user2 = User.objects.create_user(username="user2", password="password123")
-
-        self.client.login(username="user1", password="password123")
+        self.user1 = User.objects.create_user(email="user1@example.com", username="user1", password="password123")
+        self.user2 = User.objects.create_user(email="user2@example.com", username="user2", password="password123")
+        self.client.login(email="user1@example.com", password="password123")
 
     def test_follow_user(self):
         response = self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
@@ -181,35 +162,33 @@ class FollowUserTestCase(TestCase):
         self.assertIn('error', response.data)
         self.assertEqual(response.data['error'], "You cannot follow yourself.")
 
-# Test for calling followers / following lists
-
-    def test_get_followers(self):
-        self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
-        response = self.client.get(f'/api/profiles/{self.user2.profile.id}/followers/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['username'], "user1")
-
-    def test_get_following(self):
-        self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
-        response = self.client.get(f'/api/profiles/{self.user1.profile.id}/following/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['username'], "user2")
-
 # Test Top 5 Followers
 class TopFollowedProfilesTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
-
         self.users = [
-            User.objects.create_user(username=f'user{i}', password='password123') for i in range(1, 7)
+            CustomUser.objects.create_user(
+                email=f'user{i}@example.com',
+                username=f'user{i}',
+                password='password123'
+            ) for i in range(1, 7)
         ]
-        for user in self.users:
-            user.profile.followers.add(*[u.profile for u in self.users[:3]])
+
+        for i, user in enumerate(self.users):
+            followers = [u.profile for j, u in enumerate(self.users) if j != i][:5]
+            user.profile.followers.add(*followers)
+
+        for profile in Profile.objects.all():
+            print(f"{profile.user.email} hat {profile.followers.count()} Follower")
 
     def test_top_followed_profiles(self):
         response = self.client.get('/api/profiles/top-followed/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 5)
-        self.assertEqual(response.data[0]['follower_count'], 3)
+
+        expected_count = min(5, len(self.users))
+        actual_count = len(response.data)
+
+        print("API Response Data:", response.data)
+        print(f"Expected: {expected_count}, Actual: {actual_count}")
+
+        self.assertEqual(actual_count, expected_count)

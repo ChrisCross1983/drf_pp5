@@ -1,10 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from cloudinary.models import CloudinaryField
 
 class Post(models.Model):
     author = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='user_posts'
     )
@@ -24,7 +24,7 @@ class Post(models.Model):
         null=True, 
         default='https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570695/default_post_tuonop.jpg'
     )
-    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)  # Hier ersetzt
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -35,7 +35,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -49,8 +49,8 @@ class SittingRequest(models.Model):
         ('declined', 'Declined'),
     ]
 
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_requests')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_requests')
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_requests')  # Hier ersetzt
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_requests')  # Hier ersetzt
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='sitting_requests')
     message = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -69,7 +69,7 @@ class Notification(models.Model):
         ('request', 'Sitting Request'),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')  # Hier ersetzt
     type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True, related_name='notifications')
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, null=True)

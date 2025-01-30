@@ -103,7 +103,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ["X-CSRFToken"]
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
@@ -114,6 +114,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
     'https://3000-chriscross1983-reactpp5-h8ikk9hdlca.ws.codeinstitute-ide.net',
     'https://8000-chriscross1983-drfpp5-1kzqisvpqcg.ws.codeinstitute-ide.net',
+    'https://luckycat-b653875cceaf.herokuapp.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -153,7 +154,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'catsitting.wsgi.application'
 SITE_ID = 1
 ROOT_URLCONF = 'catsitting.urls'
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+AUTH_USER_MODEL = "profiles.CustomUser"
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

@@ -157,3 +157,5 @@ class TopFollowedProfilesView(ListAPIView):
         return Profile.objects.annotate(
             follower_count=Count("followers")
         ).order_by("-follower_count")[:5]
+
+    pagination_class = None
