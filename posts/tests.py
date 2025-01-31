@@ -1,14 +1,14 @@
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.test import TestCase
-from profiles.models import CustomUser
+from django.contrib.auth import get_user_model
 from django.urls import reverse
-from posts.models import Post, Comment, SittingRequest, Notification
+from posts.models import Post, Comment, SittingRequest
 
+User = get_user_model()
 
 def create_test_user(email, username, password="password123"):
-    return CustomUser.objects.create_user(email=email, username=username, password=password)
-
+    return User.objects.create_user(email=email, username=username, password=password)
 
 # Test Create Post
 class CreatePostTestCase(TestCase):
@@ -33,7 +33,6 @@ class CreatePostTestCase(TestCase):
         self.client.logout()
         response = self.client.post('/api/posts/create/', self.valid_post_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
 
 # Test Post Feed
 class PostFeedTestCase(TestCase):
@@ -62,7 +61,6 @@ class PostFeedTestCase(TestCase):
         response = self.client.get('/api/posts/feed/?page=2')
         self.assertEqual(len(response.data['results']), 5)
 
-
 # Test Comment and Like
 class PostInteractionTestCase(TestCase):
     def setUp(self):
@@ -88,7 +86,6 @@ class PostInteractionTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.post.comments.count(), 1)
 
-
 # Test Search and Filter Options
 class PostSearchFilterTestCase(TestCase):
     def setUp(self):
@@ -109,7 +106,6 @@ class PostSearchFilterTestCase(TestCase):
         response = self.client.get('/api/posts/feed/?category=offer')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 1)
-
 
 # Test Delete and Edit Post
 class EditDeletePostTestCase(TestCase):
@@ -139,7 +135,6 @@ class EditDeletePostTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Post.objects.filter(id=self.post.id).exists())
 
-
 # Test Edit / Delete Comments
 class EditDeleteCommentTestCase(TestCase):
     def setUp(self):
@@ -160,8 +155,7 @@ class EditDeleteCommentTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Comment.objects.filter(id=self.comment.id).exists())
 
-
-# Test Managing Sitting Requests
+# Test Sitting Request Management
 class SittingRequestManagementTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()

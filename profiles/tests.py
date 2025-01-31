@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.core import mail
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from profiles.models import Profile, CustomUser
+from profiles.models import Profile
 
 User = get_user_model()
 
@@ -54,8 +54,9 @@ class LoginTestCase(TestCase):
         self.login_url = '/api/auth/login/'
 
     def test_login_successful(self):
-        data = {"email": "testuser@example.com", "password": "securepassword123"}
-        response = self.client.post(self.login_url, data, format="json")
+        data = {"username": "testuser", "password": "securepassword123"}
+        response = self.client.post('/api/auth/login/', data, format="json")
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("key", response.data)
 
@@ -100,9 +101,13 @@ class PasswordResetTestCase(TestCase):
 # Test for Edit Profile
 class EditProfileTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(email="testuser@example.com", username="testuser", password="password123")
+        self.user = User.objects.create_user(
+            email="testuser@example.com",
+            username="testuser",
+            password="password123"
+        )
         self.client = APIClient()
-        self.client.login(email="testuser@example.com", password="password123")
+        self.client.force_authenticate(user=self.user)
 
     def test_edit_profile(self):
         response = self.client.put('/api/profiles/edit/', {
@@ -115,12 +120,16 @@ class EditProfileTestCase(TestCase):
 # Test for Password Change
 class ChangePasswordTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(email="testuser@example.com", username="testuser", password="password123")
+        self.user = User.objects.create_user(
+            email="testuser@example.com",
+            username="testuser",
+            password="password123"
+        )
         self.client = APIClient()
-        self.client.login(email="testuser@example.com", password="password123")
+        self.client.force_authenticate(user=self.user)
 
     def test_change_password_success(self):
-        response = self.client.post('/api/profiles/password-change/', {
+        response = self.client.post('/api/auth/password/change/', {
             "old_password": "password123",
             "new_password1": "newsecurepassword123",
             "new_password2": "newsecurepassword123"
@@ -128,12 +137,12 @@ class ChangePasswordTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_change_password_mismatch(self):
-        response = self.client.post('/api/profiles/password-change/', {
+        response = self.client.post('/api/auth/password/change/', {
             "old_password": "password123",
             "new_password1": "newpassword1",
             "new_password2": "newpassword2"
         }, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
 # Test Follow / Unfollow profiles
 class FollowUserTestCase(TestCase):
@@ -141,7 +150,7 @@ class FollowUserTestCase(TestCase):
         self.client = APIClient()
         self.user1 = User.objects.create_user(email="user1@example.com", username="user1", password="password123")
         self.user2 = User.objects.create_user(email="user2@example.com", username="user2", password="password123")
-        self.client.login(email="user1@example.com", password="password123")
+        self.client.force_authenticate(user=self.user1)
 
     def test_follow_user(self):
         response = self.client.post(f'/api/profiles/{self.user2.profile.id}/follow/')
@@ -167,7 +176,7 @@ class TopFollowedProfilesTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.users = [
-            CustomUser.objects.create_user(
+            User.objects.create_user(
                 email=f'user{i}@example.com',
                 username=f'user{i}',
                 password='password123'

@@ -3,16 +3,6 @@ from django.dispatch import receiver
 from django.db import models
 from django.conf import settings
 from cloudinary.models import CloudinaryField
-from django.contrib.auth.models import AbstractUser
-
-class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
-
-    def __str__(self):
-        return self.email
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_profile(sender, instance, created, **kwargs):
@@ -20,7 +10,7 @@ def create_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
 
 class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')  # Hier ersetzt
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True, null=True)
     profile_picture = CloudinaryField(
         'image', 

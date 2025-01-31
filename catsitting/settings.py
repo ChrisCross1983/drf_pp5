@@ -97,7 +97,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
-CORS_EXPOSE_HEADERS = ["X-CSRFToken"]
+
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 CORS_ALLOW_HEADERS = ["Authorization", "Content-Type", "X-CSRFToken"]
 
@@ -113,6 +113,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://3000-chriscross1983-reactpp5-h8ikk9hdlca.ws.codeinstitute-ide.net',
     'https://8000-chriscross1983-drfpp5-1kzqisvpqcg.ws.codeinstitute-ide.net',
     'https://luckycat-b653875cceaf.herokuapp.com',
+    'http://localhost:3000',
 ]
 
 CSRF_COOKIE_NAME = "csrftoken"
@@ -146,10 +147,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'catsitting.wsgi.application'
 SITE_ID = 1
 ROOT_URLCONF = 'catsitting.urls'
-AUTH_USER_MODEL = "profiles.CustomUser"
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
 
 # Email Config
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
