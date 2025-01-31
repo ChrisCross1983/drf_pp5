@@ -25,6 +25,10 @@ from django.middleware.csrf import get_token
 from django.utils.decorators import method_decorator
 from django.views import View
 
+
+def csrf_token_view(request):
+    return JsonResponse({"csrfToken": get_token(request)})
+
 # API-Documentation with Swagger
 schema_view = get_schema_view(
     openapi.Info(
@@ -36,15 +40,12 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-def csrf_token_view(request):
-    return JsonResponse({"csrfToken": get_token(request)})
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', welcome_view, name='welcome'),
-    path("api/auth/csrf/", csrf_token_view, name="csrf-token"),
 
     # 🔹 Authentification with dj-rest-auth
+    path("api/auth/csrf/", csrf_token_view, name="csrf-token"),
     path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
 
