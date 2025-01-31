@@ -21,7 +21,7 @@ from drf_yasg import openapi
 from rest_framework import permissions
 from .views import welcome_view
 from django.http import JsonResponse
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.middleware.csrf import get_token
 from django.utils.decorators import method_decorator
 from django.views import View
 
@@ -36,15 +36,13 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
-class GetCSRFToken(View):
-    def get(self, request):
-        return JsonResponse({"csrfToken": request.META.get("CSRF_COOKIE", "")})
+def csrf_token_view(request):
+    return JsonResponse({"csrfToken": get_token(request)})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', welcome_view, name='welcome'),
-    path("api/auth/csrf/", GetCSRFToken.as_view(), name="csrf-token"),
+    path("api/auth/csrf/", csrf_token_view, name="csrf-token"),
 
     # 🔹 Authentification with dj-rest-auth
     path('api/auth/', include('dj_rest_auth.urls')),
