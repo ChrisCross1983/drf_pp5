@@ -38,9 +38,7 @@ urlpatterns = [
 
     # 🔹 Authentification with dj-rest-auth
     path('api/auth/', include('dj_rest_auth.urls')),
-
-    # Django Auth
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
 
     # 🔹 Profiles & Posts API-Routes
     path('api/profiles/', include('profiles.urls')),
