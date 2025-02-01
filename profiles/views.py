@@ -17,6 +17,8 @@ from .models import Profile
 from posts.models import Notification
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
+from allauth.account.views import ConfirmEmailView
+from django.shortcuts import redirect
 
 def csrf_token_view(request):
     return JsonResponse({"csrfToken": get_token(request)})
@@ -34,6 +36,11 @@ class RegisterView(CreateAPIView):
             serializer.save()
             return Response({"message": "User registered successfully!"}, status=HTTP_201_CREATED)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+class CustomConfirmEmailView(ConfirmEmailView):
+    def get(self, *args, **kwargs):
+        super().get(*args, **kwargs)
+        return redirect("/login/") 
 
 class CustomLoginView(LoginView):
     def options(self, request, *args, **kwargs):
