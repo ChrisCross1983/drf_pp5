@@ -86,7 +86,8 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication', 
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication', 
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -94,12 +95,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
-
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
-CORS_ALLOW_HEADERS = ["Authorization", "Content-Type", "X-CSRFToken"]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
@@ -116,6 +111,10 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+CORS_ALLOW_HEADERS = ["Authorization", "Content-Type", "X-CSRFToken"]
+
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False
@@ -123,6 +122,9 @@ CSRF_COOKIE_SAMESITE = "None"
 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "None"
+
+JWT_AUTH_SAMESITE = 'None'
+JWT_AUTH_SECURE = True
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https:\/\/.*\.codeinstitute-ide\.net$",

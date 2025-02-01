@@ -14,18 +14,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+"""
+URL configuration for catsitting project.
+"""
 from django.contrib import admin
 from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-from .views import welcome_view
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from django.utils.decorators import method_decorator
-from django.views import View
+from dj_rest_auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView
 
-
+# CSRF-Token API View
 def csrf_token_view(request):
     return JsonResponse({"csrfToken": get_token(request)})
 
@@ -41,15 +42,21 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    # 🔹 Django Admin
     path('admin/', admin.site.urls),
-    path('', welcome_view, name='welcome'),
 
-    # 🔹 Authentification with dj-rest-auth
+    # 🔹 CSRF Token Endpoint (Wichtig für Frontend!)
     path("api/auth/csrf/", csrf_token_view, name="csrf-token"),
+
+    # 🔹 Authentication Endpoints (dj-rest-auth)
+    path('api/auth/login/', LoginView.as_view(), name='rest_login'),
+    path('api/auth/logout/', LogoutView.as_view(), name='rest_logout'),
+    path('api/auth/password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
+    path('api/auth/password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
     path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
 
-    # 🔹 Profiles & Posts API-Routes
+    # 🔹 Profiles & Posts API Routes
     path('api/profiles/', include('profiles.urls')),
     path('api/posts/', include('posts.urls')),
 
