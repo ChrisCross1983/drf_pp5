@@ -5,7 +5,6 @@ from profiles.views import CustomLogoutView
 from .views import (
     CustomLoginView,
     RegisterView,
-    CustomConfirmEmailView,
     UserProfileView,
     CurrentUserProfileView,
     EditProfileView,
@@ -20,7 +19,6 @@ from .views import (
 urlpatterns = [
     path("auth/csrf/", csrf_token_view, name="csrf-token"),
     path('register/', RegisterView.as_view(), name='register'),
-    path("api/auth/registration/account-confirm-email/<str:key>/", CustomConfirmEmailView.as_view(), name="account_confirm_email"),
     path('logout/', CustomLogoutView.as_view(), name="logout"),
     path('me/', CurrentUserProfileView.as_view(), name='current-user-profile'),
     path('<int:pk>/', UserProfileView.as_view(), name='user-profile'),
