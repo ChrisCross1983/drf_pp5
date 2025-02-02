@@ -22,6 +22,7 @@ from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
+from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from dj_rest_auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView

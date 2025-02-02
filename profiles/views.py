@@ -1,24 +1,27 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView, ListAPIView
-from django.contrib.auth.views import PasswordChangeView
+from rest_framework.generics import (
+    RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView, ListAPIView
+)
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import status, generics, permissions
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from dj_rest_auth.views import LoginView, LogoutView
+from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from django.shortcuts import redirect
 from django.db.models import Count
 from django.conf import settings
+
+from dj_rest_auth.views import LoginView, LogoutView
+from allauth.account.views import ConfirmEmailView
+
 from .models import Profile
-from posts.models import Notification
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
-from allauth.account.views import ConfirmEmailView
-from django.shortcuts import redirect
+from posts.models import Notification
+
 
 def csrf_token_view(request):
     return JsonResponse({"csrfToken": get_token(request)})
@@ -142,16 +145,23 @@ class FollowersListView(ListAPIView):
         profile_id = self.kwargs.get("pk")
         return Profile.objects.filter(following__id=profile_id)
 
-class FollowingListView(ListAPIView):
+class FollowingListView(generics.ListAPIView):
     """
     Endpoint to get a list of profiles the user is following.
     """
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        profile_id = self.kwargs.get("pk")
-        return Profile.objects.get(pk=profile_id).following.all()
+        profile_id = self.kwargs.get("profile_id")
+        if getattr(self, "swagger_fake_view", False):
+            return Profile.objects.none()
+ 
+        try:
+            profile = Profile.objects.get(pk=profile_id)
+            return profile.following.all()
+        except Profile.DoesNotExist:
+            return Profile.objects.none() 
 
 class TopFollowedProfilesView(ListAPIView):
     """
