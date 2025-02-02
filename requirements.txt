@@ -18,3 +18,4 @@ python-decouple==3.8
 pytz==2024.2
 sqlparse==0.5.3
 uritemplate==4.1.1
+whitenoise
