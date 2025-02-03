@@ -1,12 +1,13 @@
 from django.urls import path, include
+from rest_framework import status
 from django.contrib.auth import views as auth_views
-from dj_rest_auth.registration.views import ResendEmailVerificationView
 from dj_rest_auth.views import LoginView, LogoutView
 from allauth.account.views import ConfirmEmailView
 from profiles.views import CustomLogoutView
 from .views import (
     CustomLoginView,
     RegisterView,
+    CustomResendEmailView,
     UserProfileView,
     CurrentUserProfileView,
     EditProfileView,
@@ -21,7 +22,7 @@ from .views import (
 urlpatterns = [
     path("auth/csrf/", csrf_token_view, name="csrf-token"),
     path('auth/registration/account-confirm-email/<str:key>/', ConfirmEmailView.as_view(), name='account_confirm_email'),
-    path('auth/registration/resend-email/', ResendEmailVerificationView.as_view(), name='rest_resend_email'),
+    path('auth/registration/resend-email/', CustomResendEmailView.as_view(), name='resend_email'),
     path('register/', RegisterView.as_view(), name='register'),
     path('logout/', CustomLogoutView.as_view(), name="logout"),
     path('me/', CurrentUserProfileView.as_view(), name='current-user-profile'),

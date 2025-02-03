@@ -17,6 +17,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from dj_rest_auth.views import LoginView, LogoutView
+from dj_rest_auth.registration.views import ResendEmailVerificationView
 from allauth.account.views import ConfirmEmailView
 
 from .models import Profile
@@ -39,8 +40,8 @@ class RegisterView(CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "User registered successfully!"}, status=HTTP_201_CREATED)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            return Response({"message": "User registered successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomConfirmEmailView(ConfirmEmailView):
     def get(self, request, *args, **kwargs):
@@ -49,6 +50,11 @@ class CustomConfirmEmailView(ConfirmEmailView):
             return redirect("/login", {"message": "Your email has been successfully verified. You can now log in."})
         except Exception:
             return redirect("/login", {"message": "This verification link is invalid or expired. Please request a new confirmation email."}) 
+
+class CustomResendEmailView(ResendEmailVerificationView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        return Response({"message": "A new verification email has been sent."})
 
 class CustomLoginView(LoginView):
     def options(self, request, *args, **kwargs):

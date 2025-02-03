@@ -50,13 +50,20 @@ class LoginTestCase(TestCase):
             username="testuser",
             password="securepassword123"
         )
+        self.user.is_active = True
+        self.user.save()
+
+        from allauth.account.models import EmailAddress
+        EmailAddress.objects.create(user=self.user, email=self.user.email, verified=True, primary=True)
+
         self.client = APIClient()
         self.login_url = '/api/auth/login/'
 
     def test_login_successful(self):
         data = {"username": "testuser", "password": "securepassword123"}
-        response = self.client.post('/api/auth/login/', data, format="json")
+        response = self.client.post(self.login_url, data, format="json")
 
+        print("Login Response Data:", response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("key", response.data)
 
