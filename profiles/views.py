@@ -9,10 +9,12 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth import logout
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.db.models import Count
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 from dj_rest_auth.views import LoginView, LogoutView
 from allauth.account.views import ConfirmEmailView
@@ -41,9 +43,14 @@ class RegisterView(CreateAPIView):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 class CustomConfirmEmailView(ConfirmEmailView):
-    def get(self, *args, **kwargs):
-        super().get(*args, **kwargs)
-        return redirect("/login/") 
+    def get(self, request, *args, **kwargs):
+        try:
+            response = super().get(request, *args, **kwargs)
+            messages.success(request, "E-Mail confirmed succesful. You can now Login.")
+            return redirect("/login/")  
+        except ObjectDoesNotExist:
+            messages.error(request, "This verification link is invalid or expired.")
+            return redirect("/resend-email/") 
 
 class CustomLoginView(LoginView):
     def options(self, request, *args, **kwargs):
