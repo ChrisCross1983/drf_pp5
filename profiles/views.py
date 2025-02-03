@@ -46,9 +46,9 @@ class CustomConfirmEmailView(ConfirmEmailView):
     def get(self, request, *args, **kwargs):
         try:
             response = super().get(request, *args, **kwargs)
-            return redirect("https://3000-chriscross1983-reactpp5-h8ikk9hdlca.ws.codeinstitute-ide.net/login")  
-        except ObjectDoesNotExist:
-            return redirect("https://3000-chriscross1983-reactpp5-h8ikk9hdlca.ws.codeinstitute-ide.net/resend-email/") 
+            return redirect("/login", {"message": "Your email has been successfully verified. You can now log in."})
+        except Exception:
+            return redirect("/login", {"message": "This verification link is invalid or expired. Please request a new confirmation email."}) 
 
 class CustomLoginView(LoginView):
     def options(self, request, *args, **kwargs):
