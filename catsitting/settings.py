@@ -163,8 +163,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_USERNAME_REQUIRED = True
 # Frontend URL
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "https://luckycat-b653875cceaf.herokuapp.com/login"
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "https://luckycat-b653875cceaf.herokuapp.com/login"
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "https://3000-chriscross1983-reactpp5-h8ikk9hdlca.ws.codeinstitute-ide.net/login"
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "https://3000-chriscross1983-reactpp5-h8ikk9hdlca.ws.codeinstitute-ide.net/login"
 
 # Email Config
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
