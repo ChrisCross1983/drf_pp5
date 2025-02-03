@@ -49,16 +49,14 @@ class RegisterView(CreateAPIView):
 class CustomConfirmEmailView(ConfirmEmailView):
     def get(self, request, *args, **kwargs):
         try:
-            response = super().get(request, *args, **kwargs)
+            confirmation = self.get_object()
+            confirmation.confirm(request)
             logger.info("✅ Email successfully verified.")
-            messages.success(request, "Your email has been verified successfully.")
-            
-            logger.info("🔄 Redirecting to login...")
+
             return redirect("/login?verified=true")
         
-        except ObjectDoesNotExist:
+        except self.model.DoesNotExist:
             logger.warning("⚠️ Verification link invalid or expired.")
-            messages.error(request, "This verification link is invalid or expired.")
             return redirect("/login?expired=true")
 
 class CustomResendEmailView(ResendEmailVerificationView):
