@@ -25,7 +25,9 @@ from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
 from posts.models import Notification
+import logging
 
+logger = logging.getLogger(__name__)
 
 def csrf_token_view(request):
     return JsonResponse({"csrfToken": get_token(request)})
@@ -47,17 +49,17 @@ class RegisterView(CreateAPIView):
 class CustomConfirmEmailView(ConfirmEmailView):
     def get(self, request, *args, **kwargs):
         try:
-            email_address = EmailAddress.objects.get(email__iexact=self.get_object().email_address.email)
-            if email_address.verified:
-                messages.info(request, "This email has already been verified. Please log in.")
-                return redirect("/login?already_verified=true")
-
             response = super().get(request, *args, **kwargs)
-            messages.success(request, "Your email has been verified successfully. You can now log in.")
+            logger.info("✅ Email successfully verified.")
+            messages.success(request, "Your email has been verified successfully.")
+            
+            logger.info("🔄 Redirecting to login...")
             return redirect("/login?verified=true")
-        except EmailAddress.DoesNotExist:
-            messages.error(request, "This verification link is invalid or has expired.")
-            return redirect("/resend-email")
+        
+        except ObjectDoesNotExist:
+            logger.warning("⚠️ Verification link invalid or expired.")
+            messages.error(request, "This verification link is invalid or expired.")
+            return redirect("/login?expired=true")
 
 class CustomResendEmailView(ResendEmailVerificationView):
     def post(self, request, *args, **kwargs):
