@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
+from allauth.account.models import EmailAddress
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 from .models import Profile
@@ -33,6 +34,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
+
+        EmailAddress.objects.create(user=user, email=user.email, verified=False, primary=True)
+
         if profile_picture:
             user.profile.profile_picture = profile_picture
             user.profile.save()
@@ -44,6 +48,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             [user.email],
             fail_silently=False,
         )
+
         return user
 
 class ProfileSerializer(serializers.ModelSerializer):
