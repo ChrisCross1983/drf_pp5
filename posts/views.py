@@ -9,6 +9,9 @@ from profiles.permissions import IsOwnerOrReadOnly
 from .models import Post, Comment, SittingRequest, Notification, SittingRequest
 from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer, NotificationSerializer
 
+import logging
+logger = logging.getLogger(__name__)
+
 class PostFeedPagination(PageNumberPagination):
     page_size = 10
 
@@ -45,29 +48,19 @@ class PostFeedView(ListAPIView):
 
         return queryset
 
-class LikePostView(APIView):
-    permission_classes = [IsAuthenticated]
+class LikePostView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, pk):
-        try:
-            post = Post.objects.get(pk=pk)
-            if request.user in post.likes.all():
-                post.likes.remove(request.user)
-                return Response({'message': 'Post unliked'}, status=status.HTTP_200_OK)
-            else:
-                post.likes.add(request.user)
+    def post(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+            liked = False
+        else:
+            post.likes.add(request.user)
+            liked = True
 
-                if request.user != post.author:
-                    Notification.objects.create(
-                        user=post.author,
-                        type='like',
-                        post=post,
-                        message=f"{request.user.username} liked your post."
-                    )
-
-                return Response({'message': 'Post liked'}, status=status.HTTP_200_OK)
-        except Post.DoesNotExist:
-            return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"likes_count": post.likes.count(), "liked": liked})
 
 class AddCommentView(APIView):
     permission_classes = [IsAuthenticated]
@@ -83,8 +76,12 @@ class AddCommentView(APIView):
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     
+    def put(self, request, *args, **kwargs):
+        logger.info(f"PUT-Request von {request.user}")
+        return super().put(request, *args, **kwargs)
+
     def perform_update(self, serializer):
         if self.request.user != self.get_object().author:
             raise PermissionDenied("You do not have permission to edit this post.")
@@ -99,61 +96,90 @@ class CommentDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
 class CreateSittingRequestView(APIView):
+    """
+    API View to create a sitting request for a post.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, post_id):
-        print("DEBUG: Entered CreateSittingRequestView with post_id:", post_id)
-        print("DEBUG: Request user:", request.user)
-        print("DEBUG: Request data:", request.data)
         try:
             post = Post.objects.get(pk=post_id)
-            print("Post found:", post.title)
+
             if post.author == request.user:
                 return Response({"error": "You cannot request sitting for your own post."}, status=status.HTTP_400_BAD_REQUEST)
+
+            existing_request = SittingRequest.objects.filter(sender=request.user, post=post).first()
+            if existing_request:
+                return Response({"error": "You have already sent a request for this post."}, status=status.HTTP_400_BAD_REQUEST)
 
             serializer = SittingRequestSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(sender=request.user, receiver=post.author, post=post)
+
+                Notification.objects.create(
+                    user=post.author,
+                    type="request",
+                    sitting_request=serializer.instance,
+                    message=f"{request.user.username} has sent a sitting request for your post."
+                )
+
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Post.DoesNotExist:
-            print("DEBUG: Post with id", post_id, "not found.")
             return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class SentSittingRequestsView(generics.ListAPIView):
     serializer_class = SittingRequestSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return SittingRequest.objects.filter(sender=self.request.user)
 
 class IncomingSittingRequestsView(APIView):
+    """
+    API View to get incoming sitting requests.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        incoming_requests = SittingRequest.objects.filter(receiver=request.user)
-        serializer = SittingRequestSerializer(incoming_requests, many=True)
-        return Response(serializer.data)
+        sitting_requests = SittingRequest.objects.filter(receiver=request.user)
+        serializer = SittingRequestSerializer(sitting_requests, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ManageSittingRequestView(APIView):
+    """
+    API View to accept/decline sitting requests.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, request_id):
         try:
-            sitting_request = SittingRequest.objects.get(id=request_id, receiver=request.user)
-            action = request.data.get('action')
-            
-            if action == 'accept':
-                sitting_request.status = 'accepted'
-            elif action == 'decline':
-                sitting_request.status = 'declined'
+            sitting_request = SittingRequest.objects.get(pk=request_id, receiver=request.user)
+            action = request.data.get("action")
+
+            if action == "accept":
+                sitting_request.status = "accepted"
+                message = "Request accepted."
+            elif action == "decline":
+                sitting_request.status = "declined"
+                message = "Request declined."
             else:
-                return Response({'error': 'Invalid action'}, status=400)
-            
+                return Response({"error": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
             sitting_request.save()
-            return Response({'message': f'Request {action}ed successfully.'})
+
+            Notification.objects.create(
+                user=sitting_request.sender,
+                type="request",
+                sitting_request=sitting_request,
+                message=f"Your sitting request was {sitting_request.status}."
+            )
+
+            return Response({"message": message, "status": sitting_request.status}, status=status.HTTP_200_OK)
+
         except SittingRequest.DoesNotExist:
-            return Response({'error': 'Request not found'}, status=404)
+            return Response({"error": "Request not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class NotificationListView(ListAPIView):
     serializer_class = NotificationSerializer
