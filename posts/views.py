@@ -2,11 +2,11 @@ from django.db import models
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
-from .models import Post, Comment, SittingRequest, Notification
+from .models import Post, Comment, SittingRequest, Notification, SittingRequest
 from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer, NotificationSerializer
 
 class PostFeedPagination(PageNumberPagination):
@@ -80,10 +80,15 @@ class AddCommentView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class PostDetailView(RetrieveUpdateDestroyAPIView):
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def perform_update(self, serializer):
+        if self.request.user != self.get_object().author:
+            raise PermissionDenied("You do not have permission to edit this post.")
+        serializer.save()
 
 class CommentDetailView(RetrieveUpdateDestroyAPIView):
     """
@@ -115,6 +120,12 @@ class CreateSittingRequestView(APIView):
         except Post.DoesNotExist:
             print("DEBUG: Post with id", post_id, "not found.")
             return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class SentSittingRequestsView(generics.ListAPIView):
+    serializer_class = SittingRequestSerializer
+
+    def get_queryset(self):
+        return SittingRequest.objects.filter(sender=self.request.user)
 
 class IncomingSittingRequestsView(APIView):
     permission_classes = [IsAuthenticated]

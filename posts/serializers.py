@@ -34,7 +34,6 @@ class PostSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         return request and request.user == obj.author
 
-
 class SittingRequestSerializer(serializers.ModelSerializer):
     sender_username = serializers.ReadOnlyField(source='sender.username')
     receiver_username = serializers.ReadOnlyField(source='receiver.username')
