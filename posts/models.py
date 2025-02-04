@@ -24,7 +24,7 @@ class Post(models.Model):
         null=True, 
         default='https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570695/default_post_tuonop.jpg'
     )
-    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)  # Hier ersetzt
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -49,8 +49,8 @@ class SittingRequest(models.Model):
         ('declined', 'Declined'),
     ]
 
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_requests')  # Hier ersetzt
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_requests')  # Hier ersetzt
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_requests')
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_requests')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='sitting_requests')
     message = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -69,7 +69,7 @@ class Notification(models.Model):
         ('request', 'Sitting Request'),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')  # Hier ersetzt
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
     type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True, related_name='notifications')
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, null=True)

@@ -2,7 +2,7 @@ from django.db import models
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
@@ -83,7 +83,7 @@ class AddCommentView(APIView):
 class PostDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [AllowAny]
 
 class CommentDetailView(RetrieveUpdateDestroyAPIView):
     """
