@@ -7,6 +7,7 @@ from .views import (
     PostDetailView,
     CommentDetailView,
     CreateSittingRequestView,
+    SentSittingRequestsView,
     IncomingSittingRequestsView,
     ManageSittingRequestView,
     NotificationListView,
