@@ -6,6 +6,7 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.contrib.auth.views import PasswordChangeView
@@ -50,7 +51,6 @@ class RegisterView(CreateAPIView):
         if serializer.is_valid():
             user = serializer.save()
 
-            from rest_framework_simplejwt.tokens import RefreshToken
             refresh = RefreshToken.for_user(user)
 
             return Response({
@@ -82,14 +82,17 @@ class CustomResendEmailView(ResendEmailVerificationView):
         response = super().post(request, *args, **kwargs)
         return Response({"message": "A new verification email has been sent."})
 
-class CustomLoginView(LoginView):
-    def options(self, request, *args, **kwargs):
-        """Antwort auf eine CORS Preflight OPTIONS-Anfrage."""
-        response = JsonResponse({"message": "CORS preflight successful"})
-        response["Access-Control-Allow-Origin"] = request.headers.get("Origin", "")
-        response["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-        response["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-CSRFToken"
-        response["Access-Control-Allow-Credentials"] = "true"
+class CustomLoginView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if "key" in response.data:
+            print("🔍 DJ-REST-AUTH KEY:", response.data["key"])
+
+        if "access" in response.data and "refresh" in response.data:
+            print("✅ JWT Access & Refresh Tokens erhalten:", response.data)
+        else:
+            print("⚠️ Nur KEY erhalten, keine JWT-Token!")
+
         return response
 
 class CurrentUserProfileView(APIView):
@@ -140,6 +143,9 @@ class CustomPasswordChangeView(PasswordChangeView):
     permission_classes = [IsAuthenticated]
 
 class CustomLogoutView(APIView):
+    """
+    Custom Logout View, that blacklists Refresh-Tokens.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -150,7 +156,9 @@ class CustomLogoutView(APIView):
 
             token = RefreshToken(refresh_token)
             token.blacklist()
+
             return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
 

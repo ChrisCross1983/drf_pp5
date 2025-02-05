@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework',
     'rest_framework.authtoken',
+    "rest_framework_simplejwt.token_blacklist",
     'dj_rest_auth',
     'rest_framework_simplejwt',
     'allauth',
@@ -102,9 +103,16 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_BLACKLIST": "rest_framework_simplejwt.token_blacklist.models.BlacklistedToken",
 }
 
 REST_USE_JWT = True
+DJ_REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False,
+}
+
 JWT_AUTH_COOKIE = "accessToken"
 JWT_AUTH_REFRESH_COOKIE = "refreshToken"
 JWT_AUTH_SECURE = True # set to false if testing local
@@ -112,6 +120,7 @@ JWT_AUTH_SECURE = True # set to false if testing local
 REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'dj_rest_auth.serializers.LoginSerializer',
     'USER_DETAILS_SERIALIZER': 'dj_rest_auth.serializers.UserDetailsSerializer',
+    'TOKEN_SERIALIZER': 'rest_framework_simplejwt.serializers.TokenObtainPairSerializer'
 }
 
 CORS_ALLOWED_ORIGINS = [
