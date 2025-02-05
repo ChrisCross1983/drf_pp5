@@ -89,7 +89,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -129,9 +128,6 @@ CSRF_COOKIE_SAMESITE = "Lax"
 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "Lax"
-
-JWT_AUTH_SAMESITE = 'None'
-JWT_AUTH_SECURE = True
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https:\/\/.*\.codeinstitute-ide\.net$",

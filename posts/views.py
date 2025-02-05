@@ -77,6 +77,9 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        return {"request": self.request}
     
     def put(self, request, *args, **kwargs):
         logger.info(f"PUT-Request von {request.user}")
