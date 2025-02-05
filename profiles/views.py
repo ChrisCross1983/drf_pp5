@@ -4,6 +4,7 @@ from rest_framework.generics import (
     RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView, ListAPIView
 )
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status, generics, permissions
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
@@ -137,14 +138,15 @@ class CustomPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy('password_change_done')
     permission_classes = [IsAuthenticated]
 
-from rest_framework_simplejwt.tokens import RefreshToken
-
 class CustomLogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
-            refresh_token = request.data["refresh"]
+            refresh_token = request.data.get("refresh")
+            if not refresh_token:
+                return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
             token = RefreshToken(refresh_token)
             token.blacklist()
             return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)

@@ -15,12 +15,18 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=8, required=True)
+    password1 = serializers.CharField(write_only=True, min_length=8, required=True)
+    password2 = serializers.CharField(write_only=True, min_length=8, required=True)
     profile_picture = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'profile_picture']
+        fields = ['username', 'email', 'password1', 'password2', 'profile_picture']
+
+    def validate(self, data):
+        if data["password1"] != data["password2"]:
+            raise serializers.ValidationError({"password2": "Passwords must match."})
+        return data
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
@@ -32,7 +38,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password1']
         )
 
         EmailAddress.objects.create(user=user, email=user.email, verified=False, primary=True)
