@@ -25,6 +25,7 @@ from rest_framework import permissions
 from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
+from dj_rest_auth.registration.views import RegisterView
 from dj_rest_auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView
 
 # CSRF-Token API View
@@ -55,7 +56,7 @@ urlpatterns = [
     path('api/auth/password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
     path('api/auth/password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
     path('api/auth/', include('dj_rest_auth.urls')),
-    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('api/auth/registration/', RegisterView.as_view(), name='rest_register'),
 
     # 🔹 Profiles & Posts API Routes
     path('api/profiles/', include('profiles.urls')),

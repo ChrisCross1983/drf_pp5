@@ -86,9 +86,9 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -117,6 +117,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 CORS_ALLOW_HEADERS = ["Authorization", "Content-Type", "X-CSRFToken"]
@@ -124,6 +125,7 @@ CORS_ALLOW_HEADERS = ["Authorization", "Content-Type", "X-CSRFToken"]
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
+CSRF_USE_SESSIONS = True
 CSRF_COOKIE_SAMESITE = "Lax"
 
 SESSION_COOKIE_SECURE = True
