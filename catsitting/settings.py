@@ -104,7 +104,6 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_BLACKLIST": "rest_framework_simplejwt.token_blacklist.models.BlacklistedToken",
 }
 
 REST_USE_JWT = True
