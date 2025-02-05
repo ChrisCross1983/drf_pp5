@@ -25,6 +25,7 @@ from rest_framework import permissions
 from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from dj_rest_auth.registration.views import RegisterView
 from dj_rest_auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView
 
@@ -47,8 +48,10 @@ urlpatterns = [
     # 🔹 Django Admin
     path('admin/', admin.site.urls),
 
-    # 🔹 CSRF Token Endpoint (Wichtig für Frontend!)
+    # 🔹 CSRF & JWT Token Endpoint
     path("api/auth/csrf/", csrf_token_view, name="csrf-token"),
+    path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # 🔹 Authentication Endpoints (dj-rest-auth)
     path('api/auth/login/', LoginView.as_view(), name='rest_login'),
