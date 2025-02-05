@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # 🔹 Authentication Endpoints (dj-rest-auth)
+    path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/login/', LoginView.as_view(), name='rest_login'),
     path('api/auth/logout/', LogoutView.as_view(), name='rest_logout'),
     path('api/auth/password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
