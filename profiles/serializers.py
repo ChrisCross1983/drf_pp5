@@ -21,7 +21,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'profile_picture']
+        fields = ["username", "email", "password1", "password2", "profile_picture"]
 
     def validate(self, data):
         if data["password1"] != data["password2"]:
@@ -29,28 +29,33 @@ class RegisterSerializer(serializers.ModelSerializer):
         return data
 
     def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise ValidationError("A user with this email already exists.")
+        existing_user = User.objects.filter(email=value).first()
+        if existing_user:
+            email_address = EmailAddress.objects.filter(user=existing_user, email=value).first()
+            if email_address and email_address.verified:
+                raise ValidationError("A user with this email already exists and is verified.")
         return value
 
     def create(self, validated_data):
-        profile_picture = validated_data.pop('profile_picture', None)
+        profile_picture = validated_data.pop("profile_picture", None)
         user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password1']
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password1"],
         )
 
-        EmailAddress.objects.create(user=user, email=user.email, verified=False, primary=True)
+        email_address, created = EmailAddress.objects.get_or_create(
+            user=user, email=user.email, defaults={"verified": False, "primary": True}
+        )
 
         if profile_picture:
             user.profile.profile_picture = profile_picture
             user.profile.save()
 
         send_mail(
-            'Welcome to Lucky Cat!',
-            f'Hi {user.username}, thank you for registering on Lucky Cat!',
-            'cborza83@gmail.com',
+            "Welcome to Lucky Cat!",
+            f"Hi {user.username}, thank you for registering on Lucky Cat!",
+            "cborza83@gmail.com",
             [user.email],
             fail_silently=False,
         )

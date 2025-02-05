@@ -1,16 +1,20 @@
+from rest_framework import permissions
 from django.db import models
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
-from .models import Post, Comment, SittingRequest, Notification, SittingRequest
-from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer, NotificationSerializer
+from .models import Post, Comment, SittingRequest
+import notifications.models
+
+from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer
 
 import logging
 logger = logging.getLogger(__name__)
+
 
 class PostFeedPagination(PageNumberPagination):
     page_size = 10
@@ -183,31 +187,3 @@ class ManageSittingRequestView(APIView):
 
         except SittingRequest.DoesNotExist:
             return Response({"error": "Request not found."}, status=status.HTTP_404_NOT_FOUND)
-
-class NotificationListView(ListAPIView):
-    serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user)
-
-class MarkNotificationReadView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, notification_id):
-        try:
-            notification = Notification.objects.get(pk=notification_id, user=request.user)
-            notification.is_read = True
-            notification.save()
-            return Response({'message': 'Notification marked as read.'}, status=status.HTTP_200_OK)
-        except Notification.DoesNotExist:
-            return Response({'error': 'Notification not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-class MarkAllNotificationsReadView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        notifications = Notification.objects.filter(user=request.user, is_read=False)
-        count = notifications.count()
-        notifications.update(is_read=True)
-        return Response({"message": f"{count} notifications marked as read."}, status=status.HTTP_200_OK)

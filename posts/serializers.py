@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Post, Comment, SittingRequest, Notification
+from .models import Post, Comment, SittingRequest
+import notifications.models
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
@@ -46,8 +47,3 @@ class SittingRequestSerializer(serializers.ModelSerializer):
             'created_at', 'sender_username', 'receiver_username', 'post_title'
         ]
         read_only_fields = ['id', 'sender', 'receiver', 'post', 'created_at']
-
-class NotificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Notification
-        fields = ['id', 'user', 'type', 'post', 'message', 'is_read', 'created_at']

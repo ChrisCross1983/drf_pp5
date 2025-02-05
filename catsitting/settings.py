@@ -69,6 +69,7 @@ INSTALLED_APPS = [
 
     'profiles',
     'posts',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -104,6 +105,9 @@ SIMPLE_JWT = {
 }
 
 REST_USE_JWT = True
+JWT_AUTH_COOKIE = "accessToken"
+JWT_AUTH_REFRESH_COOKIE = "refreshToken"
+JWT_AUTH_SECURE = True # set to false if testing local
 
 REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'dj_rest_auth.serializers.LoginSerializer',

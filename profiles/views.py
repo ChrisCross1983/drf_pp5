@@ -1,3 +1,4 @@
+from rest_framework import status, generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import (
@@ -5,7 +6,6 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import status, generics, permissions
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.contrib.auth.views import PasswordChangeView
@@ -23,9 +23,10 @@ from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
 
 from .models import Profile
+import notifications.models
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
-from posts.models import Notification
+
 import logging
 
 logger = logging.getLogger(__name__)

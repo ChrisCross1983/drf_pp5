@@ -10,13 +10,11 @@ from .views import (
     SentSittingRequestsView,
     IncomingSittingRequestsView,
     ManageSittingRequestView,
-    NotificationListView,
-    MarkNotificationReadView,
 )
 
 urlpatterns = [
     path('create/', CreatePostView.as_view(), name='create-post'),
-    path('feed/', PostFeedView.as_view(), name='post-feed'), # with search and filter options
+    path('feed/', PostFeedView.as_view(), name='post-feed'),
     path('<int:pk>/like/', LikePostView.as_view(), name='like-post'),
     path('<int:pk>/comment/', AddCommentView.as_view(), name='add-comment'),
     path('<int:pk>/', PostDetailView.as_view(), name='post-detail'),
@@ -25,6 +23,4 @@ urlpatterns = [
     path('requests/sent/', SentSittingRequestsView.as_view(), name='sent-sitting-requests'),
     path('requests/incoming/', IncomingSittingRequestsView.as_view(), name='incoming-sitting-requests'),
     path('requests/manage/<int:request_id>/', ManageSittingRequestView.as_view(), name='manage-sitting-request'),
-    path('notifications/', NotificationListView.as_view(), name='notifications'),
-    path('notifications/<int:notification_id>/mark-read/', MarkNotificationReadView.as_view(), name='mark-notification-read'),
 ]
