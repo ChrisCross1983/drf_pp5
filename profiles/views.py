@@ -30,20 +30,36 @@ import logging
 logger = logging.getLogger(__name__)
 
 def csrf_token_view(request):
-    return JsonResponse({"csrfToken": get_token(request)})
+    response = JsonResponse({"csrfToken": get_token(request)})
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-CSRFToken"
+    response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+    return response
 
 class RegisterView(CreateAPIView):
     """
     Endpoint to register a new user.
     """
     serializer_class = RegisterSerializer
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "User registered successfully!"}, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+
+            from rest_framework_simplejwt.tokens import RefreshToken
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                "message": "User registered successfully!",
+                "user_id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            }, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomConfirmEmailView(ConfirmEmailView):
@@ -121,11 +137,19 @@ class CustomPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy('password_change_done')
     permission_classes = [IsAuthenticated]
 
-class CustomLogoutView(LogoutView):
-    """
-    Custom logout view using Django session authentication.
-    """
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class CustomLogoutView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
 
 class FollowUserView(APIView):
     permission_classes = [IsAuthenticated]
