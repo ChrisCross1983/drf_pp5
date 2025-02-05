@@ -39,7 +39,8 @@ urlpatterns = [
     path('api/auth/logout/', LogoutView.as_view(), name='rest_logout'),
     path('api/auth/password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
     path('api/auth/password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
-    path('api/auth/registration/', RegisterView.as_view(), name='rest_register'),
+    path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
+    path("accounts/", include("allauth.urls")),
 
     # 🔹 Profiles, Posts & Notifications APIs
     path('api/profiles/', include('profiles.urls')),
