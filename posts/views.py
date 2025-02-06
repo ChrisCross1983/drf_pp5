@@ -33,23 +33,27 @@ class PostFeedView(ListAPIView):
     pagination_class = PostFeedPagination
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        try:
+            queryset = super().get_queryset()
 
-        search_query = self.request.query_params.get('search')
-        if search_query:
-            queryset = queryset.filter(
-                models.Q(title__icontains=search_query) |
-                models.Q(description__icontains=search_query)
-            )
+            search_query = self.request.query_params.get('search')
+            if search_query:
+                queryset = queryset.filter(
+                    models.Q(title__icontains=search_query) |
+                    models.Q(description__icontains=search_query)
+                )
 
-        category_filter = self.request.query_params.get('category')
-        if category_filter:
-            queryset = queryset.filter(category=category_filter)
+            category_filter = self.request.query_params.get('category')
+            if category_filter:
+                queryset = queryset.filter(category=category_filter)
 
-        ordering = self.request.query_params.get('ordering', '-created_at')
-        queryset = queryset.order_by(ordering)
+            ordering = self.request.query_params.get('ordering', '-created_at')
+            queryset = queryset.order_by(ordering)
 
-        return queryset
+            return queryset
+        except Exception as e:
+            logger.error(f"🔥 Error in PostFeedView: {e}")
+            return Post.objects.none()
 
 class LikePostView(APIView):
     permission_classes = [IsAuthenticated]
