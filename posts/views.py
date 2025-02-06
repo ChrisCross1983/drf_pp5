@@ -34,6 +34,7 @@ class PostFeedView(ListAPIView):
 
     def get_queryset(self):
         try:
+            logger.info("🔍 Call of posts started")
             queryset = super().get_queryset()
 
             search_query = self.request.query_params.get('search')
@@ -42,13 +43,16 @@ class PostFeedView(ListAPIView):
                     models.Q(title__icontains=search_query) |
                     models.Q(description__icontains=search_query)
                 )
+                logger.info(f"🔍 Filter Search: {search_query}")
 
             category_filter = self.request.query_params.get('category')
             if category_filter:
                 queryset = queryset.filter(category=category_filter)
+                logger.info(f"🔍 Filter nach Kategorie: {category_filter}")
 
             ordering = self.request.query_params.get('ordering', '-created_at')
             queryset = queryset.order_by(ordering)
+            logger.info(f"📌 Ordering: {ordering}")
 
             return queryset
         except Exception as e:
