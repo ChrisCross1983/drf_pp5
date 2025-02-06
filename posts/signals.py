@@ -9,8 +9,6 @@ def create_comment_notification(sender, instance, created, **kwargs):
     if created:
         Notification.objects.create(
             user=instance.post.author,
-            type='comment',
-            post=instance.post,
             message=f"{instance.author.username} commented on your post."
         )
 
