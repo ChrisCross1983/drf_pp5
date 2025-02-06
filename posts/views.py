@@ -87,11 +87,12 @@ class LikePostView(APIView):
 
         like.delete()
         post.likes.remove(request.user)
+
         return Response({
             "detail": "Like removed!",
             "likes_count": post.likes.count(),
             "has_liked": False
-        }, status=status.HTTP_204_NO_CONTENT)
+        }, status=status.HTTP_200_OK)
 
 class ListCommentsView(generics.ListAPIView):
     serializer_class = CommentSerializer
