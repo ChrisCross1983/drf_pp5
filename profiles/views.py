@@ -10,7 +10,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.contrib.auth.views import PasswordChangeView
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
@@ -84,9 +84,30 @@ class CustomResendEmailView(ResendEmailVerificationView):
         return Response({"message": "A new verification email has been sent."})
 
 class CustomLoginView(LoginView):
-    def get_response_serializer(self):
+    """
+    Custom Login View, that ensures JWT Authentification.
+    """
+    def post(self, request, *args, **kwargs):
         print("✅ CustomLoginView is being used!")
-        return JWTSerializer
+        response = super().post(request, *args, **kwargs)
+
+        if "key" in response.data:
+            print("🔴 Only 'key' received! Generating JWT manually...")
+            
+            username = request.data.get("username")
+            password = request.data.get("password")
+            
+            user = authenticate(username=username, password=password)
+
+            if user:
+                refresh = RefreshToken.for_user(user)
+                return Response({
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                }, status=status.HTTP_200_OK)
+
+        print("🔄 Login Response Data:", response.data)
+        return response
 
 class CurrentUserProfileView(APIView):
     """

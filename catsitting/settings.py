@@ -110,6 +110,7 @@ REST_USE_JWT = True
 DJ_REST_AUTH = {
     "USE_JWT": True,
     "JWT_AUTH_HTTPONLY": False,
+    "TOKEN_MODEL": None,
 }
 
 JWT_AUTH_COOKIE = "accessToken"
