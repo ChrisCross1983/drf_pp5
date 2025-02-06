@@ -82,11 +82,22 @@ class LikePostView(APIView):
         post = get_object_or_404(Post, pk=pk)
         like = Like.objects.filter(post=post, user=request.user)
 
+        print(f"🔍 DELETE REQUEST: User {request.user} tried, Like for Post {post.id} to delete.")
+
         if not like.exists():
+            print(f"⚠️ ATTENTION: No Like found for User {request.user} on Post {post.id}")
             return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        print(f"✅ Like existiert. Likes BEFORE deleting: {Like.objects.filter(post=post).count()}")
 
         like.delete()
         post.likes.remove(request.user)
+
+        print(f"✅ Like deleted! Likes AFTER deleting: {Like.objects.filter(post=post).count()}")
+
+        if Like.objects.filter(post=post, user=request.user).exists():
+            print(f"❌ ERROR: Like wasnt correct removed!")
+            return Response({"detail": "Error: Like was not removed properly."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({
             "detail": "Like removed!",
