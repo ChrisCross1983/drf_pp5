@@ -94,7 +94,7 @@ class AddCommentView(APIView):
 
         try:
             post = Post.objects.get(pk=pk)
-            serializer = CommentSerializer(data=request.data)
+            serializer = CommentSerializer(data=request.data, context={"request": request})
 
             if serializer.is_valid():
                 serializer.save(author=request.user, post=post)
@@ -130,6 +130,11 @@ class CommentDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
 
 class CreateSittingRequestView(APIView):
     """
