@@ -82,18 +82,9 @@ class CustomResendEmailView(ResendEmailVerificationView):
         response = super().post(request, *args, **kwargs)
         return Response({"message": "A new verification email has been sent."})
 
-class CustomLoginView(TokenObtainPairView):
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        if "key" in response.data:
-            print("🔍 DJ-REST-AUTH KEY:", response.data["key"])
-
-        if "access" in response.data and "refresh" in response.data:
-            print("✅ JWT Access & Refresh Tokens erhalten:", response.data)
-        else:
-            print("⚠️ Nur KEY erhalten, keine JWT-Token!")
-
-        return response
+class CustomLoginView(LoginView):
+    def get_response_serializer(self):
+        return JWTSerializer
 
 class CurrentUserProfileView(APIView):
     """

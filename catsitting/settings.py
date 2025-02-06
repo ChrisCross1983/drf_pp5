@@ -114,10 +114,10 @@ DJ_REST_AUTH = {
 
 JWT_AUTH_COOKIE = "accessToken"
 JWT_AUTH_REFRESH_COOKIE = "refreshToken"
-JWT_AUTH_SECURE = True # set to false if testing local
+JWT_AUTH_SECURE = True # Remember set to false if testing local
 
 REST_AUTH_SERIALIZERS = {
-    'LOGIN_SERIALIZER': 'dj_rest_auth.serializers.LoginSerializer',
+    'LOGIN_SERIALIZER': 'dj_rest_auth.serializers.JWTSerializer',
     'USER_DETAILS_SERIALIZER': 'dj_rest_auth.serializers.UserDetailsSerializer',
     'TOKEN_SERIALIZER': 'rest_framework_simplejwt.serializers.TokenObtainPairSerializer'
 }
