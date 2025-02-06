@@ -66,6 +66,14 @@ class LikePostView(generics.UpdateAPIView):
 
         return Response({"likes_count": post.likes.count(), "liked": liked})
 
+class ListCommentsView(ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        post_id = self.kwargs.get("pk")
+        return Comment.objects.filter(post_id=post_id)
+
 class AddCommentView(APIView):
     permission_classes = [IsAuthenticated]
 
