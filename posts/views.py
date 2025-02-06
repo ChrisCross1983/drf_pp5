@@ -29,7 +29,7 @@ class CreatePostView(CreateAPIView):
 class PostFeedView(ListAPIView):
     serializer_class = PostSerializer
     pagination_class = PostFeedPagination
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         logger.info("📌 PostFeedView: get_queryset() started")
