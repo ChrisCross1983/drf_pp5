@@ -84,7 +84,7 @@ class AddCommentView(APIView):
         try:
             post = Post.objects.get(pk=pk)
             comments = Comment.objects.filter(post=post).order_by("-created_at")
-            serializer = CommentSerializer(comments, many=True)
+            serializer = CommentSerializer(comments, many=True, context={"request": request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Post.DoesNotExist:
             return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -132,9 +132,7 @@ class CommentDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context["request"] = self.request
-        return context
+    return {"request": self.request}
 
 class CreateSittingRequestView(APIView):
     """
