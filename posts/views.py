@@ -27,39 +27,39 @@ class CreatePostView(CreateAPIView):
         serializer.save(author=self.request.user)
 
 class PostFeedView(ListAPIView):
-    queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [AllowAny]
     pagination_class = PostFeedPagination
 
     def get_queryset(self):
-        try:
-            queryset = super().get_queryset()
-            logger.info("🔍 Fetching posts...")
+        logger.info("📌 PostFeedView: get_queryset() started")
 
-            if not queryset.exists():
-                print("⚠️ WARNING: No posts found!")
+        try:
+            queryset = Post.objects.all()
+            logger.info(f"✅ Number of posts in DB: {queryset.count()}")
 
             search_query = self.request.query_params.get('search')
             if search_query:
+                logger.info(f"🔍 Search query: {search_query}")
                 queryset = queryset.filter(
                     models.Q(title__icontains=search_query) |
                     models.Q(description__icontains=search_query)
                 )
-                logger.info(f"🔍 Search for: {search_query}, Found Posts: {queryset.count()}")
 
             category_filter = self.request.query_params.get('category')
             if category_filter:
+                logger.info(f"📂 Category filter: {category_filter}")
                 queryset = queryset.filter(category=category_filter)
-                logger.info(f"🔍 Filter Category: {category_filter}")
 
             ordering = self.request.query_params.get('ordering', '-created_at')
+            logger.info(f"📏 Ordering: {ordering}")
             queryset = queryset.order_by(ordering)
-            logger.info(f"📌 Ordering: {ordering}")
 
+            logger.info("✅ get_queryset() completed successfully")
             return queryset
+        
         except Exception as e:
-            logger.error(f"🔥 Error in PostFeedView: {e}")
+            logger.error(f"❌ ERROR in get_queryset(): {str(e)}")
             return Post.objects.none()
 
 class LikePostView(APIView):
