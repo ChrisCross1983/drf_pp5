@@ -5,7 +5,7 @@ import notifications.models
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
     is_owner = serializers.SerializerMethodField()
-
+    content = serializers.CharField()
     class Meta:
         model = Comment
         fields = ['id', 'author', 'content', 'created_at', 'is_owner']

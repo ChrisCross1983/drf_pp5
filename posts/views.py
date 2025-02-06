@@ -66,7 +66,7 @@ class LikePostView(generics.UpdateAPIView):
 
         return Response({"likes_count": post.likes.count(), "liked": liked})
 
-class ListCommentsView(ListAPIView):
+class ListCommentsView(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [AllowAny]
 
@@ -77,8 +77,27 @@ class ListCommentsView(ListAPIView):
 class AddCommentView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, pk):
+        """
+        Fetch all comments for a specific post.
+        """
+        try:
+            post = Post.objects.get(pk=pk)
+            comments = Comment.objects.filter(post=post).order_by("-created_at")
+            serializer = CommentSerializer(comments, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
     def post(self, request, pk):
-        post = Post.objects.get(pk=pk)
+        """
+        Add a new comment to a post.
+        """
+        try:
+            post = Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(author=request.user, post=post)
