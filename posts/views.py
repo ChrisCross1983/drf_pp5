@@ -8,9 +8,8 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDe
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
 from .models import Post, Comment, SittingRequest, Like
-import notifications.models
-
 from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer
+import notifications.models
 
 import logging
 logger = logging.getLogger(__name__)
@@ -28,7 +27,7 @@ class CreatePostView(CreateAPIView):
 
 class PostFeedView(ListAPIView):
     serializer_class = PostSerializer
-    pagination_class = PostFeedPagination
+    pagination_class = None
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -57,10 +56,10 @@ class PostFeedView(ListAPIView):
 
             logger.info("✅ get_queryset() completed successfully")
             return queryset
-        
+
         except Exception as e:
-            logger.error(f"❌ ERROR in get_queryset(): {str(e)}")
-            return Post.objects.none()
+            logger.error(f"❌ ERROR in get_queryset(): {str(e)}", exc_info=True)
+            raise
 
 class LikePostView(APIView):
     permission_classes = [IsAuthenticated]
