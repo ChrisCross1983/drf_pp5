@@ -34,8 +34,11 @@ class PostFeedView(ListAPIView):
 
     def get_queryset(self):
         try:
-            logger.info("🔍 Call of posts started")
             queryset = super().get_queryset()
+            logger.info("🔍 Fetching posts...")
+
+            if not queryset.exists():
+                print("⚠️ WARNING: No posts found!")
 
             search_query = self.request.query_params.get('search')
             if search_query:
@@ -43,12 +46,12 @@ class PostFeedView(ListAPIView):
                     models.Q(title__icontains=search_query) |
                     models.Q(description__icontains=search_query)
                 )
-                logger.info(f"🔍 Filter Search: {search_query}")
+                logger.info(f"🔍 Search for: {search_query}, Found Posts: {queryset.count()}")
 
             category_filter = self.request.query_params.get('category')
             if category_filter:
                 queryset = queryset.filter(category=category_filter)
-                logger.info(f"🔍 Filter nach Kategorie: {category_filter}")
+                logger.info(f"🔍 Filter Category: {category_filter}")
 
             ordering = self.request.query_params.get('ordering', '-created_at')
             queryset = queryset.order_by(ordering)
@@ -80,6 +83,8 @@ class LikePostView(APIView):
 
     def delete(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
+        print(f"🔍 DELETE REQUEST: User {request.user} (ID: {request.user.id}) tried, Like for Post {post.id} to delete.")
+        
         like = Like.objects.filter(post=post, user=request.user)
 
         print(f"🔍 DELETE REQUEST: User {request.user} tried, Like for Post {post.id} to delete.")
