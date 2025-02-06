@@ -132,7 +132,7 @@ class CommentDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_serializer_context(self):
-    return {"request": self.request}
+        return {"request": self.request}
 
 class CreateSittingRequestView(APIView):
     """
