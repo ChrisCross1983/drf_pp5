@@ -1,20 +1,19 @@
-from rest_framework import permissions
 from django.db import models
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
-from .models import Post, Comment, SittingRequest
+from .models import Post, Comment, SittingRequest, Like
 import notifications.models
 
 from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer
 
 import logging
 logger = logging.getLogger(__name__)
-
 
 class PostFeedPagination(PageNumberPagination):
     page_size = 10
@@ -52,19 +51,39 @@ class PostFeedView(ListAPIView):
 
         return queryset
 
-class LikePostView(generics.UpdateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk, *args, **kwargs):
-        post = Post.objects.get(pk=pk)
-        if request.user in post.likes.all():
-            post.likes.remove(request.user)
-            liked = False
-        else:
-            post.likes.add(request.user)
-            liked = True
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        existing_like = Like.objects.filter(post=post, user=request.user).first()
 
-        return Response({"likes_count": post.likes.count(), "liked": liked})
+        if existing_like:
+            return Response({"detail": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        Like.objects.create(post=post, user=request.user)
+        post.likes.add(request.user)
+
+        return Response({
+            "detail": "Post liked!",
+            "likes_count": post.likes.count(),
+            "has_liked": True
+        }, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(post=post, user=request.user)
+
+        if not like.exists():
+            return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        like.delete()
+        post.likes.remove(request.user)
+        return Response({
+            "detail": "Like removed!",
+            "likes_count": post.likes.count(),
+            "has_liked": False
+        }, status=status.HTTP_204_NO_CONTENT)
 
 class ListCommentsView(generics.ListAPIView):
     serializer_class = CommentSerializer

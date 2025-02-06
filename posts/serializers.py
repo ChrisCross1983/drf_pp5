@@ -24,17 +24,22 @@ class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
     likes_count = serializers.SerializerMethodField()
     comments = CommentSerializer(many=True, read_only=True)
+    has_liked = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = [
             'id', 'title', 'category', 'description', 'image', 'author',
-            'likes_count', 'comments', 'created_at', 'is_owner'
+            'likes_count', 'has_liked', 'comments', 'created_at', 'is_owner'
         ]
 
     def get_likes_count(self, obj):
-        return obj.likes.count()
+        return obj.post_likes.count()
+
+    def get_has_liked(self, obj):
+        request = self.context.get("request")
+        return request and request.user.is_authenticated and obj.likes.filter(user=request.user).exists()
 
     def get_is_owner(self, obj):
         request = self.context.get("request")
