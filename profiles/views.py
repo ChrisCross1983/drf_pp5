@@ -19,6 +19,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from dj_rest_auth.views import LoginView, LogoutView
+from dj_rest_auth.serializers import JWTSerializer
 from dj_rest_auth.registration.views import ResendEmailVerificationView
 from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
