@@ -12,8 +12,8 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'author', 'post', 'content', 'created_at', 'is_owner']
 
     def get_is_owner(self, obj):
-    request = self.context.get("request", None)
-    return request.user == obj.author if request and request.user.is_authenticated else False
+        request = self.context.get("request", None)
+        return request.user == obj.author if request and request.user.is_authenticated else False
 
     def create(self, validated_data):
         post = validated_data.pop('post')
