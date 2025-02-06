@@ -5,15 +5,20 @@ import notifications.models
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
     is_owner = serializers.SerializerMethodField()
-    content = serializers.CharField()
+    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), write_only=True)
+
     class Meta:
         model = Comment
-        fields = ['id', 'author', 'content', 'created_at', 'is_owner']
+        fields = ['id', 'author', 'post', 'content', 'created_at', 'is_owner']
 
     def get_is_owner(self, obj):
         request = self.context.get("request")
         return request and request.user == obj.author
 
+    def create(self, validated_data):
+        post = validated_data.pop('post')
+        comment = Comment.objects.create(post=post, **validated_data)
+        return comment
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
