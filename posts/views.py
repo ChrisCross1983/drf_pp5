@@ -46,7 +46,7 @@ class PostFeedView(ListAPIView):
         logger.info("📌 PostFeedView: get_queryset() started")
 
         try:
-            queryset = Post.objects.all().order_by("-created_at")
+            queryset = Post.objects.all()
             logger.info(f"✅ Number of posts in DB: {queryset.count()}")
 
             search_query = self.request.query_params.get('search')

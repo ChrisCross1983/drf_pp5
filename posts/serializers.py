@@ -56,4 +56,19 @@ class SittingRequestSerializer(serializers.ModelSerializer):
             'id', 'sender', 'receiver', 'post', 'message', 'status',
             'created_at', 'sender_username', 'receiver_username', 'post_title'
         ]
-        read_only_fields = ['id', 'sender', 'receiver', 'post', 'created_at']
+        read_only_fields = ['id', 'sender', 'receiver', 'created_at']
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        post = validated_data.pop("post")
+
+        if SittingRequest.objects.filter(sender=request.user, post=post).exists():
+            raise serializers.ValidationError("You have already sent a request for this post.")
+
+        sitting_request = SittingRequest.objects.create(
+            sender=request.user,
+            receiver=post.author,
+            post=post,
+            **validated_data
+        )
+        return sitting_request

@@ -17,7 +17,7 @@ def create_sitting_request_notification(sender, instance, created, **kwargs):
     if created:
         Notification.objects.create(
             user=instance.receiver,
-            type='request',
+            type="request",
             sitting_request=instance,
             message=f"{instance.sender.username} sent you a sitting request."
         )
