@@ -46,7 +46,8 @@ class PostFeedView(ListAPIView):
         logger.info("📌 PostFeedView: get_queryset() started")
 
         try:
-            queryset = Post.objects.all()
+            posts = Post.objects.all()
+            print(posts)
             logger.info(f"✅ Number of posts in DB: {queryset.count()}")
 
             search_query = self.request.query_params.get('search')
@@ -209,6 +210,7 @@ class CreateSittingRequestView(APIView):
 
             # Check if the user already sent a request
             existing_request = SittingRequest.objects.filter(sender=request.user, post=post).first()
+            print(f"Checking SittingRequest: User={request.user.username}, Post={post.id}, Found={existing_request}")
             if existing_request:
                 logger.warning(f"⚠️ Duplicate request detected for User {request.user} on Post {post_id}.")
                 return Response({"error": "You have already sent a request for this post."}, status=status.HTTP_400_BAD_REQUEST)

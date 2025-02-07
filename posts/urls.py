@@ -14,7 +14,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('create/', CreatePostView.as_view(), name='create-post'),
+    path('', CreatePostView.as_view(), name='create-post'),
     path('feed/', PostFeedView.as_view(), name='post-feed'),
     path('<int:pk>/like/', LikePostView.as_view(), name='like-post'),
     path('<int:pk>/comment/', AddCommentView.as_view(), name='add-comment'),
