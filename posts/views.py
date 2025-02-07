@@ -1,5 +1,4 @@
-from django.db import models
-from django.shortcuts import get_object_or_404
+
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -7,6 +6,9 @@ from rest_framework import status, generics, permissions
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
+from django.db import models
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from .models import Post, Comment, SittingRequest, Like
 from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer
 import notifications.models
@@ -18,12 +20,22 @@ class PostFeedPagination(PageNumberPagination):
     page_size = 10
 
 class CreatePostView(CreateAPIView):
+    """
+    API View to create a new post.
+    """
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        logger.info(f"📝 CreatePostView: User {self.request.user} is creating a post.")
+
+        try:
+            serializer.save(author=self.request.user)
+            logger.info(f"✅ Post successfully created by {self.request.user}")
+        except Exception as e:
+            logger.exception(f"❌ Error while creating post: {str(e)}")
+            return Response({"error": "Failed to create post."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PostFeedView(ListAPIView):
     serializer_class = PostSerializer
@@ -184,32 +196,50 @@ class CreateSittingRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, post_id):
+        logger.info(f"🐾 SittingRequest: Start for Post ID {post_id} by User {request.user}")
+
         try:
             post = Post.objects.get(pk=post_id)
+            logger.info(f"✅ Post found: {post.title} (Author: {post.author.username})")
 
+            # Prevent users from requesting their own posts
             if post.author == request.user:
+                logger.warning(f"🚫 User {request.user} attempted to request their own post.")
                 return Response({"error": "You cannot request sitting for your own post."}, status=status.HTTP_400_BAD_REQUEST)
 
+            # Check if the user already sent a request
             existing_request = SittingRequest.objects.filter(sender=request.user, post=post).first()
             if existing_request:
+                logger.warning(f"⚠️ Duplicate request detected for User {request.user} on Post {post_id}.")
                 return Response({"error": "You have already sent a request for this post."}, status=status.HTTP_400_BAD_REQUEST)
 
+            # Serialize request data
             serializer = SittingRequestSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(sender=request.user, receiver=post.author, post=post)
+                logger.info(f"🎉 SittingRequest successfully created by {request.user} for Post {post_id}")
 
+                # Create a notification
                 Notification.objects.create(
                     user=post.author,
                     type="request",
                     sitting_request=serializer.instance,
                     message=f"{request.user.username} has sent a sitting request for your post."
                 )
+                logger.info(f"🔔 Notification sent to {post.author.username}.")
 
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            logger.error(f"❌ SittingRequest validation failed: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Post.DoesNotExist:
+            logger.error(f"❌ Post with ID {post_id} not found!")
             return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.exception(f"❌ Unexpected error in CreateSittingRequestView: {str(e)}")
+            return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class SentSittingRequestsView(generics.ListAPIView):
     serializer_class = SittingRequestSerializer
