@@ -26,6 +26,13 @@ class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     has_liked = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
+    category = serializers.ChoiceField(
+        choices=[
+            ('offer', 'Offer Sitting'),
+            ('search', 'Search Sitting'),
+            ('general', 'General'),
+        ]
+    )
 
     class Meta:
         model = Post
