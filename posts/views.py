@@ -30,12 +30,17 @@ class CreatePostView(CreateAPIView):
     def perform_create(self, serializer):
         logger.info(f"📝 CreatePostView: User {self.request.user} is creating a post.")
 
+        if self.request.user.is_authenticated:
+            logger.info(f"🔍 `request.user` ist: {self.request.user.id} ({self.request.user.username})")
+        else:
+            logger.warning(f"⚠️ `request.user` ist NOT SET!")
+
         try:
             serializer.save(author=self.request.user)
             logger.info(f"✅ Post successfully created by {self.request.user}")
         except Exception as e:
             logger.exception(f"❌ Error while creating post: {str(e)}")
-            return Response({"error": "Failed to create post."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Failed to create post."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PostFeedView(ListAPIView):
     serializer_class = PostSerializer
