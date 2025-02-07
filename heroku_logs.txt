@@ -1,0 +1,100 @@
+2025-02-07T15:19:57.003088+00:00 app[web.1]: 10.1.25.163 - - [07/Feb/2025:15:19:56 +0000] "GET /static/rest_framework/css/prettify.css HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.003379+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/css/prettify.css" host=luckycat-b653875cceaf.herokuapp.com request_id=7097b078-dcde-39f1-94a6-8bc9bffe596b fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:19:57.052427+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/css/default.css" host=luckycat-b653875cceaf.herokuapp.com request_id=e1fcfbfe-92ca-5983-5df3-23846639d631 fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:19:57.052435+00:00 app[web.1]: 10.1.12.35 - - [07/Feb/2025:15:19:57 +0000] "GET /static/rest_framework/css/default.css HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.054785+00:00 app[web.1]: 10.1.33.53 - - [07/Feb/2025:15:19:57 +0000] "GET /static/rest_framework/js/csrf.js HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.054931+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/js/csrf.js" host=luckycat-b653875cceaf.herokuapp.com request_id=39d1875e-921d-9fe1-34bc-627e52fd7b57 fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:19:57.059351+00:00 app[web.1]: 10.1.30.25 - - [07/Feb/2025:15:19:57 +0000] "GET /static/rest_framework/js/ajax-form.js HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.059665+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/js/ajax-form.js" host=luckycat-b653875cceaf.herokuapp.com request_id=f5fd7abb-07f5-16e2-9e7c-7bb724db1b5c fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:19:57.062704+00:00 app[web.1]: 10.1.30.25 - - [07/Feb/2025:15:19:57 +0000] "GET /static/rest_framework/js/bootstrap.min.js HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.062787+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/js/bootstrap.min.js" host=luckycat-b653875cceaf.herokuapp.com request_id=a8b09444-9e65-9fb1-f8e8-439357d3f71e fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:19:57.063181+00:00 app[web.1]: 10.1.25.163 - - [07/Feb/2025:15:19:57 +0000] "GET /static/rest_framework/js/prettify-min.js HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.063280+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/js/prettify-min.js" host=luckycat-b653875cceaf.herokuapp.com request_id=613a83c2-58a4-2781-3030-2437b0a4493b fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:19:57.063996+00:00 app[web.1]: 10.1.34.36 - - [07/Feb/2025:15:19:57 +0000] "GET /static/rest_framework/js/load-ajax-form.js HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.064293+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/js/load-ajax-form.js" host=luckycat-b653875cceaf.herokuapp.com request_id=fc720d89-382d-9dd1-8ecc-7e41dce94ddf fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:19:57.114471+00:00 app[web.1]: 10.1.33.53 - - [07/Feb/2025:15:19:57 +0000] "GET /static/rest_framework/js/default.js HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.114514+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/js/default.js" host=luckycat-b653875cceaf.herokuapp.com request_id=9a501c7d-1624-8f63-f3e4-4a7f19a039cd fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:19:57.146561+00:00 app[web.1]: 10.1.34.36 - - [07/Feb/2025:15:19:57 +0000] "GET /static/rest_framework/img/grid.png HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/static/rest_framework/css/bootstrap-tweaks.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:19:57.146761+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/img/grid.png" host=luckycat-b653875cceaf.herokuapp.com request_id=00bfe5e6-bed0-69dc-788b-41e7852a3f84 fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:20:20.488413+00:00 app[web.1]: 10.1.30.25 - - [07/Feb/2025:15:20:20 +0000] "GET /static/rest_framework/css/prettify.css HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:20:20.488508+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/css/prettify.css" host=luckycat-b653875cceaf.herokuapp.com request_id=9f315649-2f53-7a31-fac2-3e7fd04403c4 fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:20:20.489129+00:00 app[web.1]: 10.1.25.163 - - [07/Feb/2025:15:20:20 +0000] "GET /static/rest_framework/css/default.css HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:20:20.489180+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/css/default.css" host=luckycat-b653875cceaf.herokuapp.com request_id=862492a2-a54d-8f26-2878-8aae2aaec43d fwd="79.196.23.96" dyno=web.1 connect=0ms service=1ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:20:20.489937+00:00 app[web.1]: 10.1.33.53 - - [07/Feb/2025:15:20:20 +0000] "GET /static/rest_framework/css/bootstrap-tweaks.css HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:20:20.490075+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/css/bootstrap-tweaks.css" host=luckycat-b653875cceaf.herokuapp.com request_id=3b352941-d33c-7da5-7fdc-942532843079 fwd="79.196.23.96" dyno=web.1 connect=0ms service=2ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:20:20.490396+00:00 app[web.1]: 10.1.34.36 - - [07/Feb/2025:15:20:20 +0000] "GET /static/rest_framework/css/bootstrap.min.css HTTP/1.1" 304 0 "https://luckycat-b653875cceaf.herokuapp.com/api/posts/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:20:20.490690+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/css/bootstrap.min.css" host=luckycat-b653875cceaf.herokuapp.com request_id=5f872c85-005b-fa2c-d5be-b12e82f40a77 fwd="79.196.23.96" dyno=web.1 connect=0ms service=2ms status=304 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:20:20.658285+00:00 app[web.1]: 10.1.34.36 - - [07/Feb/2025:15:20:20 +0000] "GET /static/rest_framework/css/bootstrap.min.css.map HTTP/1.1" 200 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+2025-02-07T15:20:20.662595+00:00 heroku[router]: at=info method=GET path="/static/rest_framework/css/bootstrap.min.css.map" host=luckycat-b653875cceaf.herokuapp.com request_id=c34b6ebe-6586-17e8-b441-1c9d6b2c31cd fwd="79.196.23.96" dyno=web.1 connect=1ms service=7ms status=200 bytes=540434 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:21:16.300098+00:00 app[web.1]: 10.1.12.35 - - [07/Feb/2025:15:21:16 +0000] "POST /api/posts/ HTTP/1.1" 500 173353 "-" "curl/8.9.0"
+2025-02-07T15:21:16.300827+00:00 heroku[router]: at=info method=POST path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=65366777-075b-b94d-f991-7b0ddd255d28 fwd="79.196.23.96" dyno=web.1 connect=0ms service=83ms status=500 bytes=173353 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:32:58.000000+00:00 app[api]: Build started by user cborza83@gmail.com
+2025-02-07T15:33:39.961775+00:00 app[api]: Deploy a1330eca by user cborza83@gmail.com
+2025-02-07T15:33:39.961775+00:00 app[api]: Running release v93 commands by user cborza83@gmail.com
+2025-02-07T15:33:41.164723+00:00 app[api]: Starting process with command `/bin/sh -c 'if curl $HEROKU_RELEASE_LOG_STREAM --silent --connect-timeout 10 --retry 3 --retry-delay 1 >/tmp/log-stream; then
+2025-02-07T15:33:41.164723+00:00 app[api]: chmod u+x /tmp/log-stream
+2025-02-07T15:33:41.164723+00:00 app[api]: /tmp/log-stream /bin/sh -c '"'"'python manage.py makemigrations && python manage.py migrate'"'"'
+2025-02-07T15:33:41.164723+00:00 app[api]: else
+2025-02-07T15:33:41.164723+00:00 app[api]: python manage.py makemigrations && python manage.py migrate
+2025-02-07T15:33:41.164723+00:00 app[api]: fi'` by user cborza83@gmail.com
+2025-02-07T15:33:46.413509+00:00 heroku[release.8012]: Starting process with command `/bin/sh -c 'if curl https://heroku-release-output.s3.amazonaws.com/log-stream?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAZSXS6CXKUD5IMVTI%2F20250207%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250207T153340Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=7db7f2389451ed461b6555ee6c1cd2098dbfa837fb57891ac1043a5abd44618c --silent --connect-timeout 10 --retry 3 --retry-delay 1 >/tmp/log-stream; then
+2025-02-07T15:33:46.999397+00:00 heroku[release.8012]: State changed from starting to up
+2025-02-07T15:33:48.723640+00:00 app[release.8012]: No changes detected
+2025-02-07T15:33:49.350018+00:00 app[release.8012]: Operations to perform:
+2025-02-07T15:33:49.350047+00:00 app[release.8012]: Apply all migrations: account, admin, auth, authtoken, contenttypes, notifications, posts, profiles, sessions, sites, socialaccount, token_blacklist
+2025-02-07T15:33:49.370240+00:00 app[release.8012]: Running migrations:
+2025-02-07T15:33:49.370243+00:00 app[release.8012]: No migrations to apply.
+2025-02-07T15:33:49.711839+00:00 heroku[release.8012]: Process exited with status 0
+2025-02-07T15:33:49.733695+00:00 heroku[release.8012]: State changed from up to complete
+2025-02-07T15:33:50.618264+00:00 app[api]: Release v93 created by user cborza83@gmail.com
+2025-02-07T15:33:51.000000+00:00 app[api]: Build succeeded
+2025-02-07T15:33:51.769905+00:00 heroku[web.1]: Restarting
+2025-02-07T15:33:51.771947+00:00 heroku[web.1]: State changed from up to starting
+2025-02-07T15:33:52.428519+00:00 heroku[web.1]: Stopping all processes with SIGTERM
+2025-02-07T15:33:52.449989+00:00 app[web.1]: [2025-02-07 15:33:52 +0000] [9] [INFO] Worker exiting (pid: 9)
+2025-02-07T15:33:52.450115+00:00 app[web.1]: [2025-02-07 15:33:52 +0000] [2] [INFO] Handling signal: term
+2025-02-07T15:33:52.456289+00:00 app[web.1]: [2025-02-07 15:33:52 +0000] [10] [INFO] Worker exiting (pid: 10)
+2025-02-07T15:33:52.456291+00:00 app[web.1]: [2025-02-07 15:33:52 +0000] [2] [ERROR] Worker (pid:9) was sent SIGTERM!
+2025-02-07T15:33:52.650687+00:00 app[web.1]: [2025-02-07 15:33:52 +0000] [2] [INFO] Shutting down: Master
+2025-02-07T15:33:52.720780+00:00 heroku[web.1]: Process exited with status 0
+2025-02-07T15:33:56.808887+00:00 heroku[web.1]: Starting process with command `gunicorn catsitting.wsgi`
+2025-02-07T15:33:57.293427+00:00 app[web.1]: Python buildpack: Detected 512 MB available memory and 8 CPU cores.
+2025-02-07T15:33:57.293449+00:00 app[web.1]: Python buildpack: Defaulting WEB_CONCURRENCY to 2 based on the available memory.
+2025-02-07T15:33:57.472760+00:00 app[web.1]: [2025-02-07 15:33:57 +0000] [2] [INFO] Starting gunicorn 23.0.0
+2025-02-07T15:33:57.473033+00:00 app[web.1]: [2025-02-07 15:33:57 +0000] [2] [INFO] Listening at: http://0.0.0.0:33461 (2)
+2025-02-07T15:33:57.473080+00:00 app[web.1]: [2025-02-07 15:33:57 +0000] [2] [INFO] Using worker: sync
+2025-02-07T15:33:57.475172+00:00 app[web.1]: [2025-02-07 15:33:57 +0000] [9] [INFO] Booting worker with pid: 9
+2025-02-07T15:33:57.537959+00:00 app[web.1]: [2025-02-07 15:33:57 +0000] [10] [INFO] Booting worker with pid: 10
+2025-02-07T15:33:57.914502+00:00 heroku[web.1]: State changed from starting to up
+2025-02-07T15:37:57.582632+00:00 app[web.1]: ✅ CustomLoginView is being used!
+2025-02-07T15:37:57.920998+00:00 app[web.1]: 🔴 Only 'key' received! Generating JWT manually...
+2025-02-07T15:37:58.249045+00:00 app[web.1]: 10.1.17.221 - - [07/Feb/2025:15:37:58 +0000] "POST /api/auth/login/ HTTP/1.1" 200 486 "-" "curl/8.9.0"
+2025-02-07T15:37:58.249199+00:00 heroku[router]: at=info method=POST path="/api/auth/login/" host=luckycat-b653875cceaf.herokuapp.com request_id=db12f8e4-6b21-915b-fa57-686f78466407 fwd="79.196.23.96" dyno=web.1 connect=0ms service=1004ms status=200 bytes=486 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:39:16.677398+00:00 app[web.1]: 10.1.7.100 - - [07/Feb/2025:15:39:16 +0000] "POST /api/posts/ HTTP/1.1" 500 173569 "-" "curl/8.9.0"
+2025-02-07T15:39:16.677958+00:00 heroku[router]: at=info method=POST path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=c72e1620-5910-34fd-3654-2bf34e5af5a3 fwd="79.196.23.96" dyno=web.1 connect=0ms service=213ms status=500 bytes=173569 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:43:03.885528+00:00 app[web.1]: 10.1.45.78 - - [07/Feb/2025:15:43:03 +0000] "POST /api/posts/ HTTP/1.1" 500 173785 "-" "curl/8.9.0"
+2025-02-07T15:43:03.887966+00:00 heroku[router]: at=info method=POST path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=2eb32c0a-d7d6-de2e-b196-6bf113513454 fwd="79.196.23.96" dyno=web.1 connect=0ms service=66ms status=500 bytes=173785 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:46:58.827962+00:00 app[web.1]: 10.1.40.149 - - [07/Feb/2025:15:46:58 +0000] "OPTIONS /api/posts/ HTTP/1.1" 401 58 "-" "curl/8.9.0"
+2025-02-07T15:46:58.828132+00:00 heroku[router]: at=info method=OPTIONS path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=156c111a-555b-b4b0-81aa-34f457ca2048 fwd="79.196.23.96" dyno=web.1 connect=0ms service=2ms status=401 bytes=58 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:50:24.988882+00:00 app[web.1]: 10.1.30.25 - - [07/Feb/2025:15:50:24 +0000] "OPTIONS /api/posts/ HTTP/1.1" 200 1835 "-" "curl/8.9.0"
+2025-02-07T15:50:24.989008+00:00 heroku[router]: at=info method=OPTIONS path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=0c053889-1514-1787-b84f-abe8aad57bc4 fwd="79.196.23.96" dyno=web.1 connect=0ms service=31ms status=200 bytes=1835 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:52:54.870475+00:00 app[web.1]: 10.1.15.155 - - [07/Feb/2025:15:52:54 +0000] "POST /api/posts/ HTTP/1.1" 500 174003 "-" "curl/8.9.0"
+2025-02-07T15:52:54.871197+00:00 heroku[router]: at=info method=POST path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=4ee5847f-bd65-7ca0-3b1c-f64d67db4531 fwd="79.196.23.96" dyno=web.1 connect=0ms service=76ms status=500 bytes=174003 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:53:06.579757+00:00 app[web.1]: 10.1.34.252 - - [07/Feb/2025:15:53:06 +0000] "POST /api/posts/ HTTP/1.1" 401 183 "-" "curl/8.9.0"
+2025-02-07T15:53:06.579884+00:00 heroku[router]: at=info method=POST path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=9663d8c8-441f-6cea-e4af-c493645b0e8e fwd="79.196.23.96" dyno=web.1 connect=0ms service=2ms status=401 bytes=183 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:53:50.346743+00:00 app[web.1]: ✅ CustomLoginView is being used!
+2025-02-07T15:53:50.679361+00:00 app[web.1]: 🔴 Only 'key' received! Generating JWT manually...
+2025-02-07T15:53:51.045310+00:00 app[web.1]: 10.1.44.155 - - [07/Feb/2025:15:53:51 +0000] "POST /api/auth/login/ HTTP/1.1" 200 486 "-" "curl/8.9.0"
+2025-02-07T15:53:51.045615+00:00 heroku[router]: at=info method=POST path="/api/auth/login/" host=luckycat-b653875cceaf.herokuapp.com request_id=c8e9d84c-6ccf-06ac-b641-16bca730f0a6 fwd="79.196.23.96" dyno=web.1 connect=0ms service=700ms status=200 bytes=486 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T15:54:36.643212+00:00 app[web.1]: 10.1.14.139 - - [07/Feb/2025:15:54:36 +0000] "POST /api/posts/ HTTP/1.1" 500 174219 "-" "curl/8.9.0"
+2025-02-07T15:54:36.644433+00:00 heroku[router]: at=info method=POST path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=0a390d96-a169-d9d0-3314-434f00e461ba fwd="79.196.23.96" dyno=web.1 connect=0ms service=60ms status=500 bytes=174219 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T16:00:33.628843+00:00 app[api]: Starting process with command `heroku logs --tail --app luckycat | grep "Error\|Traceback\|Exception"` by user cborza83@gmail.com
+2025-02-07T16:00:40.688841+00:00 heroku[run.1576]: State changed from starting to up
+2025-02-07T16:00:43.737328+00:00 heroku[run.1576]: Process exited with status 1
+2025-02-07T16:00:43.760600+00:00 heroku[run.1576]: State changed from up to complete
+2025-02-07T16:06:59.610603+00:00 app[web.1]: ✅ CustomLoginView is being used!
+2025-02-07T16:06:59.928947+00:00 app[web.1]: 🔴 Only 'key' received! Generating JWT manually...
+2025-02-07T16:07:00.251243+00:00 app[web.1]: 10.1.28.117 - - [07/Feb/2025:16:07:00 +0000] "POST /api/auth/login/ HTTP/1.1" 200 486 "-" "curl/8.9.0"
+2025-02-07T16:07:00.251408+00:00 heroku[router]: at=info method=POST path="/api/auth/login/" host=luckycat-b653875cceaf.herokuapp.com request_id=0b5b7fbd-12f2-062a-d5b4-00c151763863 fwd="79.196.23.96" dyno=web.1 connect=0ms service=642ms status=200 bytes=486 protocol=http1.1 tls=true tls_version=unknown
+2025-02-07T16:09:19.199035+00:00 app[web.1]: 10.1.34.193 - - [07/Feb/2025:16:09:19 +0000] "POST /api/posts/ HTTP/1.1" 500 174435 "-" "curl/8.9.0"
+2025-02-07T16:09:19.201425+00:00 heroku[router]: at=info method=POST path="/api/posts/" host=luckycat-b653875cceaf.herokuapp.com request_id=78ec3a7d-7b3a-1973-a83c-eaf2dd671324 fwd="79.196.23.96" dyno=web.1 connect=0ms service=76ms status=500 bytes=174435 protocol=http1.1 tls=true tls_version=unknown

@@ -8,3 +8,4 @@ node_modules/
 .github/
 cloudinary_python.txt
 heroku_logs.txt
+debug.log
