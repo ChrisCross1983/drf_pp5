@@ -46,8 +46,7 @@ class PostFeedView(ListAPIView):
         logger.info("📌 PostFeedView: get_queryset() started")
 
         try:
-            posts = Post.objects.all()
-            print(posts)
+            queryset = Post.objects.all().order_by("-created_at")
             logger.info(f"✅ Number of posts in DB: {queryset.count()}")
 
             search_query = self.request.query_params.get('search')
@@ -72,7 +71,7 @@ class PostFeedView(ListAPIView):
 
         except Exception as e:
             logger.error(f"❌ ERROR in get_queryset(): {str(e)}", exc_info=True)
-            raise
+            return Post.objects.none()
 
 class LikePostView(APIView):
     permission_classes = [IsAuthenticated]
