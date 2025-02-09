@@ -46,7 +46,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_has_liked(self, obj):
         request = self.context.get("request")
-        return request and request.user.is_authenticated and obj.likes.filter(user=request.user).exists()
+        return request and request.user.is_authenticated and obj.post_likes.filter(user=request.user).exists()
 
     def get_is_owner(self, obj):
         request = self.context.get("request")
