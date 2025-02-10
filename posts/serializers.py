@@ -29,7 +29,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
     likes_count = serializers.SerializerMethodField()
-    comments = CommentSerializer(many=True, read_only=True)
+    comments = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     category = serializers.ChoiceField(
@@ -47,6 +47,10 @@ class PostSerializer(serializers.ModelSerializer):
             'likes_count', 'has_liked', 'comments', 'created_at', 'is_owner'
         ]
 
+    def get_comments(self, obj):
+        comments = obj.comments.all().order_by("-created_at")[:5]
+        return CommentSerializer(comments, many=True).data
+
     def get_likes_count(self, obj):
         return obj.post_likes.count()
 
@@ -62,7 +66,6 @@ class SittingRequestSerializer(serializers.ModelSerializer):
     sender_username = serializers.ReadOnlyField(source='sender.username')
     receiver_username = serializers.ReadOnlyField(source='receiver.username')
     post_title = serializers.ReadOnlyField(source='post.title')
-
     class Meta:
         model = SittingRequest
         fields = [
