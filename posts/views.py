@@ -78,6 +78,23 @@ class PostFeedView(ListAPIView):
             logger.error(f"❌ ERROR in get_queryset(): {str(e)}", exc_info=True)
             return Post.objects.none()
 
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [AllowAny]
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+    
+    def put(self, request, *args, **kwargs):
+        logger.info(f"PUT-Request von {request.user}")
+        return super().put(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        if self.request.user != self.get_object().author:
+            raise PermissionDenied("You do not have permission to edit this post.")
+        serializer.save()
+
 class LikePostView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -132,7 +149,7 @@ class ListCommentsView(generics.ListAPIView):
 
     def get_queryset(self):
         post_id = self.kwargs.get("pk")
-        return Comment.objects.filter(post_id=post_id)
+        return Comment.objects.filter(post_id=post_id).order_by("-created_at") 
 
 class AddCommentView(APIView):
     permission_classes = [IsAuthenticated]
@@ -150,7 +167,7 @@ class AddCommentView(APIView):
             return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, pk):
-        print("🔍 Incoming Comment Data:", request.data)
+        print(f"🔍 Incoming Comment Data: {request.data}")
 
         try:
             post = Post.objects.get(pk=pk)
@@ -165,23 +182,6 @@ class AddCommentView(APIView):
         except Exception as e:
             print("❌ Comment Creation Error:", str(e))
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-    permission_classes = [AllowAny]
-
-    def get_serializer_context(self):
-        return {"request": self.request}
-    
-    def put(self, request, *args, **kwargs):
-        logger.info(f"PUT-Request von {request.user}")
-        return super().put(request, *args, **kwargs)
-
-    def perform_update(self, serializer):
-        if self.request.user != self.get_object().author:
-            raise PermissionDenied("You do not have permission to edit this post.")
-        serializer.save()
 
 class CommentDetailView(RetrieveUpdateDestroyAPIView):
     """
