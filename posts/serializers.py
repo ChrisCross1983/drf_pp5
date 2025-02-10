@@ -17,9 +17,11 @@ class CommentSerializer(serializers.ModelSerializer):
         return request.user == obj.author if request and request.user.is_authenticated else False
 
     def get_author_image(self, obj):
-        if hasattr(obj.author, "profile") and obj.author.profile.image:
-            return obj.author.profile.image.url
-        return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
+        profile = getattr(obj.author, "profile", None)
+        if not profile or not hasattr(profile, "image") or not profile.image:
+            return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
+
+        return profile.image.url
 
     def create(self, validated_data):
         post = validated_data.pop('post')
