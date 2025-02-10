@@ -30,6 +30,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
+    image = serializers.ImageField(required=False)
     likes_count = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()

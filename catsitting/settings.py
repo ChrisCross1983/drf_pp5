@@ -15,6 +15,9 @@ from datetime import timedelta
 import os
 import re
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 if os.path.exists('env.py'):
     import env
