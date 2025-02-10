@@ -15,17 +15,16 @@ class CommentSerializer(serializers.ModelSerializer):
     def get_is_owner(self, obj):
         request = self.context.get("request", None)
         return request.user == obj.author if request and request.user.is_authenticated else False
-    
-    def create(self, validated_data):
-        post = validated_data.pop('post')
-        comment = Comment.objects.create(post=post, **validated_data)
-        return comment
 
     def get_author_image(self, obj):
         if hasattr(obj.author, "profile") and obj.author.profile.image:
             return obj.author.profile.image.url
         return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
 
+    def create(self, validated_data):
+        post = validated_data.pop('post')
+        comment = Comment.objects.create(post=post, **validated_data)
+        return comment
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
