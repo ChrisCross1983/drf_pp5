@@ -72,11 +72,12 @@ class CustomConfirmEmailView(ConfirmEmailView):
             confirmation.confirm(request)
             logger.info("✅ Email successfully verified.")
 
+            frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
             return redirect("/login?verified=true")
-        
+
         except self.model.DoesNotExist:
             logger.warning("⚠️ Verification link invalid or expired.")
-            return redirect("/login?expired=true")
+            return redirect(f"{frontend_url}/login?expired=true")
 
 class CustomResendEmailView(ResendEmailVerificationView):
     def post(self, request, *args, **kwargs):
