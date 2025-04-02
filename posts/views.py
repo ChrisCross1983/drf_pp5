@@ -68,7 +68,8 @@ class PostFeedView(ListAPIView):
 
         except Exception as e:
             logger.error(f"❌ ERROR in get_queryset(): {str(e)}", exc_info=True)
-            return Post.objects.none()
+            from django.http import HttpResponseServerError
+            return HttpResponseServerError(str(e))
 
 
 class PostDetailView(RetrieveUpdateDestroyAPIView):

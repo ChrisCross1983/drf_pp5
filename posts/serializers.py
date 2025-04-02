@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Comment, SittingRequest
+from .models import Post, Comment, SittingRequest, Like
 
 
 class CommentSerializer(serializers.ModelSerializer):
