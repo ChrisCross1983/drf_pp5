@@ -7,7 +7,8 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDe
 from rest_framework.pagination import PageNumberPagination
 from profiles.permissions import IsOwnerOrReadOnly
 from django.shortcuts import get_object_or_404
-from .models import Post, Comment, SittingRequest, Like
+from .models import Post, Comment, SittingRequest
+from likes.models import Like
 from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer
 from notifications.models import Notification
 import logging
@@ -68,7 +69,7 @@ class PostFeedView(ListAPIView):
 
         except Exception as e:
             logger.error(f"❌ ERROR in get_queryset(): {str(e)}", exc_info=True)
-            eturn Post.objects.none()
+            return Post.objects.none()
 
 
 class PostDetailView(RetrieveUpdateDestroyAPIView):
