@@ -77,13 +77,13 @@ class PostSerializer(serializers.ModelSerializer):
         return request and request.user == obj.author
 
     def validate_image(self, value):
-        if value.size > 2 * 1024 * 1024:
-            raise serializers.ValidationError('Image size larger than 2MB!')
+        if value.size > 10 * 1024 * 1024:
+            raise serializers.ValidationError('Image is too large! Maximum allowed size is 10 MB.')
         if hasattr(value, 'image'):
             if value.image.height > 4096:
-                raise serializers.ValidationError('Image height > 4096px!')
+                raise serializers.ValidationError('Image height exceeds 4096px limit.')
             if value.image.width > 4096:
-                raise serializers.ValidationError('Image width > 4096px!')
+                raise serializers.ValidationError('Image width exceeds 4096px limit.')
         return value
 
 
