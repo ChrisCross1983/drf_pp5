@@ -8,6 +8,7 @@ from django.middleware.csrf import get_token
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from dj_rest_auth.registration.views import RegisterView
 from profiles.views import CustomLoginView, CustomLogoutView
+from likes import views as likes_views
 from dj_rest_auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView
 
 # CSRF-Token API View
@@ -45,6 +46,7 @@ urlpatterns = [
     # 🔹 Profiles, Posts & Notifications APIs
     path('api/profiles/', include('profiles.urls')),
     path('api/posts/', include('posts.urls')),
+    path('api/likes/', include('likes.urls')),
     path('api/notifications/', include('notifications.urls')),
 
     # 🔹 API Documentation
