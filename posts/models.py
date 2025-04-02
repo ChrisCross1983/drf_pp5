@@ -18,7 +18,6 @@ class Post(models.Model):
             ('general', 'General'),
         ]
     )
-    description = models.TextField()
     image = CloudinaryField(
         'image', 
         blank=True, 
@@ -27,7 +26,7 @@ class Post(models.Model):
     )
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_likes', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         ordering = ['-created_at']
 
