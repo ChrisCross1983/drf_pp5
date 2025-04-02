@@ -59,14 +59,14 @@ class PostSerializer(serializers.ModelSerializer):
     def get_like_id(self, obj):
         user = self.context.get("request").user
         if user.is_authenticated:
-            like = Like.objects.filter(user=user, post=obj).first()
+            like = Like.objects.filter(owner=user, post=obj).first()
             return like.id if like else None
         return None
 
     def get_has_liked(self, obj):
         try:
             request = self.context.get("request")
-            return request and request.user.is_authenticated and obj.post_likes.filter(user=request.user).exists()
+            return request and request.user.is_authenticated and obj.post_likes.filter(owner=request.user).exists()
         except Exception as e:
             import logging
             logging.error(f"🔴 Error in get_has_liked: {str(e)}")
