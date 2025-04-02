@@ -7,7 +7,7 @@ class IsOwnerOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
-        return getattr(obj, 'owner', None) == request.user
+        return getattr(obj, 'owner', getattr(obj, 'author', None)) == request.user
 
 
 class IsAuthenticated(BasePermission):
