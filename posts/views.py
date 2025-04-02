@@ -14,6 +14,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+class AllPosts(APIView):
+    def get(self, request):
+        return Response({"message": "All posts endpoint works!"})
+
+
 class PostFeedPagination(PageNumberPagination):
     page_size = 10
 
@@ -21,7 +27,7 @@ class PostFeedPagination(PageNumberPagination):
 class CreatePostView(CreateAPIView):
     queryset = Post.objects.annotate(
         likes_count=Count('likes', distinct=True),
-        comments_count=Count('comment', distinct=True)
+        comments_count=Count('comments', distinct=True)
     )
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
@@ -37,12 +43,11 @@ class PostFeedView(ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        logger.info("📌 PostFeedView: get_queryset() started")
 
         try:
             queryset = Post.objects.annotate(
                 likes_count=Count('likes', distinct=True),
-                comments_count=Count('comment', distinct=True)
+                comments_count=Count('comments', distinct=True)
             )
 
             search_query = self.request.query_params.get('search')
@@ -69,7 +74,7 @@ class PostFeedView(ListAPIView):
 class PostDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.annotate(
         likes_count=Count('likes', distinct=True),
-        comments_count=Count('comment', distinct=True)
+        comments_count=Count('comments', distinct=True)
     ).order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [IsOwnerOrReadOnly]

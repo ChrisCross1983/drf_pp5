@@ -25,7 +25,6 @@ from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
 
 from .models import Profile
-import notifications.models
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
 
@@ -33,12 +32,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def csrf_token_view(request):
     response = JsonResponse({"csrfToken": get_token(request)})
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-CSRFToken"
     response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
     return response
+
 
 class RegisterView(CreateAPIView):
     """
@@ -65,6 +66,7 @@ class RegisterView(CreateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CustomConfirmEmailView(ConfirmEmailView):
     def get(self, request, *args, **kwargs):
         try:
@@ -79,10 +81,12 @@ class CustomConfirmEmailView(ConfirmEmailView):
             logger.warning("⚠️ Verification link invalid or expired.")
             return redirect(f"{frontend_url}/login?expired=true")
 
+
 class CustomResendEmailView(ResendEmailVerificationView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         return Response({"message": "A new verification email has been sent."})
+
 
 class CustomLoginView(LoginView):
     """
@@ -94,10 +98,10 @@ class CustomLoginView(LoginView):
 
         if "key" in response.data:
             print("🔴 Only 'key' received! Generating JWT manually...")
-            
+
             username = request.data.get("username")
             password = request.data.get("password")
-            
+
             user = authenticate(username=username, password=password)
 
             if user:
@@ -110,6 +114,7 @@ class CustomLoginView(LoginView):
         print("🔄 Login Response Data:", response.data)
         return response
 
+
 class CurrentUserProfileView(APIView):
     """
     Endpoint to retrieve the profile of the currently authenticated user.
@@ -121,11 +126,16 @@ class CurrentUserProfileView(APIView):
         serializer = ProfileSerializer(profile, context={"request": request})
         return Response(serializer.data)
 
+
 class UserProfileView(RetrieveAPIView):
     """
     Endpoint to retrieve the profile of a specific user by ID.
     """
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.annotate(
+        total_posts=Count('user__user_posts', distinct=True),
+        followers_count=Count('followers', distinct=True),
+        following_count=Count('following', distinct=True)
+    )
     serializer_class = ProfileSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
@@ -134,6 +144,7 @@ class UserProfileView(RetrieveAPIView):
         context = super().get_serializer_context()
         context["request"] = self.request
         return context
+
 
 class EditProfileView(RetrieveUpdateAPIView):
     """
@@ -152,10 +163,12 @@ class EditProfileView(RetrieveUpdateAPIView):
         context["request"] = self.request
         return context
 
+
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'registration/password_change_form.html'
     success_url = reverse_lazy('password_change_done')
     permission_classes = [IsAuthenticated]
+
 
 class CustomLogoutView(APIView):
     """
@@ -177,7 +190,9 @@ class CustomLogoutView(APIView):
         except Exception as e:
             return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class FollowUserView(APIView):
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
@@ -203,6 +218,7 @@ class FollowUserView(APIView):
 
             return Response({"message": "Followed successfully."}, status=status.HTTP_200_OK)
 
+
 class FollowersListView(ListAPIView):
     """
     Endpoint to get a list of followers for a user.
@@ -212,25 +228,34 @@ class FollowersListView(ListAPIView):
 
     def get_queryset(self):
         profile_id = self.kwargs.get("pk")
-        return Profile.objects.filter(following__id=profile_id)
+        return Profile.objects.filter(following__id=profile_id).annotate(
+            total_posts=Count("user__user_posts", distinct=True),
+            followers_count=Count("followers", distinct=True),
+            following_count=Count("following", distinct=True)
+        )
 
-class FollowingListView(generics.ListAPIView):
+
+class FollowingListView(ListAPIView):
     """
     Endpoint to get a list of profiles the user is following.
     """
     serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         profile_id = self.kwargs.get("profile_id")
-        if getattr(self, "swagger_fake_view", False):
-            return Profile.objects.none()
- 
+        return Profile.objects.get(pk=profile_id).following.annotate(
+            total_posts=Count("user__user_posts", distinct=True),
+            followers_count=Count("followers", distinct=True),
+            following_count=Count("following", distinct=True)
+        )
+
         try:
             profile = Profile.objects.get(pk=profile_id)
             return profile.following.all()
         except Profile.DoesNotExist:
-            return Profile.objects.none() 
+            return Profile.objects.none()
+
 
 class TopFollowedProfilesView(ListAPIView):
     """
@@ -238,10 +263,11 @@ class TopFollowedProfilesView(ListAPIView):
     """
     serializer_class = ProfileSerializer
     permission_classes = [AllowAny]
+    pagination_class = None
 
     def get_queryset(self):
         return Profile.objects.annotate(
-            follower_count=Count("followers")
-        ).order_by("-follower_count")[:5]
-
-    pagination_class = None
+            total_posts=Count("user__user_posts", distinct=True),
+            followers_count=Count("followers", distinct=True),
+            following_count=Count("following", distinct=True)
+        ).order_by("-followers_count")[:5]

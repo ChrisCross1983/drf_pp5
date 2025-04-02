@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from .models import Comment, SittingRequest
 from notifications.models import Notification
 
+
 @receiver(post_save, sender=Comment)
 def create_comment_notification(sender, instance, created, **kwargs):
     if created:
@@ -11,6 +12,7 @@ def create_comment_notification(sender, instance, created, **kwargs):
             user=instance.post.author,
             message=f"{instance.author.username} commented on your post."
         )
+
 
 @receiver(post_save, sender=SittingRequest)
 def create_sitting_request_notification(sender, instance, created, **kwargs):

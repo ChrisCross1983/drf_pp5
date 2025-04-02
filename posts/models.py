@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from cloudinary.models import CloudinaryField
-import notifications.models
+
 
 class Post(models.Model):
     author = models.ForeignKey(
@@ -19,19 +19,22 @@ class Post(models.Model):
         ]
     )
     image = CloudinaryField(
-        'image', 
-        blank=True, 
-        null=True, 
+        'image',
+        blank=True,
+        null=True,
         default='https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570695/default_post_tuonop.jpg'
     )
+    description = models.TextField(blank=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_likes', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
         return self.title
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
@@ -41,6 +44,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author.username} on {self.post.title}"
+
 
 class SittingRequest(models.Model):
     STATUS_CHOICES = [
@@ -61,6 +65,7 @@ class SittingRequest(models.Model):
 
     def __str__(self):
         return f"Request from {self.sender.username} to {self.receiver.username} for post {self.post.title}"
+
 
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -9,6 +9,7 @@ from profiles.models import Profile
 User = get_user_model()
 
 # Test for registration
+
 class RegistrationTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -43,6 +44,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("password", response.data)
 
+
 class LoginTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -74,6 +76,8 @@ class LoginTestCase(TestCase):
         self.assertIn("non_field_errors", response.data)
 
 # Test for Logout
+
+
 class LogoutTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="testuser@example.com", username="testuser", password="password123")
@@ -85,6 +89,8 @@ class LogoutTestCase(APITestCase):
         self.assertEqual(response.data, {"detail": "Successfully logged out."})
 
 # Test for Password Reset
+
+
 class PasswordResetTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -106,6 +112,8 @@ class PasswordResetTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
 # Test for Edit Profile
+
+
 class EditProfileTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -125,6 +133,8 @@ class EditProfileTestCase(TestCase):
         self.assertEqual(response.data['bio'], "Updated bio")
 
 # Test for Password Change
+
+
 class ChangePasswordTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -152,6 +162,8 @@ class ChangePasswordTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
 # Test Follow / Unfollow profiles
+
+
 class FollowUserTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -179,6 +191,8 @@ class FollowUserTestCase(TestCase):
         self.assertEqual(response.data['error'], "You cannot follow yourself.")
 
 # Test Top 5 Followers
+
+
 class TopFollowedProfilesTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()

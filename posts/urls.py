@@ -11,10 +11,12 @@ from .views import (
     SentSittingRequestsView,
     IncomingSittingRequestsView,
     ManageSittingRequestView,
+    AllPosts,
 )
 
 urlpatterns = [
     path('', CreatePostView.as_view(), name='create-post'),
+    path('all/', AllPosts.as_view(), name='all-posts'),
     path('feed/', PostFeedView.as_view(), name='post-feed'),
     path('<int:pk>/like/', LikePostView.as_view(), name='like-post'),
     path('<int:pk>/comment/', AddCommentView.as_view(), name='add-comment'),

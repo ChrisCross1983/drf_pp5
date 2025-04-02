@@ -8,11 +8,13 @@ from posts.models import Post
 
 User = get_user_model()
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "email", "username", "password"]
         extra_kwargs = {"password": {"write_only": True}}
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True, min_length=8, required=True)
@@ -62,34 +64,39 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
 
+
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='user.username')
-    total_posts = serializers.SerializerMethodField()
-    followers_count = serializers.SerializerMethodField()
-    following_count = serializers.SerializerMethodField()
+    total_posts = serializers.ReadOnlyField()
+    followers_count = serializers.ReadOnlyField()
+    following_count = serializers.ReadOnlyField()
     is_following = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
         fields = [
             'id', 'owner', 'bio', 'profile_picture',
-            'total_posts', 'followers_count', 'following_count', 'is_following', 'created_at']
-        read_only_fields = ['owner']
-
-    def get_total_posts(self, obj):
-        return Post.objects.filter(author=obj.user).count()
-
-    def get_followers_count(self, obj):
-        return obj.followers.count()
-
-    def get_following_count(self, obj):
-        return obj.following.count()
+            'total_posts', 'followers_count', 'following_count',
+            'is_following', 'is_owner',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = [
+            'owner', 'total_posts', 'followers_count',
+            'following_count', 'is_following', 'is_owner',
+            'created_at', 'updated_at'
+        ]
 
     def get_is_following(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             return obj.followers.filter(id=request.user.id).exists()
         return False
+
+    def get_is_owner(self, obj):
+        request = self.context.get('request')
+        return request.user == obj.user if request and request.user.is_authenticated else False
+
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
