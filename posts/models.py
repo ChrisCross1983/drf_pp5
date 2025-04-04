@@ -24,7 +24,7 @@ class Post(models.Model):
         null=True,
         default='https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570695/default_post_tuonop.jpg'
     )
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=False)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_likes', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
