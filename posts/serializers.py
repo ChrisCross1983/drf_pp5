@@ -47,7 +47,7 @@ class PostSerializer(serializers.ModelSerializer):
             'id', 'title', 'category', 'description', 'image', 'author',
             'profile_id', 'profile_image',
             'likes_count', 'has_liked', 'like_id',
-            'comments_count', 'created_at', 'is_owner'
+            'comments_count', 'created_at', 'updated_at', 'is_owner'
         ]
 
     def get_likes_count(self, obj):
