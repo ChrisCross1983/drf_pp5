@@ -1,32 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics, status, permissions
-from profiles.permissions import IsOwnerOrReadOnly
+from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
 from posts.models import Post
 from likes.models import Like
 from likes.serializers import LikeSerializer
-
-
-class LikeList(generics.ListCreateAPIView):
-    """
-    List likes or create a like if logged in.
-    """
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    serializer_class = LikeSerializer
-    queryset = Like.objects.all()
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-
-class LikeDetail(generics.RetrieveDestroyAPIView):
-    """
-    Retrieve a like or delete it by id if you own it.
-    """
-    permission_classes = [IsOwnerOrReadOnly]
-    serializer_class = LikeSerializer
-    queryset = Like.objects.all()
 
 class PostLikeAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
