@@ -24,6 +24,7 @@ class CommentSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user == obj.owner
 
+
 class CommentDetailSerializer(CommentSerializer):
     """
     Serializer for the Comment model used in Detail view.
