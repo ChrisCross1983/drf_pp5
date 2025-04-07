@@ -1,7 +1,8 @@
 # posts/signals.py
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Comment, SittingRequest
+from .models import SittingRequest
+from comments.models import Comment
 from notifications.models import Notification
 
 
