@@ -11,7 +11,16 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ["id", "author", "author_image", "post", "content", "created_at", "is_owner"]
+        fields = [
+            "id",
+            "author",
+            "author_image",
+            "post",
+            "content",
+            "created_at",
+            "updated_at",
+            "is_owner"
+        ]
 
     def get_is_owner(self, obj):
         request = self.context.get("request", None)
