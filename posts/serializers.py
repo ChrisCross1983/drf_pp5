@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Post, Comment, SittingRequest
+from .models import Post, SittingRequest
+from comments.models import Comment
 from likes.models import Like
 
 
