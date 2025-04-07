@@ -2,7 +2,8 @@ from rest_framework import generics, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from profiles.permissions import IsOwnerOrReadOnly
 from .models import Comment
-from .serializers import CommentSerializer, CommentDetailSerializer
+from .serializers import CommentDetailSerializer
+from comments.serializers import CommentSerializer
 
 
 class CommentList(generics.ListCreateAPIView):

@@ -4,44 +4,6 @@ from comments.models import Comment
 from likes.models import Like
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source="author.username")
-    is_owner = serializers.SerializerMethodField()
-    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), write_only=True)
-    author_image = serializers.SerializerMethodField()
-    created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField(read_only=True)
-
-    class Meta:
-        model = Comment
-        fields = [
-            "id",
-            "author",
-            "author_image",
-            "post",
-            "content",
-            "created_at",
-            "updated_at",
-            "is_owner"
-        ]
-
-    def get_is_owner(self, obj):
-        request = self.context.get("request", None)
-        return request.user == obj.author if request and request.user.is_authenticated else False
-
-    def get_author_image(self, obj):
-        profile = getattr(obj.author, "profile", None)
-        if not profile or not hasattr(profile, "image") or not profile.image:
-            return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
-
-        return profile.image.url
-
-    def create(self, validated_data):
-        post = validated_data.pop('post')
-        comment = Comment.objects.create(post=post, **validated_data)
-        return comment
-
-
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
     profile_id = serializers.ReadOnlyField(source='author.profile.id')

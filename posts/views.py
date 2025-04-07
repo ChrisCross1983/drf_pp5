@@ -10,7 +10,8 @@ from django.shortcuts import get_object_or_404
 from .models import Post, SittingRequest
 from comments.models import Comment
 from likes.models import Like
-from .serializers import PostSerializer, CommentSerializer, SittingRequestSerializer
+from .serializers import PostSerializer, SittingRequestSerializer
+from .serializers import PostSerializer, SittingRequestSerializer
 from notifications.models import Notification
 import logging
 
