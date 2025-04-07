@@ -120,44 +120,6 @@ class LikePostView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-class ListCommentsView(generics.ListAPIView):
-    serializer_class = CommentSerializer
-    permission_classes = [AllowAny]
-
-    def get_queryset(self):
-        post_id = self.kwargs.get("pk")
-        return Comment.objects.filter(post_id=post_id).order_by("-created_at")
-
-
-class AddCommentView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, pk):
-        try:
-            post = Post.objects.get(pk=pk)
-            serializer = CommentSerializer(data=request.data, context={"request": request})
-
-            if serializer.is_valid():
-                serializer.save(author=request.user, post=post)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Post.DoesNotExist:
-            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            logger.exception("❌ Comment Creation Error")
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class CommentDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
-    def get_serializer_context(self):
-        return {"request": self.request}
-
-
 class CreateSittingRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
