@@ -48,6 +48,7 @@ urlpatterns = [
     path('api/posts/', include('posts.urls')),
     path('api/likes/', include('likes.urls')),
     path('api/notifications/', include('notifications.urls')),
+    path('api/comments/', include('comments.urls')),
 
     # 🔹 API Documentation
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
