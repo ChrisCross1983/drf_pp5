@@ -78,9 +78,19 @@ class SittingRequestSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         post = validated_data.pop("post")
 
+        # Same user
+        if post.author == request.user:
+            raise serializers.ValidationError("You can't request your own post.")
+
+        # Wrong category
+        if post.category not in ["offer", "search"]:
+            raise serializers.ValidationError("Sitting requests are only allowed for 'offer' or 'search' posts.")
+
+        # Request already active
         if SittingRequest.objects.filter(sender=request.user, post=post).exists():
             raise serializers.ValidationError("You have already sent a request for this post.")
 
+        # All checked
         sitting_request = SittingRequest.objects.create(
             sender=request.user,
             receiver=post.author,
