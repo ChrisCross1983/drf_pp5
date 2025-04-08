@@ -76,7 +76,13 @@ class SittingRequestSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get("request")
-        post = validated_data.pop("post")
+        
+        sender = validated_data.pop("sender", request.user)
+        post = validated_data.pop("post", None)
+        receiver = validated_data.pop("receiver", None) or post.author
+
+        if not post:
+            raise serializers.ValidationError("Post is required.")
 
         # Same user
         if post.author == request.user:
@@ -93,7 +99,7 @@ class SittingRequestSerializer(serializers.ModelSerializer):
         # All checked
         sitting_request = SittingRequest.objects.create(
             sender=request.user,
-            receiver=post.author,
+            receiver=receiver or post.author,
             post=post,
             **validated_data
         )
