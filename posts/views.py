@@ -136,7 +136,8 @@ class CreateSittingRequestView(APIView):
             if existing_request:
                 return Response({"error": "You have already sent a request for this post."}, status=status.HTTP_400_BAD_REQUEST)
 
-            serializer = SittingRequestSerializer(data=request.data)
+            serializer = SittingRequestSerializer(data=request.data, context={"request": request})
+
             if serializer.is_valid():
                 serializer.save(sender=request.user, receiver=post.author, post=post)
 
