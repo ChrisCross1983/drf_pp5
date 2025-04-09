@@ -1,4 +1,5 @@
 from django.db import models
+from posts.models import Post
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -14,7 +15,7 @@ class Notification(models.Model):
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='comment')
     sitting_request = models.ForeignKey(
         'posts.SittingRequest', on_delete=models.CASCADE, null=True, blank=True

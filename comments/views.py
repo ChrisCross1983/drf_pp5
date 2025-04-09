@@ -26,6 +26,7 @@ class CommentList(generics.ListCreateAPIView):
                 user=comment.post.author,
                 type="comment",
                 message=f"{self.request.user.username} commented on your post: “{comment.content[:30]}...”",
+                post=comment.post
             )
 
 
