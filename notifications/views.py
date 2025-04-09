@@ -40,15 +40,16 @@ class DashboardOverviewView(APIView):
         })
 
 
-class NotificationListView(ListAPIView):
+class AllNotificationsView(ListAPIView):
     """
-    API View to list all notifications for the logged-in user.
+    API View to return all notifications for the logged-in user, sorted by created_at.
     """
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user)
+        return Notification.objects.filter(user=self.request.user).order_by('-created_at')
+
 
 class MarkNotificationReadView(APIView):
     """
