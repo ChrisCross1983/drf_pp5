@@ -1,6 +1,8 @@
 from rest_framework import generics, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from profiles.permissions import IsOwnerOrReadOnly
+from notifications.models import Notification
+from posts.models import Post
 from .models import Comment
 from .serializers import CommentDetailSerializer
 from comments.serializers import CommentSerializer
@@ -17,7 +19,14 @@ class CommentList(generics.ListCreateAPIView):
     filterset_fields = ['post']
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        comment = serializer.save(owner=self.request.user)
+
+        if comment.post.author != self.request.user:
+            Notification.objects.create(
+                user=comment.post.author,
+                type="comment",
+                message=f"{self.request.user.username} commented on your post: “{comment.content[:30]}...”",
+            )
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):

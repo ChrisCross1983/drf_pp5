@@ -99,6 +99,13 @@ class LikePostView(APIView):
         Like.objects.create(post=post, user=request.user)
         post.likes.add(request.user)
 
+        if post.author != request.user:
+            Notification.objects.create(
+                user=post.author,
+                type="like",
+                message=f"{request.user.username} liked your post “{post.title}”",
+            )
+
         return Response({
             "detail": "Post liked!",
             "likes_count": post.likes.count(),
