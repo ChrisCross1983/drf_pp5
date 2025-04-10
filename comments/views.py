@@ -22,7 +22,7 @@ class CommentList(generics.ListCreateAPIView):
     filterset_fields = ['post']
 
     def get_queryset(self):
-        return Comment.objects.filter(parent__isnull=True).order_by("created_at")
+        return Comment.objects.filter(parent__isnull=True).order_by("-created_at")
 
     def perform_create(self, serializer):
         comment = serializer.save(owner=self.request.user)

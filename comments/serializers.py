@@ -9,6 +9,7 @@ class CommentSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
     replies_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
+    has_liked = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.SerializerMethodField()
@@ -20,11 +21,11 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'author', 'is_owner', 'profile_id', 'profile_image',
             'post', 'created_at', 'updated_at', 'content',
-            'replies', 'replies_count', 'parent', 'likes_count',
+            'replies', 'replies_count', 'parent', 'likes_count', 'has_liked'
         ]
 
     def get_replies(self, obj):
-        children = obj.replies.all().order_by("created_at")
+        children = obj.replies.all().order_by("-created_at")
         return CommentSerializer(children, many=True, context=self.context).data
 
     def get_replies_count(self, obj):
@@ -32,6 +33,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_likes_count(self, obj):
         return obj.likes.count()
+
+    def get_has_liked(self, obj):
+        user = self.context.get("request").user
+        return user.is_authenticated and user in obj.likes.all()
 
     def get_is_owner(self, obj):
         request = self.context.get('request')
