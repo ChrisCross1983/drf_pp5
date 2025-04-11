@@ -7,6 +7,7 @@ from profiles.permissions import IsOwnerOrReadOnly
 from notifications.models import Notification
 from posts.models import Post
 from .models import Comment
+from .pagination import CommentPagination
 from .serializers import CommentDetailSerializer
 from comments.serializers import CommentSerializer
 
@@ -20,6 +21,7 @@ class CommentList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['post']
+    pagination_class = CommentPagination
 
     def get_queryset(self):
         return Comment.objects.filter(parent__isnull=True).order_by("-created_at")
