@@ -28,7 +28,7 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.post_likes.count()
 
     def get_comments_count(self, obj):
-        return obj.comments.count()
+        return Comment.objects.filter(post=obj).count()
 
     def get_like_id(self, obj):
         user = self.context.get("request").user
