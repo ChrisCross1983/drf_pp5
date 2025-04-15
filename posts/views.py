@@ -166,6 +166,17 @@ class CreateSittingRequestView(APIView):
             return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class SittingRequestDetailView(generics.DestroyAPIView):
+    queryset = SittingRequest.objects.all()
+    serializer_class = SittingRequestSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        if instance.sender != self.request.user:
+            raise PermissionDenied("You can only delete your own requests.")
+        instance.delete()
+
+
 class SentSittingRequestsView(generics.ListAPIView):
     serializer_class = SittingRequestSerializer
     permission_classes = [IsAuthenticated]
