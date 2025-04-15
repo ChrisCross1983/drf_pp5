@@ -104,17 +104,28 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.bio = validated_data.get("bio", instance.bio)
+
         profile_pic = validated_data.pop("profile_picture", None)
         if profile_pic:
             instance.profile_picture = profile_pic
             print(f"✅ Profile picture uploaded: {instance.profile_picture}")
+
         instance.save()
         
-        user = instance.user
         request = self.context.get("request")
-        user.first_name = request.data.get("first_name", user.first_name)
-        user.last_name = request.data.get("last_name", user.last_name)
-        user.save()
+        if request:
+            user = instance.user
+            first = request.data.get("first_name")
+            last = request.data.get("last_name")
+            
+            if first is not None:
+                user.first_name = first.strip()
+            if last is not None:
+                user.last_name = last.strip()
+
+            user.save()
+
+            print("✅ Updated User:", user.first_name, user.last_name)
 
         return instance
 
