@@ -98,11 +98,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.bio = validated_data.get("bio", instance.bio)
-        profile_pic = validated_data.get("profile_picture", None)
-        if isinstance(profile_pic, str):
-            profile_pic = None
+        profile_pic = validated_data.pop("profile_picture", None)
         if profile_pic:
             instance.profile_picture = profile_pic
+            print(f"✅ Profile picture uploaded: {instance.profile_picture}")
         instance.save()
         
         user = instance.user
