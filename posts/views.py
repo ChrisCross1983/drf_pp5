@@ -11,7 +11,6 @@ from .models import Post, SittingRequest
 from comments.models import Comment
 from likes.models import Like
 from .serializers import PostSerializer, SittingRequestSerializer
-from .serializers import PostSerializer, SittingRequestSerializer
 from notifications.models import Notification
 import logging
 
@@ -21,6 +20,15 @@ logger = logging.getLogger(__name__)
 class AllPosts(APIView):
     def get(self, request):
         return Response({"message": "All posts endpoint works!"})
+
+
+class AuthorPostsList(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        author_id = self.request.query_params.get('author')
+        return Post.objects.filter(author_id=author_id).order_by("-created_at")
 
 
 class PostFeedPagination(PageNumberPagination):

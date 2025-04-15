@@ -1,6 +1,7 @@
 from django.urls import path
 from likes.views import PostLikeAPIView
 from .views import (
+    AuthorPostsList,
     CreatePostView,
     PostFeedView,
     LikePostView,
@@ -15,6 +16,7 @@ from .views import (
 
 urlpatterns = [
     path('', CreatePostView.as_view(), name='create-post'),
+    path('author-posts/', AuthorPostsList.as_view(), name="author-posts"),
     path('all/', AllPosts.as_view(), name='all-posts'),
     path('feed/', PostFeedView.as_view(), name='post-feed'),
     path('<int:pk>/', PostDetailView.as_view(), name='post-detail'),
