@@ -76,11 +76,17 @@ class ProfileSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name', allow_blank=True, required=False)
     last_name = serializers.CharField(source='user.last_name', allow_blank=True, required=False)
     owner = serializers.ReadOnlyField(source='user.username')
+    profile_picture = serializers.SerializerMethodField()
     total_posts = serializers.ReadOnlyField()
     followers_count = serializers.ReadOnlyField()
     following_count = serializers.ReadOnlyField()
     is_following = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
+    
+    def get_profile_picture(self, obj):
+        if obj.profile_picture:
+            return obj.profile_picture.url
+        return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1744729686/Placeholder/hshdlbr977dc6dq9gt2o.jpg"
 
     class Meta:
         model = Profile
