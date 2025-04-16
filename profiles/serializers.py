@@ -54,15 +54,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
 
         EmailAddress.objects.get_or_create(
-            user=user, email=user.email, defaults={"verified": False, "primary": True}
+            user=user,
+            email=user.email,
+            defaults={"verified": False, "primary": True}
         )
 
+        user.refresh_from_db()
+        
         if profile_picture:
+            print("📸 Profile picture set during registration")
             user.profile.profile_picture = profile_picture
             user.profile.save()
+            print("🎯 Final Profile Picture:", user.profile.profile_picture.url)
 
         print("✅ Created User:", user.first_name, user.last_name)
-        user.refresh_from_db()
 
         send_mail(
             "Welcome to Lucky Cat!",
