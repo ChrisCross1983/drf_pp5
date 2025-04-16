@@ -65,8 +65,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             defaults={"verified": False, "primary": True}
         )
 
-        if request and "profile_picture" in request.FILES:
-            print("📥 Profile picture file received:", request.FILES["profile_picture"])
+        print("📂 DEBUG: validated_data:", validated_data)
+        print("📂 DEBUG: profile_picture in validated_data?", "profile_picture" in validated_data)
+        print("📂 DEBUG: profile_picture in FILES?", "profile_picture" in request.FILES)
+        if "profile_picture" in request.FILES:
+            print("📷 FILE NAME:", request.FILES["profile_picture"].name)
+            print("📷 FILE TYPE:", request.FILES["profile_picture"].content_type)
             user.profile.profile_picture = request.FILES["profile_picture"]
             user.profile.save()
         else:

@@ -1,6 +1,7 @@
 from rest_framework import status, generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import (
     RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView, ListAPIView
 )
@@ -47,6 +48,7 @@ class RegisterView(CreateAPIView):
     """
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
