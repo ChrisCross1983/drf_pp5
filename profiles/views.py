@@ -24,6 +24,7 @@ from dj_rest_auth.views import LoginView, LogoutView
 from dj_rest_auth.registration.views import ResendEmailVerificationView
 from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
+from allauth.account.utils import send_email_confirmation
 
 from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
@@ -59,13 +60,15 @@ class RegisterView(CreateAPIView):
         print("📂 REGISTER REQUEST FILES:", request.FILES)
         print("📦 REGISTER REQUEST DATA:", request.data)
         serializer = self.get_serializer(data=request.data)
+        
         if serializer.is_valid():
             user = serializer.save()
+            send_email_confirmation(request, user)
 
             refresh = RefreshToken.for_user(user)
 
             return Response({
-                "message": "User registered successfully!",
+                "message": "User registered successfully! Verification email sent.",
                 "user_id": user.id,
                 "username": user.username,
                 "email": user.email,
