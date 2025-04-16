@@ -57,9 +57,13 @@ class RegisterSerializer(serializers.ModelSerializer):
             user=user, email=user.email, defaults={"verified": False, "primary": True}
         )
 
-        if profile_picture:
+        request = self.context.get("request")
+        if request and "profile_picture" in request.FILES:
+            print("📥 Got new profile picture:", request.FILES["profile_picture"])
             user.profile.profile_picture = profile_picture
             user.profile.save()
+            
+        print("✅ Created User:", user.first_name, user.last_name)
 
         send_mail(
             "Welcome to Lucky Cat!",
@@ -104,6 +108,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.bio = validated_data.get("bio", instance.bio)
+        print("🛠️ Incoming validated data:", validated_data)
+        print("📂 Uploaded files:", self.context["request"].FILES)
 
         profile_pic = validated_data.pop("profile_picture", None)
         if profile_pic:
