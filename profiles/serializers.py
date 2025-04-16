@@ -42,6 +42,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get("request")
+        
+        print("📥 VALIDATED DATA:", validated_data)
+        print("🧾 FILES IN REQUEST:", request.FILES)
+        print("✅ CONTEXT:", self.context)
 
         profile_picture = validated_data.pop("profile_picture", None)
         first_name = validated_data.pop("first_name", "")
