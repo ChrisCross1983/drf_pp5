@@ -53,17 +53,16 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=last_name,
         )
 
-        email_address, created = EmailAddress.objects.get_or_create(
+        EmailAddress.objects.get_or_create(
             user=user, email=user.email, defaults={"verified": False, "primary": True}
         )
 
-        request = self.context.get("request")
-        if request and "profile_picture" in request.FILES:
-            print("📥 Got new profile picture:", request.FILES["profile_picture"])
+        if profile_picture:
             user.profile.profile_picture = profile_picture
             user.profile.save()
-            
+
         print("✅ Created User:", user.first_name, user.last_name)
+        user.refresh_from_db()
 
         send_mail(
             "Welcome to Lucky Cat!",
