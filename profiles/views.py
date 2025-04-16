@@ -161,6 +161,11 @@ class EditProfileView(RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 
+    def patch(self, request, *args, **kwargs):
+        from rest_framework import status, generics, permissions
+        print("📂 Uploaded files (EditProfileView):", request.FILES)
+        return self.partial_update(request, *args, **kwargs)
+
     def get_object(self):
         return self.request.user.profile
 
