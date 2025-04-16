@@ -41,6 +41,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        request = self.context.get("request")
+
         profile_picture = validated_data.pop("profile_picture", None)
         first_name = validated_data.pop("first_name", "")
         last_name = validated_data.pop("last_name", "")
@@ -59,14 +61,14 @@ class RegisterSerializer(serializers.ModelSerializer):
             defaults={"verified": False, "primary": True}
         )
 
-        user.refresh_from_db()
-        
-        if profile_picture:
-            print("📸 Profile picture set during registration")
-            user.profile.profile_picture = profile_picture
+        if request and "profile_picture" in request.FILES:
+            print("📥 Profile picture file received:", request.FILES["profile_picture"])
+            user.profile.profile_picture = request.FILES["profile_picture"]
             user.profile.save()
-            print("🎯 Final Profile Picture:", user.profile.profile_picture.url)
+        else:
+            print("⚠️ No profile_picture found in request.FILES")
 
+        user.refresh_from_db()
         print("✅ Created User:", user.first_name, user.last_name)
 
         send_mail(

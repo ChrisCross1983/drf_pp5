@@ -47,6 +47,11 @@ class RegisterView(CreateAPIView):
     """
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
