@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
 from profiles.permissions import IsOwnerOrReadOnly
 from notifications.models import Notification
 from posts.models import Post
@@ -60,7 +61,7 @@ class ToggleCommentLike(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        comment = Comment.objects.get(pk=pk)
+        comment = get_object_or_404(Comment, pk=pk)
 
         if request.user in comment.likes.all():
             comment.likes.remove(request.user)
