@@ -26,6 +26,8 @@ from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
 from allauth.account.utils import send_email_confirmation
 
+from posts.models import Post
+from comments.models import Comment
 from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -218,7 +220,6 @@ class CustomLogoutView(APIView):
 
 
 class FollowUserView(APIView):
-
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
@@ -230,19 +231,23 @@ class FollowUserView(APIView):
         if target_profile.user == request.user:
             return Response({"error": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if request.user.profile in target_profile.followers.all():
-            target_profile.followers.remove(request.user.profile)
-            return Response({"message": "Unfollowed successfully."}, status=status.HTTP_200_OK)
+        user_profile = request.user.profile
+
+        if user_profile in target_profile.followers.all():
+            target_profile.followers.remove(user_profile)
+            message = "Unfollowed successfully."
         else:
-            target_profile.followers.add(request.user.profile)
+            target_profile.followers.add(user_profile)
+            message = "Followed successfully."
 
-            Notification.objects.create(
-                user=target_profile.user,
-                type="follow",
-                message=f"{request.user.username} started following you."
-            )
+            if target_profile.user != request.user:
+                Notification.objects.create(
+                    user=target_profile.user,
+                    type="follow",
+                    message=f"{request.user.username} started following you."
+                )
 
-            return Response({"message": "Followed successfully."}, status=status.HTTP_200_OK)
+        return Response({"message": message}, status=status.HTTP_200_OK)
 
 
 class FollowersListView(ListAPIView):
@@ -270,15 +275,12 @@ class FollowingListView(ListAPIView):
 
     def get_queryset(self):
         profile_id = self.kwargs.get("profile_id")
-        return Profile.objects.get(pk=profile_id).following.annotate(
-            total_posts=Count("user__user_posts", distinct=True),
-            followers_count=Count("followers", distinct=True),
-            following_count=Count("following", distinct=True)
-        )
-
         try:
-            profile = Profile.objects.get(pk=profile_id)
-            return profile.following.all()
+            return Profile.objects.get(pk=profile_id).following.annotate(
+                total_posts=Count("user__user_posts", distinct=True),
+                followers_count=Count("followers", distinct=True),
+                following_count=Count("following", distinct=True)
+            )
         except Profile.DoesNotExist:
             return Profile.objects.none()
 
@@ -297,3 +299,24 @@ class TopFollowedProfilesView(ListAPIView):
             followers_count=Count("followers", distinct=True),
             following_count=Count("following", distinct=True)
         ).order_by("-followers_count")[:5]
+
+
+class ProfileKPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        total_posts = Post.objects.filter(author=user).count()
+        total_followers = user.profile.followers.count()
+        total_following = user.profile.following.count()
+        total_comments = Comment.objects.filter(post__author=user).count()
+        total_likes = sum(p.likes.count() for p in Post.objects.filter(author=user))
+
+        return Response({
+            "total_posts": total_posts,
+            "followers": total_followers,
+            "following": total_following,
+            "comments": total_comments,
+            "likes": total_likes
+        })

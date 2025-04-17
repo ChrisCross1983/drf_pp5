@@ -144,7 +144,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         return instance
 
-
     def get_is_following(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:

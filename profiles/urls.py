@@ -14,10 +14,12 @@ from .views import (
     FollowersListView,
     FollowingListView,
     TopFollowedProfilesView,
+    ProfileKPIView,
 )
 
 urlpatterns = [
     path("auth/user/", UserDetailsView.as_view(), name="user-details"),
+    path("kpis/", ProfileKPIView.as_view(), name="profile-kpis"),
     path("auth/registration/", RegisterView.as_view(), name="custom-registration"),
     path('me/', CurrentUserProfileView.as_view(), name='current-user-profile'),
     path('<int:pk>/', UserProfileView.as_view(), name='user-profile'),

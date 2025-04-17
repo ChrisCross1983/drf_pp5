@@ -45,6 +45,15 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
     serializer_class = CommentDetailSerializer
     queryset = Comment.objects.all()
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        post = instance.post
+        self.perform_destroy(instance)
+
+        post.save(update_fields=[])
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ToggleCommentLike(APIView):
@@ -52,12 +61,23 @@ class ToggleCommentLike(APIView):
 
     def post(self, request, pk):
         comment = Comment.objects.get(pk=pk)
+
+        if request.user == comment.author:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
         if request.user in comment.likes.all():
             comment.likes.remove(request.user)
             liked = False
         else:
             comment.likes.add(request.user)
             liked = True
+
+            Notification.objects.create(
+                user=comment.author,
+                type="like",
+                comment=comment,
+                message=f"{request.user.username} liked your comment: “{comment.content[:30]}...”",
+            )
 
         return Response({
             "liked": liked,
