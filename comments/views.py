@@ -74,7 +74,6 @@ class ToggleCommentLike(APIView):
                 Notification.objects.create(
                     user=comment.owner,
                     type="like",
-                    comment=comment,
                     message=f"{request.user.username} liked your comment: “{comment.content[:30]}...”",
                 )
 
