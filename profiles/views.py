@@ -310,7 +310,10 @@ class ProfileKPIView(APIView):
         total_posts = Post.objects.filter(author=user).count()
         total_followers = user.profile.followers.count()
         total_following = user.profile.following.count()
-        total_comments = Comment.objects.filter(post__author=user).count()
+        total_comments = Comment.objects.filter(
+            post__author=user,
+            parent__isnull=True
+        ).exclude(owner=user).count()
         total_likes = sum(p.likes.count() for p in Post.objects.filter(author=user))
 
         return Response({
