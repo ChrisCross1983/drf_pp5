@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-from django.db.models import Count, F
+from django.db.models import Count, F, Q
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -313,7 +313,7 @@ class ProfileKPIView(APIView):
 
         total_comments = Comment.objects.filter(
             post__author=user
-        ).exclude(owner=F('post__author')).count()
+        ).filter(~Q(owner=F('post__author'))).count()
 
         total_likes = sum(p.likes.count() for p in Post.objects.filter(author=user))
 
