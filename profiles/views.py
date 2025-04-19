@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-from django.db.models import Count
+from django.db.models import Count, F
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -310,9 +310,11 @@ class ProfileKPIView(APIView):
         total_posts = Post.objects.filter(author=user).count()
         total_followers = user.profile.followers.count()
         total_following = user.profile.following.count()
+
         total_comments = Comment.objects.filter(
-            post__author=user,
-        ).exclude(owner=user).exclude(parent__isnull=False).count()
+            post__author=user
+        ).exclude(owner=F('post__author')).count()
+
         total_likes = sum(p.likes.count() for p in Post.objects.filter(author=user))
 
         return Response({
