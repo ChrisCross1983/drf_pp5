@@ -25,3 +25,11 @@ class Like(models.Model):
 
     def __str__(self):
         return f'{self.owner} {self.post}'
+
+class CommentLike(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.ForeignKey('comments.Comment', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['owner', 'comment']
