@@ -311,20 +311,27 @@ class ProfileKPIView(APIView):
         total_followers = user.profile.followers.count()
         total_following = user.profile.following.count()
 
-        # 🧪 DEBUG: Alle Kommentare auf eigene Posts
+        valid_comments = Comment.objects.filter(
+            post__author=user
+        ).exclude(owner=user)
+
+        total_comments = valid_comments.count()
+
+        total_likes = Post.objects.filter(author=user).aggregate(
+            total=Count("likes")
+        )["total"]
+
+        # Debugging
+        print("📊 DEBUG: All comments on own posts:")
         all_comments = Comment.objects.filter(post__author=user)
-        counted_comments = all_comments.exclude(owner=user)
-
-        logger.info("📊 DEBUG: All comments on own posts:")
         for c in all_comments:
-            logger.info(f"🟡 ID {c.id}: {c.owner} → Post {c.post.id} (Owner: {c.post.author})")
+            print(f"🟡 ID {c.id}: {c.owner.username} → Post {c.post.id} (Owner: {c.post.author.username})")
 
-        logger.info("✅ These comments were actually counted (≠ owner):")
-        for c in counted_comments:
-            logger.info(f"🟢 ID {c.id}: {c.owner} → Post {c.post.id}")
+        print("✅ These comments were actually counted (≠ owner):")
+        for c in valid_comments:
+            print(f"🟢 ID {c.id}: {c.owner.username} → Post {c.post.id}")
 
-        total_comments = counted_comments.count()
-        total_likes = sum(p.likes.count() for p in Post.objects.filter(author=user))
+        print("🔍 Counted KPI comments (foreign only):", total_comments)
 
         return Response({
             "total_posts": total_posts,
