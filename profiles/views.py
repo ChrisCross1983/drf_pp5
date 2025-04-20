@@ -26,8 +26,10 @@ from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
 from allauth.account.utils import send_email_confirmation
 
+from likes.models import Like
 from posts.models import Post
 from comments.models import Comment
+from likes.models import Like as CommentLike
 from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -314,12 +316,15 @@ class ProfileKPIView(APIView):
         valid_comments = Comment.objects.filter(
             post__author=user
         ).exclude(owner=user)
+        
+        post_likes = Like.objects.filter(post__author=user).count()
+
+        comment_ids = Comment.objects.filter(post__author=user).exclude(owner=user).values_list("id", flat=True)
+        comment_likes = CommentLike.objects.filter(comment_id__in=comment_ids).count()
+
+        total_likes = post_likes + comment_likes
 
         total_comments = valid_comments.count()
-
-        total_likes = Post.objects.filter(author=user).aggregate(
-            total=Count("likes")
-        )["total"]
 
         # Debugging
         print("📊 DEBUG: All comments on own posts:")
@@ -338,5 +343,7 @@ class ProfileKPIView(APIView):
             "followers": total_followers,
             "following": total_following,
             "comments": total_comments,
-            "likes": total_likes
+            "likes": total_likes,
+            "likes_on_posts": post_likes,
+            "likes_on_comments": comment_likes
         })
