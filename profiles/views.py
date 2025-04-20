@@ -311,19 +311,19 @@ class ProfileKPIView(APIView):
         total_followers = user.profile.followers.count()
         total_following = user.profile.following.count()
 
+        # 🧪 DEBUG: Alle Kommentare auf eigene Posts
         all_comments = Comment.objects.filter(post__author=user)
         counted_comments = all_comments.exclude(owner=user)
 
-        print("📊 DEBUG: Alle Kommentare auf eigene Posts:")
+        logger.info("📊 DEBUG: All comments on own posts:")
         for c in all_comments:
-            print(f"🟡 ID {c.id}: {c.owner} → Post {c.post.id} (Owner: {c.post.author})")
+            logger.info(f"🟡 ID {c.id}: {c.owner} → Post {c.post.id} (Owner: {c.post.author})")
 
-        print("✅ These comments were counted (≠ owner):")
+        logger.info("✅ These comments were actually counted (≠ owner):")
         for c in counted_comments:
-            print(f"🟢 ID {c.id}: {c.owner} → Post {c.post.id}")
+            logger.info(f"🟢 ID {c.id}: {c.owner} → Post {c.post.id}")
 
         total_comments = counted_comments.count()
-
         total_likes = sum(p.likes.count() for p in Post.objects.filter(author=user))
 
         return Response({
