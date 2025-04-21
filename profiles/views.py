@@ -311,35 +311,20 @@ class ProfileKPIView(APIView):
         total_posts = Post.objects.filter(author=user).count()
         total_followers = user.profile.followers.count()
         total_following = user.profile.following.count()
-        
-        in_requests = SittingRequest.objects.filter(recipient=user).count()
-        out_requests = SittingRequest.objects.filter(sender=user).count()
 
+        in_requests = SittingRequest.objects.filter(receiver=user).count()
+        out_requests = SittingRequest.objects.filter(sender=user).count()
 
         valid_comments = Comment.objects.filter(
             post__author=user
         ).exclude(owner=user)
         
         post_likes = Like.objects.filter(post__author=user).count()
-
         comment_ids = Comment.objects.filter(post__author=user).exclude(owner=user).values_list("id", flat=True)
         comment_likes = CommentLike.objects.filter(comment__in=comment_ids).count()
-
         total_likes = post_likes + comment_likes
 
         total_comments = valid_comments.count()
-
-        # Debugging
-        print("📊 DEBUG: All comments on own posts:")
-        all_comments = Comment.objects.filter(post__author=user)
-        for c in all_comments:
-            print(f"🟡 ID {c.id}: {c.owner.username} → Post {c.post.id} (Owner: {c.post.author.username})")
-
-        print("✅ These comments were actually counted (≠ owner):")
-        for c in valid_comments:
-            print(f"🟢 ID {c.id}: {c.owner.username} → Post {c.post.id}")
-
-        print("🔍 Counted KPI comments (foreign only):", total_comments)
 
         return Response({
             "total_posts": total_posts,
