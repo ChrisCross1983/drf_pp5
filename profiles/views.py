@@ -27,7 +27,7 @@ from allauth.account.models import EmailAddress
 from allauth.account.utils import send_email_confirmation
 
 from likes.models import Like, CommentLike
-from posts.models import Post
+from posts.models import Post, SittingRequest
 from comments.models import Comment
 from .models import Profile
 from .serializers import ProfileSerializer, RegisterSerializer
@@ -311,6 +311,10 @@ class ProfileKPIView(APIView):
         total_posts = Post.objects.filter(author=user).count()
         total_followers = user.profile.followers.count()
         total_following = user.profile.following.count()
+        
+        in_requests = SittingRequest.objects.filter(recipient=user).count()
+        out_requests = SittingRequest.objects.filter(sender=user).count()
+
 
         valid_comments = Comment.objects.filter(
             post__author=user
@@ -344,5 +348,7 @@ class ProfileKPIView(APIView):
             "comments": total_comments,
             "likes": total_likes,
             "likes_on_posts": post_likes,
-            "likes_on_comments": comment_likes
+            "likes_on_comments": comment_likes,
+            "requests_in": in_requests,
+            "requests_out": out_requests,
         })
