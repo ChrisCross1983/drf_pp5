@@ -21,6 +21,7 @@ from .views_follow_requests import (
     FollowRequestCreateView,
     FollowRequestRespondView,
     FollowRequestCancelView,
+    UnfollowView,
 )
 
 urlpatterns = [
@@ -41,4 +42,5 @@ urlpatterns = [
     path("follow-requests/send/<int:target_id>/", FollowRequestCreateView.as_view(), name="follow-request-send"),
     path("follow-requests/manage/<int:request_id>/", FollowRequestRespondView.as_view(), name="follow-request-manage"),
     path("follow-requests/cancel/<int:request_id>/", FollowRequestCancelView.as_view(), name="follow-request-cancel"),
+    path("profiles/unfollow/<int:target_id>/", UnfollowView.as_view(), name="unfollow"),
 ]

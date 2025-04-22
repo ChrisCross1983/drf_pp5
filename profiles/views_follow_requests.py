@@ -97,3 +97,12 @@ class FollowRequestCancelView(APIView):
         follow_request = get_object_or_404(FollowRequest, id=request_id, sender=request.user.profile)
         follow_request.delete()
         return Response({"message": "Follow request canceled."}, status=204)
+
+
+class UnfollowView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, target_id):
+        profile = get_object_or_404(Profile, pk=target_id)
+        request.user.profile.following.remove(profile)
+        return Response({"message": "Unfollowed successfully."}, status=204)
