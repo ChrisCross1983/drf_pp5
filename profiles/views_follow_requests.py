@@ -6,28 +6,32 @@ from django.shortcuts import get_object_or_404
 from .models import Profile, FollowRequest
 from notifications.models import Notification
 
+
 class FollowRequestCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk):
-        receiver = get_object_or_404(Profile, pk=pk)
-        sender = request.user.profile
+    def post(self, request, target_id):
+        target_profile = get_object_or_404(Profile, pk=target_id)
+        sender_profile = request.user.profile
 
-        if receiver == sender:
-            return Response({"error": "You cannot follow yourself."}, status=400)
+        if sender_profile == target_profile:
+            return Response({"detail": "You cannot follow yourself."}, status=400)
 
-        if FollowRequest.objects.filter(sender=sender, receiver=receiver).exists():
-            return Response({"error": "Follow request already sent."}, status=400)
+        if FollowRequest.objects.filter(sender=sender_profile, receiver=target_profile).exists():
+            return Response({"detail": "Request already sent."}, status=400)
 
-        FollowRequest.objects.create(sender=sender, receiver=receiver)
+        follow_request = FollowRequest.objects.create(
+            sender=sender_profile,
+            receiver=target_profile
+        )
 
         Notification.objects.create(
-            user=receiver.user,
+            user=target_profile.user,
             type="follow",
             message=f"{request.user.username} sent you a follow request."
         )
 
-        return Response({"message": "Follow request sent."}, status=201)
+        return Response({"detail": "Request sent successfully!"}, status=201)
 
 
 class FollowRequestRespondView(APIView):
@@ -55,9 +59,9 @@ class FollowRequestListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        sent = FollowRequest.objects.filter(sender=user)
-        received = FollowRequest.objects.filter(receiver=user)
+        user_profile = request.user.profile
+        sent = FollowRequest.objects.filter(sender=user_profile)
+        received = FollowRequest.objects.filter(receiver=user_profile)
 
         return Response({
             "sent": [

@@ -39,12 +39,9 @@ class FollowRequest(models.Model):
         ("declined", "Declined"),
     ]
 
-    sender = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="sent_follow_requests"
-    )
-    receiver = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="received_follow_requests"
-    )
+    sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="sent_follow_requests")
+    receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="received_follow_requests")
+
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
 
