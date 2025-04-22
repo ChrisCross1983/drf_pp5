@@ -55,9 +55,9 @@ class FollowRequestListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_profile = request.user.profile
-        sent = FollowRequest.objects.filter(sender=user_profile)
-        received = FollowRequest.objects.filter(receiver=user_profile)
+        user = request.user
+        sent = FollowRequest.objects.filter(sender=user)
+        received = FollowRequest.objects.filter(receiver=user)
 
         return Response({
             "sent": [
