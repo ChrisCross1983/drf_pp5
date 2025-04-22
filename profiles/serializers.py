@@ -168,3 +168,8 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'category', 'description', 'image', 'author', 'created_at']
+
+class ProfileMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['id', 'profile_picture']

@@ -2,12 +2,12 @@ from rest_framework import serializers
 from .models import Post, SittingRequest
 from comments.models import Comment
 from likes.models import Like
+from profiles.serializers import ProfileMiniSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
-    profile_id = serializers.ReadOnlyField(source='author.profile.id')
-    profile_image = serializers.ReadOnlyField(source='author.profile.profile_picture.url')
+    author_profile = ProfileMiniSerializer(source='author.profile', read_only=True)
     image = serializers.ImageField(required=False)
     likes_count = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
@@ -19,8 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = [
             'id', 'title', 'category', 'description', 'image', 'author',
-            'profile_id', 'profile_image',
-            'likes_count', 'has_liked', 'like_id',
+            'author_profile', 'likes_count', 'has_liked', 'like_id',
             'comments_count', 'created_at', 'updated_at', 'is_owner'
         ]
 
@@ -38,13 +37,8 @@ class PostSerializer(serializers.ModelSerializer):
         return None
 
     def get_has_liked(self, obj):
-        try:
-            request = self.context.get("request")
-            return request and request.user.is_authenticated and obj.post_likes.filter(owner=request.user).exists()
-        except Exception as e:
-            import logging
-            logging.error(f"🔴 Error in get_has_liked: {str(e)}")
-            return False
+        request = self.context.get("request")
+        return request and request.user.is_authenticated and obj.post_likes.filter(owner=request.user).exists()
 
     def get_is_owner(self, obj):
         request = self.context.get("request")
