@@ -9,16 +9,16 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = [
-            'id', 'message', 'is_read', 'created_at', 'type',
-            'post_id', 'sitting_request_id', 'sender_profile_id'
-        ]
+        fields = ['id', 'message', 'is_read', 'created_at', 'type',
+                  'post_id', 'sitting_request_id', 'sender_profile_id']
 
     def get_post_id(self, obj):
         return obj.post.id if obj.post else None
 
     def get_sitting_request_id(self, obj):
         return obj.sitting_request.id if obj.sitting_request else None
-    
+
     def get_sender_profile_id(self, obj):
-        return obj.sender.profile.id if obj.sender and hasattr(obj.sender, "profile") else None
+        if obj.type == "follow" and obj.sitting_request and hasattr(obj.sitting_request, "sender"):
+            return obj.sitting_request.sender.id
+        return None
