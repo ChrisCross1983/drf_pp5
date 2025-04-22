@@ -103,12 +103,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'owner', 'first_name', 'last_name', 'bio', 'profile_picture',
             'total_posts', 'followers_count', 'following_count',
-            'is_following', 'is_owner',
+            'is_following', 'is_following_accepted', 'is_owner',
             'created_at', 'updated_at'
         ]
         read_only_fields = [
             'owner', 'total_posts', 'followers_count',
-            'following_count', 'is_following', 'is_owner',
+            'following_count', 'is_following_accepted', 'is_following', 'is_owner',
             'created_at', 'updated_at'
         ]
 
@@ -148,6 +148,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             return obj.followers.filter(id=request.user.id).exists()
+        return False
+    
+    def get_is_following_accepted(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return obj.followers.filter(id=request.user.profile.id).exists()
         return False
 
     def get_is_owner(self, obj):
