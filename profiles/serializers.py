@@ -91,6 +91,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     followers_count = serializers.ReadOnlyField()
     following_count = serializers.ReadOnlyField()
     is_following = serializers.SerializerMethodField()
+    is_following_accepted = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     
     def get_profile_picture(self, obj):
