@@ -13,6 +13,13 @@ class FollowRequestCreateView(APIView):
     def post(self, request, target_id):
         target_profile = get_object_or_404(Profile, pk=target_id)
         sender_profile = request.user.profile
+        existing = FollowRequest.objects.filter(
+            sender=sender_profile,
+            receiver=target_profile
+        ).exclude(status="declined").exists()
+
+        if existing:
+            return Response({"detail": "Follow request already active."}, status=400)
 
         if sender_profile == target_profile:
             return Response({"detail": "You cannot follow yourself."}, status=400)
@@ -60,8 +67,8 @@ class FollowRequestListView(APIView):
 
     def get(self, request):
         user_profile = request.user.profile
-        sent = FollowRequest.objects.filter(sender=user_profile)
-        received = FollowRequest.objects.filter(receiver=user_profile)
+        sent = FollowRequest.objects.filter(sender=user_profile, status="pending")
+        received = FollowRequest.objects.filter(receiver=user_profile, status="pending")
 
         return Response({
             "sent": [
