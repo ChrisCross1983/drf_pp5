@@ -1,4 +1,5 @@
 from django.db.models.signals import post_save
+from django.contrib.auth import get_user_model
 from django.dispatch import receiver
 from django.db import models
 from django.contrib.auth.models import User
@@ -30,3 +31,26 @@ def create_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
     elif not hasattr(instance, "profile"):
         Profile.objects.create(user=instance)
+
+class FollowRequest(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("accepted", "Accepted"),
+        ("declined", "Declined"),
+    ]
+
+    sender = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="sent_follow_requests"
+    )
+    receiver = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="received_follow_requests"
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("sender", "receiver")
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"FollowRequest from {self.sender.username} to {self.receiver.username} ({self.status})"

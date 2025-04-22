@@ -16,6 +16,12 @@ from .views import (
     TopFollowedProfilesView,
     ProfileKPIView,
 )
+from .views_follow_requests import (
+    FollowRequestListView,
+    FollowRequestCreateView,
+    FollowRequestRespondView,
+    FollowRequestCancelView,
+)
 
 urlpatterns = [
     path("auth/user/", UserDetailsView.as_view(), name="user-details"),
@@ -29,4 +35,10 @@ urlpatterns = [
     path('<int:pk>/following/', FollowingListView.as_view(), name='following-list'),
     path('top-followed/', TopFollowedProfilesView.as_view(), name='top-followed-profiles'),
     path('password-change/', CustomPasswordChangeView.as_view(), name='password_change'),
+    
+     # Follow Request Endpoints
+    path("follow-requests/", FollowRequestListView.as_view(), name="follow-requests-list"),
+    path("follow-requests/send/<int:target_id>/", FollowRequestCreateView.as_view(), name="follow-request-send"),
+    path("follow-requests/manage/<int:request_id>/", FollowRequestRespondView.as_view(), name="follow-request-manage"),
+    path("follow-requests/cancel/<int:request_id>/", FollowRequestCancelView.as_view(), name="follow-request-cancel"),
 ]
