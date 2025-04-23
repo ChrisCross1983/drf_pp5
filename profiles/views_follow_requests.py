@@ -62,7 +62,6 @@ class FollowRequestRespondView(APIView):
             receiver = follow_request.receiver
 
             sender.following.add(receiver)
-            receiver.followers.add(sender)
 
             follow_request.status = "accepted"
             follow_request.save()
