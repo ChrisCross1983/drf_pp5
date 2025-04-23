@@ -43,7 +43,7 @@ class ActivityFeedView(APIView):
                 "message": f"You liked a post",
                 "timestamp": l.created_at,
                 "data": {"post_id": l.post.id}
-            } for l in Like.objects.filter(user=user)
+            } for l in Like.objects.filter(owner=user)
         ]
 
         comment_like_activities = [
@@ -52,7 +52,7 @@ class ActivityFeedView(APIView):
                 "message": f"You liked a comment",
                 "timestamp": l.created_at,
                 "data": {"comment_id": l.comment.id}
-            } for l in CommentLike.objects.filter(user=user)
+            } for l in CommentLike.objects.filter(owner=user)
         ]
 
         follow_sent = [
