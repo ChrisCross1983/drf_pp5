@@ -16,27 +16,30 @@ class FollowRequestCreateView(APIView):
 
         if sender_profile == target_profile:
             return Response({"detail": "You cannot follow yourself."}, status=400)
-        
+
         existing = FollowRequest.objects.filter(
             sender=sender_profile,
             receiver=target_profile
-        ).exclude(status="declined")
-        
-        print("📌 Existing follow request(s):", existing.values("status", "id"))
+        ).first()
 
-        if existing.exists():
-            return Response(
-                {"detail": f"Follow request already active. Status: {list(existing.values_list('status', flat=True))}"},
-                status=400
+        print("📌 Existing follow request(s):", existing)
+
+        if existing:
+            if existing.status == "declined":
+                existing.status = "pending"
+                existing.save()
+                print("🔄 Re-activated previously declined request")
+            else:
+                return Response(
+                    {"detail": f"Follow request already active. Status: {existing.status}"},
+                    status=400
+                )
+        else:
+            follow_request = FollowRequest.objects.create(
+                sender=sender_profile,
+                receiver=target_profile
             )
-
-        print("✅ Creating new follow request now")
-        follow_request = FollowRequest.objects.create(
-            sender=sender_profile,
-            receiver=target_profile
-        )
-
-        print("✅ FollowRequest created with ID:", follow_request.id)
+            print("✅ FollowRequest created with ID:", follow_request.id)
 
         Notification.objects.create(
             user=target_profile.user,
