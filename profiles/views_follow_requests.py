@@ -58,7 +58,12 @@ class FollowRequestRespondView(APIView):
         follow_request = get_object_or_404(FollowRequest, id=request_id, receiver=request.user.profile)
 
         if action == "accept":
-            follow_request.receiver.followers.add(follow_request.sender)
+            sender = follow_request.sender
+            receiver = follow_request.receiver
+
+            sender.following.add(receiver)
+            receiver.followers.add(sender)
+
             follow_request.status = "accepted"
             follow_request.save()
             return Response({"message": "Follow request accepted."})
