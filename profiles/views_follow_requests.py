@@ -105,4 +105,11 @@ class UnfollowView(APIView):
     def delete(self, request, target_id):
         profile = get_object_or_404(Profile, pk=target_id)
         request.user.profile.following.remove(profile)
+        
+        FollowRequest.objects.filter(
+            sender=request.user.profile,
+            receiver=profile,
+            status="accepted"
+        ).delete()
+
         return Response({"message": "Unfollowed successfully."}, status=204)
