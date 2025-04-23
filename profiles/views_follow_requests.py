@@ -16,10 +16,15 @@ class FollowRequestCreateView(APIView):
         existing = FollowRequest.objects.filter(
             sender=sender_profile,
             receiver=target_profile
-        ).exclude(status="declined").exists()
+        ).exclude(status="declined")
 
-        if existing:
-            return Response({"detail": "Follow request already active."}, status=400)
+        print("📌 Existing follow request(s):", existing.values("status", "id"))
+
+        if existing.exists():
+            return Response(
+                {"detail": f"Follow request already active. Status: {list(existing.values_list('status', flat=True))}"},
+                status=400
+            )
 
         if sender_profile == target_profile:
             return Response({"detail": "You cannot follow yourself."}, status=400)
