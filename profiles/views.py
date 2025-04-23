@@ -159,11 +159,10 @@ class UserProfileView(RetrieveAPIView):
         context = super().get_serializer_context()
         context["request"] = self.request
         return context
-    
+
     def get(self, request, pk):
-        profile = get_object_or_404(Profile, pk=pk)
-        serializer = ProfileSerializer(profile, context={'request': request})
-        
+        profile = get_object_or_404(self.get_queryset(), pk=pk)
+        serializer = self.get_serializer(profile)
         follows_you = request.user.is_authenticated and request.user.profile in profile.following.all()
 
         return Response({
