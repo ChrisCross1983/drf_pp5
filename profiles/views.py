@@ -159,6 +159,17 @@ class UserProfileView(RetrieveAPIView):
         context = super().get_serializer_context()
         context["request"] = self.request
         return context
+    
+    def get(self, request, pk):
+        profile = get_object_or_404(Profile, pk=pk)
+        serializer = ProfileSerializer(profile, context={'request': request})
+        
+        follows_you = request.user.is_authenticated and request.user.profile in profile.following.all()
+
+        return Response({
+            **serializer.data,
+            "follows_you": follows_you
+        })
 
 
 class EditProfileView(RetrieveUpdateAPIView):
