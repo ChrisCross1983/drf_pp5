@@ -68,7 +68,7 @@ class ActivityFeedView(APIView):
             {
                 "type": "follow_accepted",
                 "message": f"{r.sender.user.username} accepted your follow request",
-                "timestamp": r.updated_at,
+                "timestamp": r.created_at,
                 "data": {"from_user": r.sender.id}
             } for r in FollowRequest.objects.filter(receiver=user.profile, status="accepted")
         ]
