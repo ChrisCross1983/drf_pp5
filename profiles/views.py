@@ -286,14 +286,11 @@ class FollowingListView(ListAPIView):
 
     def get_queryset(self):
         profile_id = self.kwargs.get("pk")
-        try:
-            return Profile.objects.get(pk=profile_id).following.annotate(
-                total_posts=Count("user__user_posts", distinct=True),
-                followers_count=Count("followers", distinct=True),
-                following_count=Count("following", distinct=True)
-            )
-        except Profile.DoesNotExist:
-            return Profile.objects.none()
+        return Profile.objects.filter(followers__id=profile_id).annotate(
+            total_posts=Count("user__user_posts", distinct=True),
+            followers_count=Count("followers", distinct=True),
+            following_count=Count("following", distinct=True)
+        )
 
 
 class TopFollowedProfilesView(ListAPIView):
