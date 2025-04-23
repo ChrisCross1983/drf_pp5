@@ -50,4 +50,6 @@ class FollowRequest(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"FollowRequest from {self.sender.username} to {self.receiver.username} ({self.status})"
+        from_user = getattr(self.sender.user, "username", "unknown")
+        to_user = getattr(self.receiver.user, "username", "unknown")
+        return f"FollowRequest from {from_user} to {to_user} ({self.status})"
