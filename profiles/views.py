@@ -286,7 +286,7 @@ class FollowingListView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        profile_id = self.kwargs.get("profile_id")
+        profile_id = self.kwargs.get("pk")
         try:
             return Profile.objects.get(pk=profile_id).following.annotate(
                 total_posts=Count("user__user_posts", distinct=True),
