@@ -13,11 +13,15 @@ class FollowRequestCreateView(APIView):
     def post(self, request, target_id):
         target_profile = get_object_or_404(Profile, pk=target_id)
         sender_profile = request.user.profile
+
+        if sender_profile == target_profile:
+            return Response({"detail": "You cannot follow yourself."}, status=400)
+        
         existing = FollowRequest.objects.filter(
             sender=sender_profile,
             receiver=target_profile
         ).exclude(status="declined")
-
+        
         print("📌 Existing follow request(s):", existing.values("status", "id"))
 
         if existing.exists():
@@ -26,16 +30,13 @@ class FollowRequestCreateView(APIView):
                 status=400
             )
 
-        if sender_profile == target_profile:
-            return Response({"detail": "You cannot follow yourself."}, status=400)
-
-        if FollowRequest.objects.filter(sender=sender_profile, receiver=target_profile).exists():
-            return Response({"detail": "Request already sent."}, status=400)
-
+        print("✅ Creating new follow request now")
         follow_request = FollowRequest.objects.create(
             sender=sender_profile,
             receiver=target_profile
         )
+
+        print("✅ FollowRequest created with ID:", follow_request.id)
 
         Notification.objects.create(
             user=target_profile.user,
