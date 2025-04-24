@@ -1,6 +1,7 @@
 from django.db import models
 from posts.models import Post
 from profiles.models import Profile
+from comments.models import Comment
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
