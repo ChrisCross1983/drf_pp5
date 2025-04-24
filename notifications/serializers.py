@@ -19,6 +19,4 @@ class NotificationSerializer(serializers.ModelSerializer):
         return obj.sitting_request.id if obj.sitting_request else None
 
     def get_sender_profile_id(self, obj):
-        if obj.type == "follow" and obj.sitting_request and hasattr(obj.sitting_request, "sender"):
-            return obj.sitting_request.sender.id
-        return None
+        return obj.sender_profile.id if obj.sender_profile else None

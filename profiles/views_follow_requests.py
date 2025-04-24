@@ -44,7 +44,8 @@ class FollowRequestCreateView(APIView):
         Notification.objects.create(
             user=target_profile.user,
             type="follow",
-            message=f"{request.user.username} sent you a follow request."
+            message=f"{request.user.username} sent you a follow request.",
+            sender_profile=request.user.profile
         )
 
         return Response({"detail": "Request sent successfully!"}, status=201)
