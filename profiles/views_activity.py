@@ -62,8 +62,7 @@ class ActivityFeedView(APIView):
                 "timestamp": r.created_at,
                 "data": {
                     "to_user": r.receiver.id,
-                    "first_name": r.receiver.user.first_name,
-                    "owner": r.receiver.user.username,
+                    "to_user_username": r.receiver.user.username,
                     "profile_picture": (
                         r.receiver.profile_picture.url
                         if r.receiver.profile_picture
@@ -81,8 +80,7 @@ class ActivityFeedView(APIView):
                 "timestamp": r.created_at,
                 "data": {
                     "from_user": r.sender.id,
-                    "first_name": r.sender.user.first_name,
-                    "owner": r.sender.user.username,
+                    "to_user_username": r.receiver.user.username,
                     "profile_picture": (
                         r.sender.profile_picture.url
                         if r.sender.profile_picture
