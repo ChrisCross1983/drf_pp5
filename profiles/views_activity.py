@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.utils.timezone import now
 from itertools import chain
 from operator import itemgetter
 
@@ -9,9 +8,6 @@ from posts.models import Post, SittingRequest
 from comments.models import Comment
 from likes.models import Like, CommentLike
 from profiles.models import FollowRequest
-from profiles.serializers import ProfileMiniSerializer
-from posts.serializers import PostSerializer
-from comments.serializers import CommentSerializer
 
 class ActivityFeedView(APIView):
     permission_classes = [IsAuthenticated]
@@ -22,37 +18,53 @@ class ActivityFeedView(APIView):
         post_activities = [
             {
                 "type": "post",
-                "message": f"You created a post: '{p.title}'",
+                "message": f"You created the post “{p.title}”",
                 "timestamp": p.created_at,
-                "data": {"post_id": p.id}
-            } for p in Post.objects.filter(author=user)
+                "data": {
+                    "post_id": p.id,
+                    "post_title": p.title
+                }
+            } for p in Post.objects.filter(author=user) if p.title
         ]
 
         comment_activities = [
             {
                 "type": "comment",
-                "message": f"You commented on a post",
+                "message": f"You commented: “{c.content}”",
                 "timestamp": c.created_at,
-                "data": {"comment_id": c.id, "post_id": c.post.id}
-            } for c in Comment.objects.filter(owner=user)
+                "data": {
+                    "comment_id": c.id,
+                    "post_id": c.post.id,
+                    "post_title": c.post.title,
+                    "content": c.content
+                }
+            } for c in Comment.objects.filter(owner=user) if c.content
         ]
 
         post_like_activities = [
             {
                 "type": "like",
-                "message": f"You liked a post",
+                "message": f"You liked the post “{l.post.title}”",
                 "timestamp": l.created_at,
-                "data": {"post_id": l.post.id}
-            } for l in Like.objects.filter(owner=user)
+                "data": {
+                    "post_id": l.post.id,
+                    "post_title": l.post.title
+                }
+            } for l in Like.objects.filter(owner=user) if l.post and l.post.title
         ]
 
         comment_like_activities = [
             {
                 "type": "like",
-                "message": f"You liked a comment",
+                "message": f"You liked a comment: “{l.comment.content}”",
                 "timestamp": l.created_at,
-                "data": {"comment_id": l.comment.id}
-            } for l in CommentLike.objects.filter(owner=user)
+                "data": {
+                    "comment_id": l.comment.id,
+                    "post_id": l.comment.post.id,
+                    "post_title": l.comment.post.title,
+                    "comment_content": l.comment.content
+                }
+            } for l in CommentLike.objects.filter(owner=user) if l.comment and l.comment.content
         ]
 
         follow_sent = [
@@ -62,7 +74,9 @@ class ActivityFeedView(APIView):
                 "timestamp": r.created_at,
                 "data": {
                     "to_user": r.receiver.id,
-                    "to_user_username": r.receiver.user.username,
+                    "username": r.receiver.user.username,
+                    "first_name": r.receiver.user.first_name,
+                    "last_name": r.receiver.user.last_name,
                     "profile_picture": (
                         r.receiver.profile_picture.url
                         if r.receiver.profile_picture
@@ -80,7 +94,9 @@ class ActivityFeedView(APIView):
                 "timestamp": r.created_at,
                 "data": {
                     "from_user": r.sender.id,
-                    "to_user_username": r.receiver.user.username,
+                    "username": r.sender.user.username,
+                    "first_name": r.sender.user.first_name,
+                    "last_name": r.sender.user.last_name,
                     "profile_picture": (
                         r.sender.profile_picture.url
                         if r.sender.profile_picture
@@ -96,8 +112,12 @@ class ActivityFeedView(APIView):
                 "type": "sitting",
                 "message": f"You sent a sitting request to {sr.receiver.username}",
                 "timestamp": sr.created_at,
-                "data": {"sitting_id": sr.id}
-            } for sr in SittingRequest.objects.filter(sender=user)
+                "data": {
+                    "sitting_id": sr.id,
+                    "receiver_id": sr.receiver.id,
+                    "receiver_username": sr.receiver.username
+                }
+            } for sr in SittingRequest.objects.filter(sender=user) if sr.receiver
         ]
 
         all_activities = list(chain(
