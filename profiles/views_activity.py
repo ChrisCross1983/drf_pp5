@@ -48,7 +48,8 @@ class ActivityFeedView(APIView):
                     "content": (c.content[:60] + "...") if len(c.content) > 60 else c.content,
                     "post_id": c.post.id,
                     "post_title": c.post.title or "Untitled",
-                    "post_image": c.post.image.url if c.post.image else None
+                    "post_image": c.post.image.url if c.post.image else PLACEHOLDER,
+                    "post_exists": hasattr(c, "post") and c.post is not None,
                 }
             }
             for c in Comment.objects.filter(owner=user).select_related("post")
