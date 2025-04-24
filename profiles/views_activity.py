@@ -60,8 +60,18 @@ class ActivityFeedView(APIView):
                 "type": "follow",
                 "message": f"You sent a follow request to {r.receiver.user.username}",
                 "timestamp": r.created_at,
-                "data": {"to_user": r.receiver.id}
-            } for r in FollowRequest.objects.filter(sender=user.profile)
+                "data": {
+                    "to_user": r.receiver.id,
+                    "first_name": r.receiver.user.first_name,
+                    "owner": r.receiver.user.username,
+                    "profile_picture": (
+                        r.receiver.profile_picture.url
+                        if r.receiver.profile_picture
+                        else "https://res.cloudinary.com/daj7vkzdw/image/upload/v1744729686/Placeholder/hshdlbr977dc6dq9gt2o.jpg"
+                    )
+                }
+            }
+            for r in FollowRequest.objects.filter(sender=user.profile)
         ]
 
         follow_accepted = [
@@ -69,8 +79,18 @@ class ActivityFeedView(APIView):
                 "type": "follow_accepted",
                 "message": f"{r.sender.user.username} accepted your follow request",
                 "timestamp": r.created_at,
-                "data": {"from_user": r.sender.id}
-            } for r in FollowRequest.objects.filter(receiver=user.profile, status="accepted")
+                "data": {
+                    "from_user": r.sender.id,
+                    "first_name": r.sender.user.first_name,
+                    "owner": r.sender.user.username,
+                    "profile_picture": (
+                        r.sender.profile_picture.url
+                        if r.sender.profile_picture
+                        else "https://res.cloudinary.com/daj7vkzdw/image/upload/v1744729686/Placeholder/hshdlbr977dc6dq9gt2o.jpg"
+                    )
+                }
+            }
+            for r in FollowRequest.objects.filter(receiver=user.profile, status="accepted")
         ]
 
         sitting_requests = [
