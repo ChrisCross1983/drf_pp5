@@ -21,6 +21,7 @@ class Notification(models.Model):
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='comment')
     sitting_request = models.ForeignKey('posts.SittingRequest', on_delete=models.CASCADE, null=True, blank=True)
     sender_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True)
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='comment')
 
     def __str__(self):
