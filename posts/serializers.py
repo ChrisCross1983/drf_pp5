@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, SittingRequest
+from .models import Post, SittingRequest, SittingResponseMessage
 from comments.models import Comment
 from likes.models import Like
 from profiles.serializers import ProfileMiniSerializer
@@ -70,7 +70,7 @@ class SittingRequestSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get("request")
-        
+
         sender = validated_data.pop("sender", request.user)
         post = validated_data.pop("post", None)
         receiver = validated_data.pop("receiver", None) or post.author
@@ -98,3 +98,12 @@ class SittingRequestSerializer(serializers.ModelSerializer):
             **validated_data
         )
         return sitting_request
+
+
+class SittingResponseMessageSerializer(serializers.ModelSerializer):
+    sender_name = serializers.CharField(source='sender.username', read_only=True)
+
+    class Meta:
+        model = SittingResponseMessage
+        fields = ['id', 'sitting_request', 'sender', 'sender_name', 'content', 'created_at']
+        read_only_fields = ['id', 'sender', 'created_at']

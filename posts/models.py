@@ -59,3 +59,15 @@ class SittingRequest(models.Model):
 
     def __str__(self):
         return f"Request from {self.sender.username} to {self.receiver.username} for post {self.post.title}"
+
+class SittingResponseMessage(models.Model):
+    sitting_request = models.ForeignKey(SittingRequest, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Message by {self.sender.username} on Request {self.request.id}"

@@ -1,5 +1,7 @@
 from django.urls import path
 from likes.views import PostLikeAPIView
+from rest_framework.routers import DefaultRouter
+from posts.views_messages import SittingResponseMessageViewSet
 from .views import (
     AuthorPostsList,
     CreatePostView,
@@ -14,6 +16,9 @@ from .views import (
     AllPosts,
 )
 
+router = DefaultRouter()
+router.register(r"sitting-messages", SittingResponseMessageViewSet, basename="sitting-messages")
+
 urlpatterns = [
     path('', CreatePostView.as_view(), name='create-post'),
     path('author-posts/', AuthorPostsList.as_view(), name="author-posts"),
@@ -27,3 +32,5 @@ urlpatterns = [
     path('requests/manage/<int:request_id>/', ManageSittingRequestView.as_view(), name='manage-sitting-request'),
     path('<int:post_id>/like/', PostLikeAPIView.as_view(), name='post-like'),
 ]
+
+urlpatterns += router.urls
