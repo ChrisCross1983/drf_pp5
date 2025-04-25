@@ -35,7 +35,8 @@ class CommentList(generics.ListCreateAPIView):
                 user=comment.post.author,
                 type="comment",
                 message=f"{self.request.user.username} commented on your post: “{comment.content[:30]}...”",
-                post=comment.post
+                post=comment.post,
+                comment=comment
             )
 
 
@@ -75,6 +76,8 @@ class ToggleCommentLike(APIView):
                     user=comment.owner,
                     type="like",
                     message=f"{request.user.username} liked your comment: “{comment.content[:30]}...”",
+                    post=comment.post,
+                    comment=comment
                 )
 
         return Response({
