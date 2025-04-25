@@ -11,15 +11,11 @@ class SittingResponseMessageViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        print("👤 Request user:", self.request.user)
-        print("🔒 Authenticated:", self.request.user.is_authenticated)
-
         sitting_request = serializer.validated_data["sitting_request"]
         content = serializer.validated_data["content"]
 
         serializer.save(
             sender=self.request.user,
-            receiver=sitting_request.receiver,
             sitting_request=sitting_request,
             content=content
         )
