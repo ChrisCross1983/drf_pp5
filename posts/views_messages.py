@@ -15,13 +15,13 @@ class SittingResponseMessageViewSet(viewsets.ModelViewSet):
         print("🔒 Authenticated:", self.request.user.is_authenticated)
 
         sitting_request = serializer.validated_data["sitting_request"]
-        message = serializer.validated_data["message"]
+        content = serializer.validated_data["content"]
 
         serializer.save(
             sender=self.request.user,
             receiver=sitting_request.receiver,
             sitting_request=sitting_request,
-            message=message
+            content=content
         )
 
     def get_queryset(self):
