@@ -102,8 +102,25 @@ class SittingRequestSerializer(serializers.ModelSerializer):
 
 class SittingResponseMessageSerializer(serializers.ModelSerializer):
     sender_name = serializers.CharField(source='sender.username', read_only=True)
+    sender_id = serializers.IntegerField(source='sender.id', read_only=True)
+    sender_profile_image = serializers.SerializerMethodField()
 
     class Meta:
         model = SittingResponseMessage
-        fields = ['id', 'sitting_request', 'sender', 'sender_name', 'content', 'created_at']
+        fields = [
+            'id',
+            'sitting_request',
+            'sender',
+            'sender_name',
+            'sender_id',
+            'sender_profile_image',
+            'content',
+            'created_at',
+        ]
         read_only_fields = ['id', 'sender', 'created_at']
+
+    def get_sender_profile_image(self, obj):
+        profile = getattr(obj.sender, 'profile', None)
+        if profile and profile.image:
+            return profile.image.url
+        return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
