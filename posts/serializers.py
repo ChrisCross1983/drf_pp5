@@ -120,7 +120,7 @@ class SittingResponseMessageSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'sender', 'created_at']
 
     def get_sender_profile_image(self, obj):
-        profile = getattr(obj.sender, 'profile', None)
-        if profile and profile.image:
-            return profile.image.url
+        profile = getattr(obj.sender, "profile", None)
+        if profile and hasattr(profile, "profile_picture") and profile.profile_picture:
+            return profile.profile_picture.url
         return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
