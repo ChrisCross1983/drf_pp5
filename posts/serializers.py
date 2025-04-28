@@ -74,17 +74,13 @@ class SittingRequestSerializer(serializers.ModelSerializer):
     def get_sender_profile_picture(self, obj):
         profile = getattr(obj.sender, "profile", None)
         if profile and profile.profile_picture:
-            if str(profile.profile_picture).startswith("http"):
-                return profile.profile_picture
-            return f"https://res.cloudinary.com/daj7vkzdw/{profile.profile_picture}"
+            return profile.profile_picture.url
         return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
 
     def get_receiver_profile_picture(self, obj):
         profile = getattr(obj.receiver, "profile", None)
         if profile and profile.profile_picture:
-            if str(profile.profile_picture).startswith("http"):
-                return profile.profile_picture
-            return f"https://res.cloudinary.com/daj7vkzdw/{profile.profile_picture}"
+            return profile.profile_picture.url
         return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
 
     def create(self, validated_data):
