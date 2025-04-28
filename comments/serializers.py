@@ -43,10 +43,12 @@ class CommentSerializer(serializers.ModelSerializer):
         return request.user == obj.owner if request and request.user.is_authenticated else False
 
     def get_profile_image(self, obj):
-        profile = getattr(obj.owner, "profile", None)
-        if not profile or not getattr(profile, "image", None):
-            return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
-        return profile.image.url
+        if hasattr(obj.owner, "profile") and obj.owner.profile.profile_picture:
+            url = obj.owner.profile.profile_picture.url
+            if not url.startswith("http"):
+                return f"https://res.cloudinary.com/daj7vkzdw/{url}"
+            return url
+        return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
 
     def create(self, validated_data):
         request = self.context.get('request')
