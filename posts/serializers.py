@@ -101,9 +101,7 @@ class SittingRequestSerializer(serializers.ModelSerializer):
 
 
 class SittingResponseMessageSerializer(serializers.ModelSerializer):
-    sender_name = serializers.CharField(source='sender.username', read_only=True)
-    sender_id = serializers.IntegerField(source='sender.id', read_only=True)
-    sender_profile_image = serializers.SerializerMethodField()
+    sender = ProfileMiniSerializer(source='sender.profile', read_only=True)
 
     class Meta:
         model = SittingResponseMessage
@@ -111,9 +109,6 @@ class SittingResponseMessageSerializer(serializers.ModelSerializer):
             'id',
             'sitting_request',
             'sender',
-            'sender_name',
-            'sender_id',
-            'sender_profile_image',
             'content',
             'created_at',
         ]
