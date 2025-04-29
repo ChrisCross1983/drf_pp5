@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from profiles.views import CustomLoginView, CustomLogoutView
+from profiles.views import CustomLoginView, CustomLogoutView, CustomPasswordResetView
 from dj_rest_auth.views import LoginView, LogoutView, PasswordResetConfirmView, PasswordResetView
 
 # CSRF-Token API View
@@ -38,7 +38,7 @@ urlpatterns = [
     path('api/auth/logout/', CustomLogoutView.as_view(), name='rest_logout'),
     
     # 🔹 Registration & Password Reset Endpoints (dj-rest-auth)
-    path('api/auth/password/reset/', PasswordResetView.as_view(), name='password_reset'),
+    path('api/auth/password/reset/', CustomPasswordResetView.as_view(), name='password_reset'),
     path(
         'api/auth/password/reset/confirm/<uidb64>/<token>/',
         PasswordResetConfirmView.as_view(),

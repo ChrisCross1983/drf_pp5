@@ -120,6 +120,7 @@ DJ_REST_AUTH = {
 
 DJANGO_REST_AUTH = {
     "PASSWORD_RESET_CONFIRM_URL": "reset-password?uid={uid}&token={token}",
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True, 
 }
 
 JWT_AUTH_COOKIE = "accessToken"
@@ -129,7 +130,8 @@ JWT_AUTH_SECURE = True  # Remember set to false if testing local
 REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'dj_rest_auth.serializers.JWTSerializer',
     'USER_DETAILS_SERIALIZER': 'dj_rest_auth.serializers.UserDetailsSerializer',
-    'TOKEN_SERIALIZER': 'rest_framework_simplejwt.serializers.TokenObtainPairSerializer'
+    'TOKEN_SERIALIZER': 'rest_framework_simplejwt.serializers.TokenObtainPairSerializer',
+    'PASSWORD_RESET_SERIALIZER': 'dj_rest_auth.serializers.PasswordResetSerializer',
 }
 
 CORS_ALLOWED_ORIGINS = [
