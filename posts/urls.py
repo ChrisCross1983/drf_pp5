@@ -12,6 +12,7 @@ from .views import (
     SittingRequestDetailView,
     SentSittingRequestsView,
     IncomingSittingRequestsView,
+    DeleteProfileView,
     ManageSittingRequestView,
     AllPosts,
 )
@@ -31,6 +32,7 @@ urlpatterns = [
     path('requests/incoming/', IncomingSittingRequestsView.as_view(), name='incoming-sitting-requests'),
     path('requests/manage/<int:request_id>/', ManageSittingRequestView.as_view(), name='manage-sitting-request'),
     path('<int:post_id>/like/', PostLikeAPIView.as_view(), name='post-like'),
+    path("delete/", DeleteProfileView.as_view(), name="delete-profile"),
 ]
 
 urlpatterns += router.urls
