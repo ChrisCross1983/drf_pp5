@@ -31,7 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # 🔹 CSRF & JWT Token Endpoint
-    path("api/auth/csrf/", csrf_token_view, name="csrf-token"),
+    path('api/auth/csrf/', csrf_token_view, name='csrf-token'),
     path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
@@ -39,9 +39,9 @@ urlpatterns = [
     path('api/auth/login/', CustomLoginView.as_view(), name='rest_login'),
     path('api/auth/logout/', CustomLogoutView.as_view(), name='rest_logout'),
     path('api/auth/password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
-    path('api/auth/password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
-    path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
-    path("accounts/", include("allauth.urls")),
+    path('api/auth/password/reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('accounts/', include('allauth.urls')),
 
     # 🔹 Profiles, Posts & Notifications APIs
     path('api/profiles/', include('profiles.urls')),
