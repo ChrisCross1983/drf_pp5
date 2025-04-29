@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from profiles.views import CustomLoginView, CustomLogoutView, CustomPasswordResetView, PasswordResetRedirectView
-from dj_rest_auth.views import LoginView, LogoutView
+from dj_rest_auth.views import PasswordResetConfirmView
 
 # CSRF-Token API View
 def csrf_token_view(request):
@@ -43,6 +43,12 @@ urlpatterns = [
         'api/auth/password/reset/confirm/<uidb64>/<token>/',
         PasswordResetRedirectView.as_view(),
         name='password_reset_confirm'
+    ),
+    
+    path(
+        'api/auth/password/reset/confirm/',
+        PasswordResetConfirmView.as_view(),
+        name='password_reset_confirm_post'
     ),
 
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
