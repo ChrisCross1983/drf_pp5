@@ -20,7 +20,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from dj_rest_auth.serializers import JWTSerializer
-from dj_rest_auth.views import LoginView, LogoutView
+from dj_rest_auth.views import LoginView, LogoutView, PasswordResetView
 from dj_rest_auth.registration.views import ResendEmailVerificationView
 from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
@@ -207,6 +207,23 @@ class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'registration/password_change_form.html'
     success_url = reverse_lazy('password_change_done')
     permission_classes = [IsAuthenticated]
+
+
+class CustomPasswordResetView(PasswordResetView):
+    """
+    Send reset emails with link to frontend instead of backend view.
+    """
+    def get_email_options(self):
+        site_url = settings.FRONTEND_URL.rstrip('/')
+        path = settings.DJANGO_REST_AUTH.get("PASSWORD_RESET_CONFIRM_URL", "reset-password?uid={uid}&token={token}")
+        
+        reset_url = f"{site_url}/{path}"
+        
+        return {
+            "extra_email_context": {
+                "password_reset_url": reset_url
+            }
+        }
 
 
 class CustomLogoutView(APIView):
