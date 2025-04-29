@@ -118,6 +118,10 @@ DJ_REST_AUTH = {
     "TOKEN_MODEL": None,
 }
 
+DJANGO_REST_AUTH = {
+    "PASSWORD_RESET_CONFIRM_URL": "reset-password?uid={uid}&token={token}",
+}
+
 JWT_AUTH_COOKIE = "accessToken"
 JWT_AUTH_REFRESH_COOKIE = "refreshToken"
 JWT_AUTH_SECURE = True  # Remember set to false if testing local
