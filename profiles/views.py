@@ -14,6 +14,7 @@ from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth import authenticate, logout
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.views import View
 from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Count, F, Q
 from django.conf import settings
@@ -224,6 +225,12 @@ class CustomPasswordResetView(PasswordResetView):
                 "password_reset_url": reset_url
             }
         }
+
+
+class PasswordResetRedirectView(View):
+    def get(self, request, uidb64, token, *args, **kwargs):
+        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+        return redirect(f"{frontend_url}/reset-password?uid={uidb64}&token={token}")
 
 
 class CustomLogoutView(APIView):
