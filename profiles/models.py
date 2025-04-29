@@ -24,6 +24,13 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s profile"
 
+    def save(self, *args, **kwargs):
+        if self.profile_picture and isinstance(self.profile_picture, str):
+            if self.profile_picture.startswith("https://res.cloudinary.com/"):
+                self.profile_picture = self.profile_picture.replace(
+                    "https://res.cloudinary.com/daj7vkzdw/image/upload/", "")
+        super().save(*args, **kwargs)
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_profile(sender, instance, created, **kwargs):
