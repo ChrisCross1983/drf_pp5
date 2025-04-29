@@ -15,6 +15,7 @@ from .views import (
     FollowingListView,
     TopFollowedProfilesView,
     ProfileKPIView,
+    DeleteProfileView,
 )
 from .views_follow_requests import (
     FollowRequestListView,
@@ -37,6 +38,7 @@ urlpatterns = [
     path('<int:pk>/following/', FollowingListView.as_view(), name='following-list'),
     path('top-followed/', TopFollowedProfilesView.as_view(), name='top-followed-profiles'),
     path('password-change/', CustomPasswordChangeView.as_view(), name='password_change'),
+    path("delete/", DeleteProfileView.as_view(), name="delete-profile"),
 
     # Follow Request Endpoints
     path("follow-requests/", FollowRequestListView.as_view(), name="follow-requests-list"),
@@ -44,6 +46,5 @@ urlpatterns = [
     path("follow-requests/manage/<int:request_id>/", FollowRequestRespondView.as_view(), name="follow-request-manage"),
     path("follow-requests/cancel/<int:request_id>/", FollowRequestCancelView.as_view(), name="follow-request-cancel"),
     path("unfollow/<int:target_id>/", UnfollowView.as_view(), name="unfollow"),
-
     path("activity/", ActivityFeedView.as_view(), name="activity-feed"),
 ]
