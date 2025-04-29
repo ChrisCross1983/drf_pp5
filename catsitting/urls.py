@@ -36,7 +36,7 @@ urlpatterns = [
     # 🔹 Authentication Endpoints (dj-rest-auth)
     path('api/auth/login/', CustomLoginView.as_view(), name='rest_login'),
     path('api/auth/logout/', CustomLogoutView.as_view(), name='rest_logout'),
-    
+
     # 🔹 Registration & Password Reset Endpoints (dj-rest-auth)
     path('api/auth/password/reset/', CustomPasswordResetView.as_view(), name='password_reset'),
     path(
@@ -44,7 +44,7 @@ urlpatterns = [
         PasswordResetRedirectView.as_view(),
         name='password_reset_confirm'
     ),
-    
+
     path(
         'api/auth/password/reset/confirm/',
         PasswordResetConfirmView.as_view(),
