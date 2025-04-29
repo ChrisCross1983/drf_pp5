@@ -66,17 +66,6 @@ class MarkNotificationReadView(APIView):
         except Notification.DoesNotExist:
             return Response({'error': 'Notification not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
-from notifications.models import Notification
-from comments.models import Comment
-from comments.serializers import CommentSerializer
-from .serializers import NotificationSerializer
-from posts.models import Post
-
 
 class DashboardOverviewView(APIView):
     permission_classes = [IsAuthenticated]
@@ -133,3 +122,12 @@ class MarkNotificationReadView(APIView):
             return Response({'message': 'Notification marked as read.'}, status=status.HTTP_200_OK)
         except Notification.DoesNotExist:
             return Response({'error': 'Notification not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class MarkAllNotificationsReadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        notifications = Notification.objects.filter(user=request.user, is_read=False)
+        notifications.update(is_read=True)
+        return Response({'message': 'All notifications marked as read.'}, status=status.HTTP_200_OK)
