@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import DashboardOverviewView
-from .views import AllNotificationsView, MarkNotificationReadView, MarkAllNotificationsReadView,
+from .views import AllNotificationsView, MarkNotificationReadView, MarkAllNotificationsReadView
 
 urlpatterns = [
     path('', AllNotificationsView.as_view(), name='notifications-feed'), 
