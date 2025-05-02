@@ -1,131 +1,363 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# Lucky Cat
 
-Welcome Christian Borza,
 
-This is the Code Institute student template for Gitpod. We have preinstalled all of the tools you need to get started. It's perfectly ok to use this template as the basis for your project submissions.
+### Here you can explore the [Live webpage]()
 
-You can safely delete this README.md file or change it for your own project. Please do read it at least once, though! It contains some important information about Gitpod and the extensions we use. Some of this information has been updated since the video content was created. The last update to this file was: **June 18, 2024**
+## Developer
 
-## Gitpod Reminders
+| Name            | Linkedin                     | GitHub           |
+| --------------- | ---------------------------- | ---------------- |
+| Christian Borza | [Linkedin Profile](https://www.linkedin.com/in/borzachristian/) | [GitHub repositories](https://github.com/ChrisCross1983) |
 
-To run a frontend (HTML, CSS, Javascript only) application in Gitpod, in the terminal, type:
+## About
 
-`python3 -m http.server`
 
-A blue button should appear to click: _Make Public_,
+## Project Goals
 
-Another blue button should appear to click: _Open Browser_.
+### User Goals
 
-To run a backend Python file, type `python3 app.py` if your Python file is named `app.py`, of course.
+-
 
-A blue button should appear to click: _Make Public_,
+### Business Owner Goals
 
-Another blue button should appear to click: _Open Browser_.
+-
 
-By Default, Gitpod gives you superuser security privileges. Therefore, you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the lessons.
+## User Stories
 
-To log into the Heroku toolbelt CLI:
 
-1. Log in to your Heroku account and go to *Account Settings* in the menu under your avatar.
-2. Scroll down to the *API Key* and click *Reveal*
-3. Copy the key
-4. In Gitpod, from the terminal, run `heroku_config`
-5. Paste in your API key when asked
+## User Experience
 
-You can now use the `heroku` CLI program - try running `heroku apps` to confirm it works. This API key is unique and private to you, so do not share it. If you accidentally make it public, you can create a new one with _Regenerate API Key_.
+### Target Audience
 
-### Connecting your Mongo database
+-
 
-- **Connect to Mongo CLI on a IDE**
-- navigate to your MongoDB Clusters Sandbox
-- click **"Connect"** button
-- select **"Connect with the MongoDB shell"**
-- select **"I have the mongo shell installed"**
-- choose **mongosh (2.0 or later)** for : **"Select your mongo shell version"**
-- choose option: **"Run your connection string in your command line"**
-- in the terminal, paste the copied code `mongo "mongodb+srv://<CLUSTER-NAME>.mongodb.net/<DBname>" --apiVersion 1 --username <USERNAME>`
-  - replace all `<angle-bracket>` keys with your own data
-- enter password _(will not echo **\*\*\*\*** on screen)_
+### User Requirements and Expectations
 
-------
+-
 
-## Release History
+### Agile Methodologies
 
-We continually tweak and adjust this template to help give you the best experience. Here is the version history:
+The project followed Agile principles using:
 
-**June 18, 2024,** Add Mongo back into template
+- GitHub Projects: Kanban board to track tasks and progress.
+- User Stories: Each feature aligned with specific user or business needs.
 
-**June 14, 2024,** Temporarily remove Mongo until the key issue is resolved
+![Kanban Board](-)
 
-**May 28 2024:** Fix Mongo and Links installs
+[Link to GitHub Project Board](-)
 
-**April 26 2024:** Update node version to 16
+## Design
 
-**September 20 2023:** Update Python version to 3.9.17.
+### Design Decisions
 
-**September 1 2021:** Remove `PGHOSTADDR` environment variable.
 
-**July 19 2021:** Remove `font_fix` script now that the terminal font issue is fixed.
 
-**July 2 2021:** Remove extensions that are not available in Open VSX.
+### Colors
 
-**June 30 2021:** Combined the P4 and P5 templates into one file, added the uptime script. See the FAQ at the end of this file.
+Primary colors include:
 
-**June 10 2021:** Added: `font_fix` script and alias to fix the Terminal font issue
+-
 
-**May 10 2021:** Added `heroku_config` script to allow Heroku API key to be stored as an environment variable.
+### Color Scheme
 
-**April 7 2021:** Upgraded the template for VS Code instead of Theia.
+The visual identity of Wild Watch is based on warm, natural tones that reflect wildlife and conservation.
 
-**October 21 2020:** Versions of the HTMLHint, Prettier, Bootstrap4 CDN and Auto Close extensions updated. The Python extension needs to stay the same version for now.
+| Hex Code  | Usage                | Description                                                      |
+|-----------|----------------------|------------------------------------------------------------------|
+| `#FFC857` | Primary / Navbar     | Main brand color for navigation and call-to-actions              |
+| `#1A7F3C` | Success / Text Icons | Green tone used in helper labels and visual accents              |
+| `#F4E4BC` | Section Background   | Soft beige background for content blocks                         |
+| `#D67B4B` | CTA-Highlight        | Contrast color for emphasis in special sections                  |
+| `#42C460` | Success Badge        | Used to indicate successful report interaction                   |
+| `#F0B914` | Warning Badge        | Warning and pending status visuals                               |
+| `#830814` | Danger Badge         | Error messages and rejected reports                              |
+| `#49A9E9` | Info Badge           | Informational elements and icons                                 |
+| `#333333` | Main Text Color      | Strong dark tone for body and headline text                      |
+| `#F4F4F4` | Light BG Elements    | Light grey for containers and subtle background elements         |
 
-**October 08 2020:** Additional large Gitpod files (`core.mongo*` and `core.python*`) are now hidden in the Explorer, and have been added to the `.gitignore` by default.
+> *Note:* Additional utility classes from Bootstrap (e.g., `.btn-success`, `.alert-danger`) were partially customized to reflect this color palette.
 
-**September 22 2020:** Gitpod occasionally creates large `core.Microsoft` files. These are now hidden in the Explorer. A `.gitignore` file has been created to make sure these files will not be committed, along with other common files.
+### Fonts
 
-**April 16 2020:** The template now automatically installs MySQL instead of relying on the Gitpod MySQL image. The message about a Python linter not being installed has been dealt with, and the set-up files are now hidden in the Gitpod file explorer.
+Typography was selected for readability and aesthetic harmony:
 
-**April 13 2020:** Added the _Prettier_ code beautifier extension instead of the code formatter built-in to Gitpod.
+-
 
-**February 2020:** The initialisation files now _do not_ auto-delete. They will remain in your project. You can safely ignore them. They just make sure that your workspace is configured correctly each time you open it. It will also prevent the Gitpod configuration popup from appearing.
+### Layout & Structure
 
-**December 2019:** Added Eventyret's Bootstrap 4 extension. Type `!bscdn` in a HTML file to add the Bootstrap boilerplate. Check out the <a href="https://github.com/Eventyret/vscode-bcdn" target="_blank">README.md file at the official repo</a> for more options.
+The layout follows a structured, user-friendly approach:
 
-------
+-
 
-## FAQ about the uptime script
+Visual hierarchy was created through:
 
-**Why have you added this script?**
+-
 
-It will help us to calculate how many running workspaces there are at any one time, which greatly helps us with cost and capacity planning. It will help us decide on the future direction of our cloud-based IDE strategy.
+### Wireframes
 
-**How will this affect me?**
+Wireframes were created for desktop, tablet, and mobile views using Balsamiq to visualize the layout structure and user flow at an early project stage.  
+>Please note: The final implemented UI may differ slightly from these drafts due to design iterations and responsive adjustments during development.
 
-For everyday usage of Gitpod, it doesn’t have any effect at all. The script only captures the following data:
 
-- An ID that is randomly generated each time the workspace is started.
-- The current date and time
-- The workspace status of “started” or “running”, which is sent every 5 minutes.
+### Responsive Design
 
-It is not possible for us or anyone else to trace the random ID back to an individual, and no personal data is being captured. It will not slow down the workspace or affect your work.
+WildWatch is fully responsive and optimized for various screen sizes, from large desktops to tablets and smartphones. The application was developed using a mobile-first approach and adapts layout and content dynamically based on device resolution.
 
-**So….?**
+Key responsive elements include:
 
-We want to tell you this so that we are being completely transparent about the data we collect and what we do with it.
+-
 
-**Can I opt out?**
+## Database Diagram
 
-Yes, you can. Since no personally identifiable information is being captured, we'd appreciate it if you let the script run; however if you are unhappy with the idea, simply run the following commands from the terminal window after creating the workspace, and this will remove the uptime script:
+The application uses a relational database with key models:
 
-```
-pkill uptime.sh
-rm .vscode/uptime.sh
-```
 
-**Anything more?**
 
-Yes! We'd strongly encourage you to look at the source code of the `uptime.sh` file so that you know what it's doing. As future software developers, it will be great practice to see how these shell scripts work.
+## Key Features
+
+
+## Future Improvements
+
+-
+
+## Technologies Used
+
+### Languages
+
+- Python 3
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+
+### Libraries & Frameworks
+
+-
+
+### Django Packages
+
+-
+
+### Deployment & DevOps
+
+- Heroku (Production Hosting)
+- Gunicorn (WSGI HTTP server)
+- GitHub (Version control and project board)
+
+## Testing
+
+### Accessibility
+
+- The platform adheres to **WCAG 2.1 AA guidelines**
+- ARIA labels and roles are implemented for screen reader compatibility
+- Contrast levels tested with WebAIM contrast checker
+
+### Performance Optimization
+
+- Optimized static file handling via Django Whitenoise
+- Lazy loading of images and media
+- Minified CSS and compressed assets
+- Lighthouse audits conducted across all key user flows
+
+### Device & Browser Compatibility
+
+- **Devices tested:**
+  - Desktop: Windows, macOS
+  - Mobile: Android, iOS
+
+- **Browsers tested:**
+
+  - Google Chrome (desktop/mobile)
+  - Mozilla Firefox
+  - Microsoft Edge
+
+### Automated Testing
+
+- **HTML Validation**: Used the [W3C HTML Validator](https://validator.w3.org/) which returned the following results:
+
+    **Before**:
+
+
+    **After**:
+
+
+- **CSS Validation**: Used the [W3C CSS Validator](https://jigsaw.w3.org/css-validator/) which returned the following results:
+
+
+- **JavaScript Validation**: Used [JSHint](https://jshint.com/) to validate JavaScript code. The validation process returned a clean report compliant with ES6+ standards.
+
+### Lighthouse scores
+
+Lighthouse metrics were scored on Incognito Chrome
+
+
+
+### Running Tests
+
+Although automated tests (e.g., unit tests or integration tests) are considered best practice in professional development workflows, they were not implemented in this project. The project scope focused primarily on core functionality, UI/UX design, and manual end-to-end testing in line with the PP4 requirements.
+
+### Manual Testing Overview
+
+All major user flows were tested manually to ensure functional coverage, usability, and correct feedback behavior across devices and user roles. The tables below outline test scenarios, expected outcomes, and actual results.
 
 ---
 
-Happy coding!
+<details>
+<summary><strong>General User Functional Tests</strong></summary>
+
+| Test Name                      | Steps                                                             | Expected Result                                                   | Actual Result       | Pass/Fail |
+|-------------------------------|-------------------------------------------------------------------|-------------------------------------------------------------------|----------------------|-----------|
+| Home Navigation               | Click "WildWatch" logo or Home link in navbar                     | User is redirected to homepage                                   | Same as expected     | ✓         |
+| Signup Process                | Click Signup → Fill form → Submit                                 | Account created & verification email sent                        | Same as expected     | ✓         |
+| Signup with invalid data      | Leave required fields empty → Submit                              | Inline error messages shown                                      | Same as expected     | ✓         |
+| Signup with existing username | Fill form with already registered username → Submit               | Error message: "A user with that username already exists."        | Same as expected     | ✓         |
+| Email Confirmation Flow       | Register → Click email verification link                          | Account gets activated                                           | Same as expected     | ✓         |
+| Resend Verification Email     | Try login unverified → Click “Resend Email”                       | New confirmation email is sent                                  | Same as expected     | ✓         |
+| Login (valid credentials)     | Enter correct credentials → Submit                                | User logs in successfully                                       | Same as expected     | ✓         |
+| Login (wrong credentials)     | Enter wrong password → Submit                                     | Error message: "Invalid password."                               | Same as expected     | ✓         |
+| Login (unverified user)       | Attempt login before email verification                           | Error: “Account not verified” message shown                      | Same as expected     | ✓         |
+| Password Reset Flow           | Click “Forgot password” → Enter email → Receive link → Set new pw | Password reset completed successfully                            | Same as expected     | ✓         |
+| View Profile                  | Navigate to Settings/Profile                                      | Profile details are displayed                                   | Same as expected     | ✓         |
+| Edit Profile                  | Edit profile data → Submit                                        | Data updated, success message shown                             | Same as expected     | ✓         |
+| Edit Email Address            | Change email → Submit                                             | User logged out → Verification email sent                        | Same as expected     | ✓         |
+| Upload Profile Picture        | Upload image → Submit                                             | Image preview visible, saved to profile                         | Same as expected     | ✓         |
+| Delete Account (cancel)       | Click Delete → Cancel confirmation popup                          | No action taken                                                  | Same as expected     | ✓         |
+| Delete Account (confirmed)    | Click Delete → Confirm popup                                      | Account and data deleted                                        | Same as expected     | ✓         |
+| Submit a Report               | Fill report form → Submit                                         | Report created and saved                                         | Same as expected     | ✓         |
+| Edit Report                   | Open own report → Edit fields → Submit                            | Report updated, confirmation shown                              | Same as expected     | ✓         |
+| Delete Report                 | Click Delete on own report → Confirm                              | Report deleted from system                                      | Same as expected     | ✓         |
+| View All Reports Feed         | Click “Animal Reports Overview”                                   | Public reports displayed in list                                | Same as expected     | ✓         |
+| Filter Reports (species/keyword) | Select species or enter keyword → Apply filter                  | Filtered reports displayed                                      | Same as expected     | ✓         |
+| View Report Details           | Click “View Details” on report card                               | Full report detail shown                                        | Same as expected     | ✓         |
+| Help on Report                | Click “I want to help” on report                                  | User added to helpers, button changes                           | Same as expected     | ✓         |
+| Cancel Help                   | Click “I can no longer help”                                      | User removed from helpers                                       | Same as expected     | ✓         |
+| Scroll-to-Top Button          | Scroll down → Click scroll arrow                                 | Page scrolls to top smoothly                                    | Same as expected     | ✓         |
+| Responsive Mobile View        | Open site on mobile → FAB menu visible                           | Responsive behavior confirmed                                   | Same as expected     | ✓         |
+| Navigation Menu               | Click through navbar items                                        | Pages load correctly                                             | Same as expected     | ✓         |
+| Session Persistence           | Login → Navigate through site                                     | Session remains active                                           | Same as expected     | ✓         |
+| Logout                        | Click Logout button                                               | User is logged out and redirected                               | Same as expected     | ✓         |
+
+</details>
+<br>
+
+---
+
+<details>
+<summary><strong>Edge Cases & Negative Testing</strong></summary>
+
+| Test Name                            | Steps                                                               | Expected Result                                               | Actual Result       | Pass/Fail |
+|-------------------------------------|---------------------------------------------------------------------|---------------------------------------------------------------|----------------------|-----------|
+| Upload invalid profile picture      | Try uploading non-image file (e.g. .pdf) as profile image → Submit | Error: "Upload a valid image."                                | Same as expected     | ✓         |
+| Submit Report – Missing Fields      | Leave required report fields empty → Submit                        | Inline validation errors shown                                | Same as expected     | ✓         |
+| Submit Report with large image      | Upload very high-res image → Submit                                 | Image saved successfully, scaled in display                   | Same as expected     | ✓         |
+| Edit Report Image                   | Edit existing report → Upload new image → Submit                   | New image replaces previous one                               | Same as expected     | ✓         |
+| Attempt edit by another user        | Login as another user → Access another user's edit URL             | Redirect or access denied                                     | Same as expected     | ✓         |
+| Attempt delete by another user      | Login as another user → Access delete URL of other's report        | Redirect or access denied                                     | Same as expected     | ✓         |
+| Filter Reports – no match           | Enter a rare/invalid keyword → Submit                              | Message shown: "No reports found matching your criteria"      | Same as expected     | ✓         |
+| Try to help on own report           | Open own report detail page                                        | "Help" button is not visible                                  | Same as expected     | ✓         |
+| Attempt double-helping              | Click “I want to help” multiple times rapidly                      | Only one helper entry added, button becomes disabled          | Same as expected     | ✓         |
+| Admin – Reject Report with Comment  | Admin logs in → Rejects report → Adds rejection comment            | Status set to "Rejected", comment visible for user            | Same as expected     | ✓         |
+| Admin – Approve Report              | Admin logs in → Approves report                                    | Status set to "Approved"                                      | Same as expected     | ✓         |
+
+</details>
+<br>
+
+## Bugs
+
+### Known Issues
+
+-
+
+### Resolved Issues
+
+-
+
+> All reported issues were tracked and resolved via GitHub commit references.
+
+## Deployment
+
+### Clone & Local Setup
+
+To run the project locally:
+
+1. Open your terminal (e.g., Git Bash, Command Prompt, Terminal).
+2. Clone the repository:
+
+    - git clone https://github.com/ChrisCross1983/pp4-wildwatch.git
+    - cd pp4-wildwatch
+
+3. Create and activate a virtual environment:
+
+On macOS/Linux:
+
+    - python -m venv .venv
+    - source .venv/bin/activate
+
+On Windows:
+
+    - python -m venv .venv
+    - .venv\Scripts\activate
+
+4. Install all required packages:
+
+    - pip install -r requirements.txt
+
+5. Create a .env file in the project root and add the following variables:
+
+![Environment Message](assets/env_message.png)
+
+> Example of how environment variables are loaded in `settings.py`:
+
+![Setting Message](assets/settings_message.png)
+
+6. Run the server locally:
+
+    - python manage.py makemigrations
+    - python manage.py migrate
+    - python manage.py runserver
+
+### Deployment via Heroku
+
+1. Navigate to [heroku](https://www.heroku.com/home) and create an account.
+2. Click `Create new app`, enter the app name and choose your region, hit `create app`.
+3. Click **Deploy** and in the _Deployment method_ option choose **Github**. Enter the repository's name and click connect, you can leave the branch deployment to `main`.
+   > You need to have created your github repository.
+4. Head to **Settings** and click `Reveal config vars`
+5. On the KEY inputs add: DATABASE_URL - SECRET_KEY - CLOUDINARY_URL - DEBUG. On the VALUE inputs add your own, for each one.
+6. Click **Add buildpack** and choose `python`.
+7. Now you're set. Go back to `Deploy` and click **Deploy branch**.
+
+Heroku will install packages, apply migrations and launch the app.
+
+### Forking the Project
+
+Forking a repository is commonly done to contribute to another developer's project or to use it as the foundation for your own. To fork a repository:
+
+1. Click the **Fork** button at the top right of the repository page.
+2. This creates a separate copy in your own account for further modification or contribution.
+
+## Credits
+
+- [WebAIM](https://webaim.org/) – Contrast Checker (Accessibility Testing)
+- [TinyPNG](https://tinypng.com/) – Image Compression
+- [Icons8](https://icons8.com/) – Favicon and UI icon sets
+- [Font Awesome](https://fontawesome.com/) – Icon integration
+- [Unsplash](https://unsplash.com/) – Free wildlife placeholder images
+- [Balsamiq](https://balsamiq.com/) – Wireframe design
+
+### Additional Resources & Support
+
+Throughout the development process, various tools and platforms were consulted to support error resolution, refresh knowledge, and ensure efficient troubleshooting:
+
+- [chatgpt](https://chatgpt.com) - Used as a support tool for resolving technical issues and validating code logic.
+- [StackOverflow](https://stackoverflow.com) - Community-driven platform for researching specific error messages and best practices.
+- [YouTube](https://youtube.com) - Reference for tutorial content and visual explanations to reinforce concepts and workflows.
+
+### Media
+
+-
+
+## Acknowledgements
+
+I would like to thank those who were a great support and inspiration during writing this project:
+
+- My wife, who supported me during the process of creating this project.
