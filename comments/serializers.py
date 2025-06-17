@@ -14,7 +14,7 @@ class CommentSerializer(serializers.ModelSerializer):
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.SerializerMethodField()
     post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
-
+    content = serializers.CharField(max_length=500)
 
     class Meta:
         model = Comment
