@@ -28,7 +28,7 @@ class Post(models.Model):
         null=True,
         default='https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570695/default_post_tuonop.jpg'
     )
-    description = models.TextField(blank=False)
+    description = models.TextField(blank=False, max_length=1000)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_likes', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -50,7 +50,7 @@ class SittingRequest(models.Model):
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_requests')
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_requests')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='sitting_requests')
-    message = models.TextField(blank=True, null=True)
+    message = models.TextField(blank=True, null=True, max_length=500)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -63,7 +63,7 @@ class SittingRequest(models.Model):
 class SittingResponseMessage(models.Model):
     sitting_request = models.ForeignKey(SittingRequest, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

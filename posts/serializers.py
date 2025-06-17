@@ -9,6 +9,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
     author_profile = ProfileMiniSerializer(source='author.profile', read_only=True)
     image = serializers.ImageField(required=False)
+    description = serializers.CharField(max_length=1000)
     likes_count = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()
@@ -61,6 +62,12 @@ class SittingRequestSerializer(serializers.ModelSerializer):
     post_title = serializers.ReadOnlyField(source='post.title')
     sender_profile_picture = serializers.SerializerMethodField()
     receiver_profile_picture = serializers.SerializerMethodField()
+    message = serializers.CharField(
+        max_length=500,
+        allow_blank=True,
+        allow_null=True,
+        help_text="Optional message to include with the request."
+    )
 
     class Meta:
         model = SittingRequest
@@ -116,6 +123,10 @@ class SittingRequestSerializer(serializers.ModelSerializer):
 
 class SittingResponseMessageSerializer(serializers.ModelSerializer):
     sender = ProfileMiniSerializer(source='sender.profile', read_only=True)
+    content = serializers.CharField(
+        max_length=500,
+        help_text="Message content for the response."
+    )
 
     class Meta:
         model = SittingResponseMessage
