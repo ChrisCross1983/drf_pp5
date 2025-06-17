@@ -17,6 +17,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(
+        min_length=2,
+        max_length=30,
+        validators=[
+            RegexValidator(
+                regex=r"^[a-zA-Z0-9_]+$",
+                message="Username may contain letters, numbers and underscores only."
+            )
+        ],
+    )
     password1 = serializers.CharField(write_only=True, min_length=8, required=True)
     password2 = serializers.CharField(write_only=True, min_length=8, required=True)
     profile_picture = serializers.ImageField(required=False, allow_null=True)
