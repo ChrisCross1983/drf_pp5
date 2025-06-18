@@ -23,7 +23,7 @@ if os.path.exists('env.py'):
     import env
 
 CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL'),
     'SECURE': True,
 }
 MEDIA_URL = '/media/'
@@ -121,7 +121,7 @@ DJ_REST_AUTH = {
 
 DJANGO_REST_AUTH = {
     "PASSWORD_RESET_CONFIRM_URL": "reset-password?uid={uid}&token={token}",
-    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True, 
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
 }
 
 JWT_AUTH_COOKIE = "accessToken"

@@ -63,7 +63,7 @@ class RegisterView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        
+
         if serializer.is_valid():
             user = serializer.save()
             send_email_confirmation(request, user)
@@ -216,9 +216,9 @@ class CustomPasswordResetView(PasswordResetView):
     def get_email_options(self):
         site_url = settings.FRONTEND_URL.rstrip('/')
         path = settings.DJANGO_REST_AUTH.get("PASSWORD_RESET_CONFIRM_URL", "reset-password?uid={uid}&token={token}")
-        
+
         reset_url = f"{site_url}/{path}"
-        
+
         return {
             "extra_email_context": {
                 "password_reset_url": reset_url
@@ -348,7 +348,7 @@ class ProfileKPIView(APIView):
         valid_comments = Comment.objects.filter(
             post__author=user
         ).exclude(owner=user)
-        
+
         post_likes = Like.objects.filter(post__author=user).count()
         comment_ids = Comment.objects.filter(post__author=user).exclude(owner=user).values_list("id", flat=True)
         comment_likes = CommentLike.objects.filter(comment__in=comment_ids).count()

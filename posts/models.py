@@ -105,5 +105,6 @@ class SittingResponseMessage(models.Model):
 
     def __str__(self):
         return (
-            f"Message by {self.sender.username} on Request {self.request.id}"
+            f"Message by {self.sender.username} "
+            f"on Request {self.sitting_request.id}"
         )
