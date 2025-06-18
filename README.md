@@ -5,7 +5,8 @@ Lucky Cat is a platform where cat owners and cat lovers can connect. Whether you
 On the site, users can reate posts to find a cat sitter or offer cat-sitting services or browse through local requests and offers.<br>
 It's simple, user-friendly, and all about helping each other take care of our feline friends.
 
-Link to the live site: [Lucky Cat](https://chriscross1983.github.io/react_pp5/)
+![Mockup - Lucky Cat](assets\readme\hero_lucky_cat.jpg)
+Link to the live site: [Lucky Cat](https://luckycat-frontend-e730bcd9b089.herokuapp.com/)
 
 ## Table of Contents
 
@@ -85,15 +86,17 @@ Users of the website should be able to:
 
 ## User Stories
 
+<details>
+
 1. User Story: User Registration
 
 As a new user, I can register for an account so that I can access features like posting, commenting, and interacting with other users.
 
 Acceptance Criteria:
 
-Users can register with a unique username and email.
-Password must meet basic security criteria (e.g., minimum 8 characters).
-Users receive a confirmation email upon registration.
+- Users can register with a unique username and email.
+- Password must meet basic security criteria (e.g., minimum 8 characters).
+- Users receive a confirmation email upon registration.
 
 2. User Story: User Login
 
@@ -101,9 +104,9 @@ As a registered user, I can log into my account so that I can access personalize
 
 Acceptance Criteria:
 
-Users can log in with their username and password.
-Incorrect login attempts display an appropriate error message.
-Token-based authentication is used to secure sessions.
+- Users can log in with their username and password.
+- Incorrect login attempts display an appropriate error message.
+- Token-based authentication is used to secure sessions.
 
 3. User Story: Password Reset
 
@@ -111,8 +114,8 @@ As a user, I can reset my password so that I can regain access to my account if 
 
 Acceptance Criteria:
 
-Users can request a password reset link via email.
-Password reset functionality includes token validation and password change form.
+- Users can request a password reset link via email.
+- Password reset functionality includes token validation and password change form.
 
 4. User Story: Profile Overview
 
@@ -120,8 +123,8 @@ As a user, I can view my profile so that I can see a summary of my activity, inc
 
 Acceptance Criteria:
 
-Profiles display total posts, followers, and followings.
-Users can see their recent posts on their profile.
+- Profiles display total posts, followers, and followings.
+- Users can see their recent posts on their profile.
 
 5. User Story: Edit Profile
 
@@ -129,8 +132,8 @@ As a user, I can edit my profile details so that I can update my username, profi
 
 Acceptance Criteria:
 
-Users can upload a profile picture using Cloudinary.
-Profile editing options include username, bio, and picture.
+- Users can upload a profile picture using Cloudinary.
+- Profile editing options include username, bio, and picture.
 
 6. User Story: Change Password
 
@@ -138,8 +141,8 @@ As a user, I can change my password so that I can enhance the security of my acc
 
 Acceptance Criteria:
 
-Users can change their password from the profile settings menu.
-Users must confirm their current password before setting a new one.
+- Users can change their password from the profile settings menu.
+- Users must confirm their current password before setting a new one.
 
 7. User Story: Create Post
 
@@ -147,9 +150,9 @@ As a user, I can create a post so that I can share my cat-sitting needs, service
 
 Acceptance Criteria:
 
-Posts must include a title, category, description, and optional image.
-Categories include "Offer Sitting," "Search Sitting," and "General."
-Posts are displayed on the feed after submission.
+- Posts must include a title, category, description, and optional image.
+- Categories include "Offer Sitting," "Search Sitting," and "General."
+- Posts are displayed on the feed after submission.
 
 8. User Story: View Feed
 
@@ -157,8 +160,8 @@ As a user, I can view all posts in an infinite scrolling feed so that I can expl
 
 Acceptance Criteria:
 
-The feed supports infinite scrolling to dynamically load more posts.
-Posts display the title, category, image, and number of likes/comments.
+- The feed supports infinite scrolling to dynamically load more posts.
+- Posts display the title, category, image, and number of likes/comments.
 
 9. User Story: Interact with Posts
 
@@ -166,8 +169,8 @@ As a user, I can like, unlike, and comment on posts so that I can engage with th
 
 Acceptance Criteria:
 
-Users can like and unlike posts with a single click.
-Users can leave comments on posts, which are displayed below each post.
+- Users can like and unlike posts with a single click.
+- Users can leave comments on posts, which are displayed below each post.
 
 10. User Story: Search and Filter Posts
 
@@ -175,8 +178,8 @@ As a user, I can search and filter posts by category so that I can find relevant
 
 Acceptance Criteria:
 
-A search bar allows users to search by keyword.
-Filters include "Offer Sitting," "Search Sitting," and "General."
+- A search bar allows users to search by keyword.
+- Filters include "Offer Sitting," "Search Sitting," and "General."
 
 11. User Story: Edit/Delete Post
 
@@ -184,8 +187,8 @@ As a user, I can edit or delete my posts so that I can update or remove content 
 
 Acceptance Criteria:
 
-Users can edit the title, category, description, and image of their posts.
-Users can delete their posts, which are removed from the feed.
+- Users can edit the title, category, description, and image of their posts.
+- Users can delete their posts, which are removed from the feed.
 
 12. User Story: Edit/Delete Comments
 
@@ -193,8 +196,8 @@ As a user, I can edit or delete my comments so that I can correct or remove comm
 
 Acceptance Criteria:
 
-Users can edit the content of their comments.
-Users can delete their comments, which are removed from the post.
+- Users can edit the content of their comments.
+- Users can delete their comments, which are removed from the post.
 
 13. User Story: Follow Users
 
@@ -202,8 +205,8 @@ As a user, I can follow other users so that I can stay updated with their posts.
 
 Acceptance Criteria:
 
-Users can follow/unfollow other users with a single click.
-Followers and followings are displayed on the profile page.
+- Users can follow/unfollow other users with a single click.
+- Followers and followings are displayed on the profile page.
 
 14. User Story: Dashboard Insights
 
@@ -211,13 +214,13 @@ As a user, I can view and interact with a list of recent notifications in my das
 
 Acceptance Criteria:
 
-Users see a scrollable list of recent notifications in the dashboard sidebar.
-Unread notifications are visually highlighted (e.g. background color, red badge).
-Each notification shows a type (e.g. like, comment, follow, sitting request, sitting message) and a timestamp.
-Clicking a notification redirects the user to the corresponding detail page (e.g. post, comment, chat).
-Users can mark individual notifications as read (automatically on click).
-Users can mark all notifications as read via a dedicated button.
-If a referenced post or request no longer exists, the user receives a toast notification.
+- Users see a scrollable list of recent notifications in the dashboard sidebar.
+- Unread notifications are visually highlighted (e.g. background color, red badge).
+- Each notification shows a type (e.g. like, comment, follow, sitting request, sitting message) and a timestamp.
+- Clicking a notification redirects the user to the corresponding detail page (e.g. post, comment, chat).
+- Users can mark individual notifications as read (automatically on click).
+- Users can mark all notifications as read via a dedicated button.
+- If a referenced post or request no longer exists, the user receives a toast notification.
 
 15. User Story: Create Sitting Request
 
@@ -225,8 +228,8 @@ As a user, I can send a sitting request to post owners so that I can arrange cat
 
 Acceptance Criteria:
 
-Posts include a "Request Sitting" button.
-Clicking the button sends a private message to the post owner.
+- Posts include a "Request Sitting" button.
+- Clicking the button sends a private message to the post owner.
 
 16. User Story: Manage Sitting Requests
 
@@ -234,7 +237,7 @@ As a user, I can view and manage all my sitting requests so that I can track ong
 
 Acceptance Criteria:
 
-A dashboard shows incoming sitting requests and responses.
+- A dashboard shows incoming sitting requests and responses.
 
 17. User Story: Receive Notifications
 
@@ -242,8 +245,10 @@ As a user, I can receive notifications for new comments, likes, and sitting requ
 
 Acceptance Criteria:
 
-Notifications appear as a dropdown or a separate section.
-Notifications include a timestamp and a link to the relevant activity.
+- Notifications appear as a dropdown or a separate section.
+- Notifications include a timestamp and a link to the relevant activity.
+
+</details>
 
 ---
 
@@ -515,17 +520,25 @@ The core framework that enables the creation of flexible and robust RESTful APIs
 
 Lighthouse metrics were scored on Incognito Chrome
 
-![Lighthouse Test - Home Page](assets/)
+![Lighthouse Test - Dashboar](assets\readme\lighthouse_dashboard.jpg)
 
-![Lighthouse Test - Login Page](assets/)
+![Lighthouse Test - Sitting Request Page](assets\readme\lighthouse_sitting_request.jpg)
 
-![Lighthouse Test - Create Report Page](assets/)
+![Lighthouse Test - My Hub Page](assets\readme\lighthouse_myhub.jpg)
 
-![Lighthouse Test - Animal Report Overview Page](assets/)
+### Lighthouse Performance & Best Practices Score – Justification
 
-![Lighthouse Test - My Reports Page](assets/)
+The performance score remains at 60 despite several targeted improvements:
 
-![Lighthouse Test - Profile Page](assets/)
+- **Cloudinary image optimization**: While newer uploads use transformations like `f_auto`, `q_auto`, and `w_600`, earlier images were uploaded without optimization. These legacy assets increase loading time and affect layout stability.
+
+- **Layout shifts (LCP impact)**: The Largest Contentful Paint is delayed due to image loading. Although fixed dimensions and blurred placeholders were introduced, the delay still causes layout shifts during rendering.
+
+- **Mixed content (HTTP/HTTPS)**: Some images were originally embedded with `http://` links. Although most are now upgraded to HTTPS or auto-corrected by the browser, Lighthouse still flags them as insecure requests.
+
+- **Limited implementation time**: Due to time constraints, certain advanced optimizations such as responsive `sizes` attributes, lazy loading for non-critical content, and CDN-side preloading were not fully implemented.
+
+Despite the performance score, the application performs reliably for real users and delivers its core functionality without critical issues.
 
 ### Running Tests
 
@@ -599,6 +612,23 @@ Forking a repository is commonly done to contribute to another developer's proje
 1. Click the **Fork** button at the top right of the repository page.
 2. This creates a separate copy in your own account for further modification or contribution.
 
+## Production Settings
+
+Before deploying to production, ensure the following settings are correctly configured:
+
+- `DEBUG=False` in the environment variables (e.g., on Heroku under "Config Vars")
+- A secure `SECRET_KEY` set via environment variable
+- `ALLOWED_HOSTS` includes your deployed domain
+- `CSRF_TRUSTED_ORIGINS` includes your frontend URL
+- Static and media files are served via Cloudinary
+
+To set `DEBUG=False` on Heroku:
+
+1. Go to your app's dashboard
+2. Open the "Settings" tab
+3. Scroll to "Config Vars"
+4. Edit the `DEBUG` variable and set its value to `False`
+
 ## Credits
 
 ### [Coolors](https://coolors.co/)
@@ -610,4 +640,44 @@ Used for emojis in the application.
 ### [Visual Studio Code](https://code.visualstudio.com/)
 Used to edit the code for the application.
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+### [Adobe Photoshop](https://www.adobe.com/products/photoshop.html)
+Used to create the wireframes and layout drafts.
+
+### [DrawSQL](https://drawsql.app/)
+Used to design the relational database schema.
+
+### [Font Awesome](https://fontawesome.com/)
+Used to integrate icons into the UI.
+
+### [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+Used for accessibility testing of color contrasts.
+
+### [TinyPNG](https://tinypng.com/)
+Used to compress images before upload.
+
+### [Icons8](https://icons8.com/)
+Used for favicon and additional UI icons.
+
+### [Unsplash](https://unsplash.com/)
+Used for placeholder images (when applicable).
+
+### [React Bootstrap](https://react-bootstrap.github.io/)
+Used for layout components and responsive design.
+
+## Additional Resources & Support
+
+Throughout the development process, various tools and platforms were consulted to support error resolution, refresh knowledge, and ensure efficient troubleshooting:
+
+- chatgpt - Used as a support tool for resolving technical issues and validating code logic.
+- StackOverflow - Community-driven platform for researching specific error messages and best practices.
+- YouTube - Reference for tutorial content and visual explanations to reinforce concepts and workflows.
+
+## Media
+
+- All user-uploaded media is handled securely and optimized via Cloudinary.
+
+## Acknowledgements
+
+I would like to thank those who were a great support and inspiration during writing this project:
+
+- My wife, who supported me during the process of creating this final project.

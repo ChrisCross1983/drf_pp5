@@ -60,16 +60,16 @@
 
 | Testing method | Expected Result | Result |
 |-----|----------|-------|
-|Submitting a valid comment | The comment appears at the top of the comment list |  |
-| Submitting a comment with only whitespace | No comment is created, submit button remains disabled |  |
-| Replying to a comment | The reply appears under the parent comment |  |
-| Liking a comment | Like count increases, button changes to active state |  |
-| Unliking a comment | Like count decreases, button resets to inactive |  |
-| Editing own comment | Edited comment is updated inline and saved |  |
-| Deleting own comment | Comment disappears, toast confirms deletion |  |
-| Deleting a reply | Reply disappears from the comment thread |  |
-| Clicking "Load more comments" | Next page of comments is appended to the list |  |
-| Visiting post with comment ID in URL | The referenced comment is auto-scrolled and highlighted |  |
+|Submitting a valid comment | The comment appears at the top of the comment list | Pass |
+| Submitting a comment with only whitespace | No comment is created, submit button remains disabled | Pass |
+| Replying to a comment | The reply appears under the parent comment | Pass |
+| Liking a comment | Like count increases, button changes to active state | Pass |
+| Unliking a comment | Like count decreases, button resets to inactive | Pass |
+| Editing own comment | Edited comment is updated inline and saved | Pass |
+| Deleting own comment | Comment disappears, toast confirms deletion | Pass |
+| Deleting a reply | Reply disappears from the comment thread | Pass |
+| Clicking "Load more comments" | Next page of comments is appended to the list | Pass |
+| Visiting post with comment ID in URL | The referenced comment is auto-scrolled and highlighted | Pass |
 
 ### Notifications
 
