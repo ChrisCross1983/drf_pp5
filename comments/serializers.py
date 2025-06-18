@@ -26,7 +26,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_replies(self, obj):
         children = obj.replies.all().order_by("-created_at")
-        return CommentSerializer(children, many=True, context=self.context).data
+        return CommentSerializer(
+            children, many=True, context=self.context
+        ).data
 
     def get_replies_count(self, obj):
         return obj.replies.count()
@@ -40,15 +42,25 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_is_owner(self, obj):
         request = self.context.get('request')
-        return request.user == obj.owner if request and request.user.is_authenticated else False
+        return (
+            request.user == obj.owner
+            if request and request.user.is_authenticated
+            else False
+        )
 
     def get_profile_image(self, obj):
         if hasattr(obj.owner, "profile") and obj.owner.profile.profile_picture:
             url = obj.owner.profile.profile_picture.url
             if not url.startswith("http"):
-                return f"https://res.cloudinary.com/daj7vkzdw/{url}"
+                return (
+                    f"https://res.cloudinary.com/daj7vkzdw/"
+                    f"{url}"
+                )
             return url
-        return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
+        return (
+            "https://res.cloudinary.com/daj7vkzdw/image/upload/"
+            "v1737570810/default_profile_uehpos.jpg"
+        )
 
     def create(self, validated_data):
         request = self.context.get('request')

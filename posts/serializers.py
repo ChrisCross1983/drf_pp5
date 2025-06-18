@@ -7,7 +7,10 @@ from profiles.serializers import ProfileMiniSerializer
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
-    author_profile = ProfileMiniSerializer(source='author.profile', read_only=True)
+    author_profile = ProfileMiniSerializer(
+        source='author.profile',
+        read_only=True
+    )
     image = serializers.ImageField(required=False)
     description = serializers.CharField(max_length=1000)
     likes_count = serializers.SerializerMethodField()
@@ -39,7 +42,11 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_has_liked(self, obj):
         request = self.context.get("request")
-        return request and request.user.is_authenticated and obj.post_likes.filter(owner=request.user).exists()
+        return (
+            request
+            and request.user.is_authenticated
+            and obj.post_likes.filter(owner=request.user).exists()
+        )
 
     def get_is_owner(self, obj):
         request = self.context.get("request")
@@ -47,12 +54,18 @@ class PostSerializer(serializers.ModelSerializer):
 
     def validate_image(self, value):
         if value.size > 10 * 1024 * 1024:
-            raise serializers.ValidationError('Image is too large! Maximum allowed size is 10 MB.')
+            raise serializers.ValidationError(
+                'Image is too large! Maximum allowed size is 10 MB.'
+            )
         if hasattr(value, 'image'):
             if value.image.height > 4096:
-                raise serializers.ValidationError('Image height exceeds 4096px limit.')
+                raise serializers.ValidationError(
+                    'Image height exceeds 4096px limit.'
+                )
             if value.image.width > 4096:
-                raise serializers.ValidationError('Image width exceeds 4096px limit.')
+                raise serializers.ValidationError(
+                    'Image width exceeds 4096px limit.'
+                )
         return value
 
 
@@ -82,13 +95,19 @@ class SittingRequestSerializer(serializers.ModelSerializer):
         profile = getattr(obj.sender, "profile", None)
         if profile and profile.profile_picture:
             return profile.profile_picture.url
-        return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
+        return (
+            "https://res.cloudinary.com/daj7vkzdw/image/upload/"
+            "v1737570810/default_profile_uehpos.jpg"
+        )
 
     def get_receiver_profile_picture(self, obj):
         profile = getattr(obj.receiver, "profile", None)
         if profile and profile.profile_picture:
             return profile.profile_picture.url
-        return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
+        return (
+            "https://res.cloudinary.com/daj7vkzdw/image/upload/"
+            "v1737570810/default_profile_uehpos.jpg"
+        )
 
     def create(self, validated_data):
         request = self.context.get("request")
@@ -101,15 +120,28 @@ class SittingRequestSerializer(serializers.ModelSerializer):
 
         # Same user
         if post.author == request.user:
-            raise serializers.ValidationError("You can't request your own post.")
+            raise serializers.ValidationError(
+                "You can't request your own post."
+            )
 
         # Wrong category
         if post.category not in ["offer", "search"]:
-            raise serializers.ValidationError("Sitting requests are only allowed for 'offer' or 'search' posts.")
+            raise serializers.ValidationError(
+                (
+                    (
+                        "Sitting requests are only allowed for 'offer' or "
+                        "'search' posts."
+                    )
+                )
+            )
 
         # Request already active
-        if SittingRequest.objects.filter(sender=request.user, post=post).exists():
-            raise serializers.ValidationError("You have already sent a request for this post.")
+        if SittingRequest.objects.filter(
+            sender=request.user, post=post
+        ).exists():
+            raise serializers.ValidationError(
+                "You have already sent a request for this post."
+            )
 
         # All checked
         sitting_request = SittingRequest.objects.create(
@@ -141,6 +173,13 @@ class SittingResponseMessageSerializer(serializers.ModelSerializer):
 
     def get_sender_profile_image(self, obj):
         profile = getattr(obj.sender, "profile", None)
-        if profile and hasattr(profile, "profile_picture") and profile.profile_picture:
+        if (
+            profile
+            and hasattr(profile, "profile_picture")
+            and profile.profile_picture
+        ):
             return profile.profile_picture.url
-        return "https://res.cloudinary.com/daj7vkzdw/image/upload/v1737570810/default_profile_uehpos.jpg"
+        return (
+            "https://res.cloudinary.com/daj7vkzdw/image/upload/"
+            "v1737570810/default_profile_uehpos.jpg"
+        )
