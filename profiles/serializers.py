@@ -70,10 +70,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get("request")
 
-        print("📥 VALIDATED DATA:", validated_data)
-        print("🧾 FILES IN REQUEST:", request.FILES)
-        print("✅ CONTEXT:", self.context)
-
         profile_picture = validated_data.pop("profile_picture", None)
         first_name = validated_data.pop("first_name", "")
         last_name = validated_data.pop("last_name", "")
@@ -149,7 +145,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         print("🛠️ Incoming validated data:", validated_data)
         request = self.context.get("request")
-        print("📂 Uploaded files:", request.FILES if request else "No request")
 
         instance.bio = validated_data.get("bio", instance.bio)
 
